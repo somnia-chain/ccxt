@@ -1,0 +1,48 @@
+{
+    "SOM/USD": {
+        "id": "SOM:USD",
+        "symbol": "SOM/USD",
+        "base": "SOM",
+        "quote": "USD",
+        "baseId": "0xSomBaseAddr",
+        "quoteId": "0xSomQuoteAddr",
+        "active": true,
+        "type": "spot",
+        "spot": true,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "margin": false,
+        "contract": false,
+        "precision": {
+            "amount": 1e-18,
+            "price": 0.000001
+        },
+        "limits": {
+            "leverage": {
+                "min": null,
+                "max": null
+            },
+            "amount": {
+                "min": 1,
+                "max": null
+            },
+            "price": {
+                "min": null,
+                "max": null
+            },
+            "cost": {
+                "min": null,
+                "max": null
+            }
+        },
+        "info": {
+            "symbol": "SOM:USD",
+            "base": "0xSomBaseAddr",
+            "quote": "0xSomQuoteAddr",
+            "baseDecimals": 18,
+            "quoteDecimals": 6,
+            "minQuantity": "1"
+        }
+    }
+}

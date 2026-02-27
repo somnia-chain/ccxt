@@ -1,0 +1,28 @@
+{
+    "SOM": {
+        "id": "som",
+        "code": "SOM",
+        "name": "Somnia",
+        "type": "crypto",
+        "active": true,
+        "fees": {},
+        "networks": {},
+        "limits": {
+            "deposit": {},
+            "withdraw": {}
+        }
+    },
+    "USD": {
+        "id": "usd",
+        "code": "USD",
+        "name": "US Dollar",
+        "type": "crypto",
+        "active": true,
+        "fees": {},
+        "networks": {},
+        "limits": {
+            "deposit": {},
+            "withdraw": {}
+        }
+    }
+}

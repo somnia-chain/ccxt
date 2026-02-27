@@ -105,6 +105,7 @@ import delta from  './src/delta.js'
 import deribit from  './src/deribit.js'
 import derive from  './src/derive.js'
 import digifinex from  './src/digifinex.js'
+import dreamdex from  './src/dreamdex.js'
 import dydx from  './src/dydx.js'
 import exmo from  './src/exmo.js'
 import fmfwio from  './src/fmfwio.js'
@@ -200,6 +201,7 @@ import deepcoinPro from  './src/pro/deepcoin.js'
 import defxPro from  './src/pro/defx.js'
 import deribitPro from  './src/pro/deribit.js'
 import derivePro from  './src/pro/derive.js'
+import dreamdexPro from  './src/pro/dreamdex.js'
 import dydxPro from  './src/pro/dydx.js'
 import exmoPro from  './src/pro/exmo.js'
 import gatePro from  './src/pro/gate.js'
@@ -297,6 +299,7 @@ const exchanges = {
     'deribit':                deribit,
     'derive':                 derive,
     'digifinex':              digifinex,
+    'dreamdex':               dreamdex,
     'dydx':                   dydx,
     'exmo':                   exmo,
     'fmfwio':                 fmfwio,
@@ -392,6 +395,7 @@ const pro = {
     'defx':                   defxPro,
     'deribit':                deribitPro,
     'derive':                 derivePro,
+    'dreamdex':               dreamdexPro,
     'dydx':                   dydxPro,
     'exmo':                   exmoPro,
     'gate':                   gatePro,
@@ -632,6 +636,7 @@ export {
     deribit,
     derive,
     digifinex,
+    dreamdex,
     dydx,
     exmo,
     fmfwio,

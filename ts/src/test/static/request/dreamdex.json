@@ -1,0 +1,128 @@
+{
+    "exchange": "dreamdex",
+    "skipKeys": [],
+    "outputType": "json",
+    "options": {
+        "authToken": "test-token",
+        "authTokenExpires": 9999999999999
+    },
+    "methods": {
+        "fetchOrders": [
+            {
+                "description": "Spot orders for SOM/USD",
+                "method": "fetchOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOpenOrders": [
+            {
+                "description": "Open orders for SOM/USD",
+                "method": "fetchOpenOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders?status=open",
+                "input": [
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "createOrder": [
+            {
+                "description": "Prepare limit buy order for SOM/USD",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USD",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\"}"
+            },
+            {
+                "description": "Prepare market buy order for SOM/USD",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USD",
+                    "market",
+                    "buy",
+                    10
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"market\",\"side\":\"buy\",\"amount\":\"10\"}"
+            }
+        ],
+        "cancelOrder": [
+            {
+                "description": "Cancel order for SOM/USD",
+                "method": "cancelOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders/01KC1F8N2NBP5GEYKE66CRJ34A",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOrder": [
+            {
+                "description": "Fetch order for SOM/USD",
+                "method": "fetchOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders/01KC1F8N2NBP5GEYKE66CRJ34A",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOrderBook": [
+            {
+                "description": "Fetch order book for SOM/USD",
+                "method": "fetchOrderBook",
+                "url": "https://dev.dreamdex.somnia.host/v0/orderbooks?symbols=SOM%3AUSD",
+                "input": [
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "fetchTicker": [
+            {
+                "description": "Fetch ticker for SOM/USD",
+                "method": "fetchTicker",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/tickers",
+                "input": [
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "fetchTrades": [
+            {
+                "description": "Fetch trades for SOM/USD",
+                "method": "fetchTrades",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/trades",
+                "input": [
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOHLCV": [
+            {
+                "description": "Fetch OHLCV for SOM/USD",
+                "method": "fetchOHLCV",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/candles?interval=1m",
+                "input": [
+                    "SOM/USD"
+                ],
+                "output": null
+            }
+        ]
+    }
+}
