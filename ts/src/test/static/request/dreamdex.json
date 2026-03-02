@@ -7,6 +7,24 @@
         "authTokenExpires": 9999999999999
     },
     "methods": {
+        "fetchCurrencies": [
+            {
+                "description": "Fetch all currencies",
+                "method": "fetchCurrencies",
+                "url": "https://dev.dreamdex.somnia.host/v0/currencies",
+                "input": [],
+                "output": null
+            }
+        ],
+        "fetchMarkets": [
+            {
+                "description": "Fetch all markets",
+                "method": "fetchMarkets",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets",
+                "input": [],
+                "output": null
+            }
+        ],
         "fetchOrders": [
             {
                 "description": "Spot orders for SOM/USD",
@@ -121,6 +139,20 @@
                     { "fundingSource": "vault", "selfMatchingOption": "cancelTaker" }
                 ],
                 "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"fundingSource\":\"vault\",\"selfMatchingOption\":\"cancelTaker\"}"
+            },
+            {
+                "description": "Limit order with timeInForce FOK",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USD",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5,
+                    { "timeInForce": "FOK" }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"orderType\":\"fillOrKill\"}"
             }
         ],
         "cancelOrder": [
