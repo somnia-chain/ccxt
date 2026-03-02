@@ -463,6 +463,59 @@
                 ]
             }
         ],
+        "createOrder": [
+            {
+                "description": "Create limit buy order returns unsigned tx",
+                "method": "createOrder",
+                "input": [
+                    "SOM/USD",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5
+                ],
+                "httpResponse": {
+                    "chainId": "50312",
+                    "data": "0x80702f830000000000000000000000000000000000000000",
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "value": "0"
+                },
+                "parsedResponse": {
+                    "id": null,
+                    "clientOrderId": null,
+                    "timestamp": null,
+                    "datetime": null,
+                    "lastTradeTimestamp": null,
+                    "status": null,
+                    "symbol": "SOM/USD",
+                    "type": "limit",
+                    "side": "buy",
+                    "price": 1.5,
+                    "amount": 10,
+                    "filled": null,
+                    "remaining": null,
+                    "average": null,
+                    "cost": null,
+                    "trades": [],
+                    "fee": null,
+                    "info": {
+                        "chainId": "50312",
+                        "data": "0x80702f830000000000000000000000000000000000000000",
+                        "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                        "value": "0"
+                    },
+                    "fees": [],
+                    "lastUpdateTimestamp": null,
+                    "timeInForce": null,
+                    "postOnly": null,
+                    "reduceOnly": null,
+                    "stopPrice": null,
+                    "triggerPrice": null,
+                    "takeProfitPrice": null,
+                    "stopLossPrice": null
+                }
+            }
+        ],
         "fetchOHLCV": [
             {
                 "description": "OHLCV for SOM/USD",

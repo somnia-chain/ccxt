@@ -808,12 +808,11 @@ export default class dreamdex extends Exchange {
         //         "value": "0"
         //     }
         //
-        const timestamp = this.milliseconds ();
         return this.safeOrder ({
             'id': undefined,
             'clientOrderId': undefined,
-            'timestamp': timestamp,
-            'datetime': this.iso8601 (timestamp),
+            'timestamp': undefined,
+            'datetime': undefined,
             'lastTradeTimestamp': undefined,
             'status': undefined,
             'symbol': market['symbol'],
