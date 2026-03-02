@@ -24,5 +24,18 @@
             "deposit": {},
             "withdraw": {}
         }
+    },
+    "ETH": {
+        "id": "eth",
+        "code": "ETH",
+        "name": "Ethereum",
+        "type": "crypto",
+        "active": true,
+        "fees": {},
+        "networks": {},
+        "limits": {
+            "deposit": {},
+            "withdraw": {}
+        }
     }
 }

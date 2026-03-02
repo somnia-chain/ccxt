@@ -44,5 +44,51 @@
             "quoteDecimals": 6,
             "minQuantity": "1"
         }
+    },
+    "ETH/USD": {
+        "id": "ETH:USD",
+        "symbol": "ETH/USD",
+        "base": "ETH",
+        "quote": "USD",
+        "baseId": "0xEthBaseAddr",
+        "quoteId": "0xSomQuoteAddr",
+        "active": true,
+        "type": "spot",
+        "spot": true,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "margin": false,
+        "contract": false,
+        "precision": {
+            "amount": 1e-18,
+            "price": 0.01
+        },
+        "limits": {
+            "leverage": {
+                "min": null,
+                "max": null
+            },
+            "amount": {
+                "min": 0.001,
+                "max": null
+            },
+            "price": {
+                "min": null,
+                "max": null
+            },
+            "cost": {
+                "min": null,
+                "max": null
+            }
+        },
+        "info": {
+            "symbol": "ETH:USD",
+            "base": "0xEthBaseAddr",
+            "quote": "0xSomQuoteAddr",
+            "baseDecimals": 18,
+            "quoteDecimals": 6,
+            "minQuantity": "0.001"
+        }
     }
 }
