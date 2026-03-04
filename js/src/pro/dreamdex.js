@@ -102,8 +102,8 @@ export default class dreamdex extends dreamdexRest {
         client.resolve(orderbook, messageHash);
     }
     handleDelta(bookside, delta) {
-        const price = this.safeNumber(delta, 'price');
-        const amount = this.safeNumber(delta, 'quantity');
+        const price = this.safeFloat(delta, 'price');
+        const amount = this.safeFloat(delta, 'quantity');
         bookside.store(price, amount);
     }
     handleDeltas(bookside, deltas) {

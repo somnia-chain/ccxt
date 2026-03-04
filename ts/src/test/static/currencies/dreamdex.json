@@ -1,10 +1,11 @@
 {
     "SOM": {
-        "id": "som",
+        "id": "SOM",
         "code": "SOM",
         "name": "Somnia",
         "type": "crypto",
         "active": true,
+        "precision": 1e-18,
         "fees": {},
         "networks": {},
         "limits": {
@@ -12,12 +13,13 @@
             "withdraw": {}
         }
     },
-    "USD": {
-        "id": "usd",
-        "code": "USD",
+    "USDC": {
+        "id": "USD",
+        "code": "USDC",
         "name": "US Dollar",
         "type": "crypto",
         "active": true,
+        "precision": 0.000001,
         "fees": {},
         "networks": {},
         "limits": {
@@ -26,11 +28,12 @@
         }
     },
     "ETH": {
-        "id": "eth",
+        "id": "ETH",
         "code": "ETH",
         "name": "Ethereum",
         "type": "crypto",
         "active": true,
+        "precision": 1e-18,
         "fees": {},
         "networks": {},
         "limits": {

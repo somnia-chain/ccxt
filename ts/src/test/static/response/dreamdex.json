@@ -4,10 +4,10 @@
     "methods": {
         "fetchOrders": [
             {
-                "description": "Spot orders for SOM/USD",
+                "description": "Spot orders for SOM/USDC",
                 "method": "fetchOrders",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "orders": [
@@ -35,7 +35,7 @@
                         "datetime": "2025-12-12T10:09:29.841Z",
                         "lastTradeTimestamp": null,
                         "status": "open",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "type": "limit",
                         "side": "buy",
                         "price": 1.25,
@@ -73,10 +73,10 @@
                 ]
             },
             {
-                "description": "Fully filled closed order for SOM/USD",
+                "description": "Fully filled closed order for SOM/USDC",
                 "method": "fetchOrders",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "orders": [
@@ -104,7 +104,7 @@
                         "datetime": "2025-12-12T10:10:00.000Z",
                         "lastTradeTimestamp": null,
                         "status": "closed",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "type": "limit",
                         "side": "sell",
                         "price": 1.3,
@@ -142,10 +142,10 @@
                 ]
             },
             {
-                "description": "Canceled order with partial fill for SOM/USD",
+                "description": "Canceled order with partial fill for SOM/USDC",
                 "method": "fetchOrders",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "orders": [
@@ -173,7 +173,7 @@
                         "datetime": "2025-12-12T10:11:00.000Z",
                         "lastTradeTimestamp": null,
                         "status": "canceled",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "type": "limit",
                         "side": "buy",
                         "price": 1.2,
@@ -213,10 +213,10 @@
         ],
         "fetchOrderBook": [
             {
-                "description": "Order book for SOM/USD",
+                "description": "Order book for SOM/USDC",
                 "method": "fetchOrderBook",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "orderbooks": [
@@ -236,7 +236,7 @@
                     ]
                 },
                 "parsedResponse": {
-                    "symbol": "SOM/USD",
+                    "symbol": "SOM/USDC",
                     "bids": [
                         [ 1.24, 500 ],
                         [ 1.23, 300 ]
@@ -251,10 +251,10 @@
                 }
             },
             {
-                "description": "Empty order book for SOM/USD",
+                "description": "Empty order book for SOM/USDC",
                 "method": "fetchOrderBook",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "orderbooks": [
@@ -268,7 +268,7 @@
                     ]
                 },
                 "parsedResponse": {
-                    "symbol": "SOM/USD",
+                    "symbol": "SOM/USDC",
                     "bids": [],
                     "asks": [],
                     "timestamp": 1765534300000,
@@ -279,10 +279,10 @@
         ],
         "fetchTicker": [
             {
-                "description": "Ticker for SOM/USD",
+                "description": "Ticker for SOM/USDC",
                 "method": "fetchTicker",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "symbols": [
@@ -295,7 +295,7 @@
                     ]
                 },
                 "parsedResponse": {
-                    "symbol": "SOM/USD",
+                    "symbol": "SOM/USDC",
                     "timestamp": 1765534169841,
                     "datetime": "2025-12-12T10:09:29.841Z",
                     "high": 1.3,
@@ -327,10 +327,10 @@
         ],
         "fetchTrades": [
             {
-                "description": "Trades for SOM/USD",
+                "description": "Trades for SOM/USDC",
                 "method": "fetchTrades",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "symbol": "SOM:USD",
@@ -360,7 +360,7 @@
                         },
                         "timestamp": 1765534169841,
                         "datetime": "2025-12-12T10:09:29.841Z",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "order": null,
                         "type": null,
                         "side": "buy",
@@ -377,10 +377,10 @@
                 ]
             },
             {
-                "description": "Multiple trades (buy and sell) for SOM/USD",
+                "description": "Multiple trades (buy and sell) for SOM/USDC",
                 "method": "fetchTrades",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "symbol": "SOM:USD",
@@ -419,7 +419,7 @@
                         },
                         "timestamp": 1765534200000,
                         "datetime": "2025-12-12T10:10:00.000Z",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "order": null,
                         "type": null,
                         "side": "buy",
@@ -446,7 +446,7 @@
                         },
                         "timestamp": 1765534201000,
                         "datetime": "2025-12-12T10:10:01.000Z",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "order": null,
                         "type": null,
                         "side": "sell",
@@ -468,7 +468,7 @@
                 "description": "Create limit buy order returns unsigned tx",
                 "method": "createOrder",
                 "input": [
-                    "SOM/USD",
+                    "SOM/USDC",
                     "limit",
                     "buy",
                     10,
@@ -487,7 +487,7 @@
                     "datetime": null,
                     "lastTradeTimestamp": null,
                     "status": null,
-                    "symbol": "SOM/USD",
+                    "symbol": "SOM/USDC",
                     "type": "limit",
                     "side": "buy",
                     "price": 1.5,
@@ -518,10 +518,10 @@
         ],
         "fetchOHLCV": [
             {
-                "description": "OHLCV for SOM/USD",
+                "description": "OHLCV for SOM/USDC",
                 "method": "fetchOHLCV",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "symbol": "SOM:USD",
@@ -551,22 +551,22 @@
         ],
         "fetchCurrencies": [
             {
-                "description": "Currencies list with SOM and USD",
+                "description": "Currencies list with SOM and USD (mapped to USDC)",
                 "method": "fetchCurrencies",
                 "input": [],
                 "httpResponse": {
                     "currencies": [
-                        { "id": "som", "code": "SOM", "name": "Somnia" },
-                        { "id": "usd", "code": "USD", "name": "US Dollar" }
+                        { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": "18" },
+                        { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": "6" }
                     ]
                 },
                 "parsedResponse": {
                     "SOM": {
-                        "info": { "id": "som", "code": "SOM", "name": "Somnia" },
-                        "id": "som",
+                        "info": { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": "18" },
+                        "id": "SOM",
                         "numericId": null,
                         "code": "SOM",
-                        "precision": null,
+                        "precision": 1e-18,
                         "type": "crypto",
                         "name": "Somnia",
                         "active": true,
@@ -580,12 +580,12 @@
                             "withdraw": { "min": null, "max": null }
                         }
                     },
-                    "USD": {
-                        "info": { "id": "usd", "code": "USD", "name": "US Dollar" },
-                        "id": "usd",
+                    "USDC": {
+                        "info": { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": "6" },
+                        "id": "USD",
                         "numericId": null,
-                        "code": "USD",
-                        "precision": null,
+                        "code": "USDC",
+                        "precision": 0.000001,
                         "type": "crypto",
                         "name": "US Dollar",
                         "active": true,
@@ -604,7 +604,7 @@
         ],
         "fetchMarkets": [
             {
-                "description": "Markets list with SOM/USD",
+                "description": "Markets list with SOM/USDC",
                 "method": "fetchMarkets",
                 "input": [],
                 "httpResponse": {
@@ -624,12 +624,12 @@
                 "parsedResponse": [
                     {
                         "id": "SOM:USD",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "base": "SOM",
-                        "quote": "USD",
+                        "quote": "USDC",
                         "settle": null,
-                        "baseId": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
-                        "quoteId": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
+                        "baseId": "SOM",
+                        "quoteId": "USD",
                         "settleId": null,
                         "type": "spot",
                         "spot": true,
@@ -675,10 +675,10 @@
         ],
         "fetchBalance": [
             {
-                "description": "Vault balance for SOM/USD market",
+                "description": "Vault balance for SOM/USDC market",
                 "method": "fetchBalance",
                 "input": [
-                    { "symbol": "SOM/USD" }
+                    { "symbol": "SOM/USDC" }
                 ],
                 "httpResponse": {
                     "balances": [
@@ -692,20 +692,20 @@
                         { "currency": "USD", "amount": "500.25" }
                     ],
                     "SOM": { "free": 1000.5, "used": 0, "total": 1000.5 },
-                    "USD": { "free": 500.25, "used": 0, "total": 500.25 },
-                    "free": { "SOM": 1000.5, "USD": 500.25 },
-                    "used": { "SOM": 0, "USD": 0 },
-                    "total": { "SOM": 1000.5, "USD": 500.25 }
+                    "USDC": { "free": 500.25, "used": 0, "total": 500.25 },
+                    "free": { "SOM": 1000.5, "USDC": 500.25 },
+                    "used": { "SOM": 0, "USDC": 0 },
+                    "total": { "SOM": 1000.5, "USDC": 500.25 }
                 }
             }
         ],
         "fetchOrder": [
             {
-                "description": "Single open order for SOM/USD",
+                "description": "Single open order for SOM/USDC",
                 "method": "fetchOrder",
                 "input": [
                     "01KC1F8N2NBP5GEYKE66CRJ34A",
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
@@ -728,7 +728,7 @@
                     "datetime": "2025-12-12T10:09:29.841Z",
                     "lastTradeTimestamp": null,
                     "status": "open",
-                    "symbol": "SOM/USD",
+                    "symbol": "SOM/USDC",
                     "type": "limit",
                     "side": "buy",
                     "price": 1.25,
@@ -767,10 +767,10 @@
         ],
         "fetchOpenOrders": [
             {
-                "description": "Open orders for SOM/USD",
+                "description": "Open orders for SOM/USDC",
                 "method": "fetchOpenOrders",
                 "input": [
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "orders": [
@@ -798,14 +798,14 @@
                         "datetime": "2025-12-12T10:12:00.000Z",
                         "lastTradeTimestamp": null,
                         "status": "open",
-                        "symbol": "SOM/USD",
+                        "symbol": "SOM/USDC",
                         "type": "limit",
                         "side": "sell",
                         "price": 1.3,
                         "amount": 300,
                         "filled": 0,
                         "remaining": 300,
-                        "average": null,
+                        "average": 1.3,
                         "cost": 0,
                         "trades": [],
                         "fee": null,
@@ -838,11 +838,11 @@
         ],
         "cancelOrder": [
             {
-                "description": "Cancel partially filled order for SOM/USD",
+                "description": "Cancel partially filled order for SOM/USDC",
                 "method": "cancelOrder",
                 "input": [
                     "01KC1F8N2NBP5GEYKE66CRJ34A",
-                    "SOM/USD"
+                    "SOM/USDC"
                 ],
                 "httpResponse": {
                     "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
@@ -865,7 +865,7 @@
                     "datetime": "2025-12-12T10:09:29.841Z",
                     "lastTradeTimestamp": null,
                     "status": "canceled",
-                    "symbol": "SOM/USD",
+                    "symbol": "SOM/USDC",
                     "type": "limit",
                     "side": "buy",
                     "price": 1.25,
@@ -904,10 +904,10 @@
         ],
         "vaultDeposit": [
             {
-                "description": "Deposit SOM into SOM/USD vault returns unsigned tx",
+                "description": "Deposit SOM into SOM/USDC vault returns unsigned tx",
                 "method": "vaultDeposit",
                 "input": [
-                    "SOM/USD",
+                    "SOM/USDC",
                     "SOM",
                     100
                 ],
@@ -931,11 +931,11 @@
         ],
         "vaultWithdraw": [
             {
-                "description": "Withdraw USD from SOM/USD vault returns unsigned tx",
+                "description": "Withdraw USDC from SOM/USDC vault returns unsigned tx",
                 "method": "vaultWithdraw",
                 "input": [
-                    "SOM/USD",
-                    "USD",
+                    "SOM/USDC",
+                    "USDC",
                     50
                 ],
                 "httpResponse": {
@@ -958,10 +958,10 @@
         ],
         "vaultApprove": [
             {
-                "description": "Approve SOM for SOM/USD vault returns unsigned tx",
+                "description": "Approve SOM for SOM/USDC vault returns unsigned tx",
                 "method": "vaultApprove",
                 "input": [
-                    "SOM/USD",
+                    "SOM/USDC",
                     "SOM",
                     100
                 ],

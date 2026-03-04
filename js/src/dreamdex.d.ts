@@ -5,6 +5,8 @@ import type { Dict, int, Int, Str, Num, Market, Currencies, Order, OrderType, Or
  * @augments Exchange
  * @description Dreamdex (Somnia DEX) - a non-custodial decentralized exchange on the Somnia network (chain ID 50312).
  * createOrder returns an unsigned EVM transaction for the user to sign and broadcast on-chain.
+ * Note: Somnia is currently in testnet. The API base URL points to the testnet environment and will be
+ * updated to the production URL once mainnet launches.
  */
 export default class dreamdex extends Exchange {
     describe(): any;
@@ -79,7 +81,7 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchBalance
-     * @description query for balance and get the amount of funds available for trading or funds locked in orders
+     * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} params.symbol unified market symbol (required — vault is per-market)
@@ -90,10 +92,13 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultApprove
-     * @description generates an unsigned EVM transaction that approves the pool contract to spend a token on behalf of the wallet. Must be called before vaultDeposit.
+     * @description generates an unsigned EVM transaction that approves the pool contract to spend a token on behalf of the wallet.
+     * Must be called before vaultDeposit. DreamDEX uses per-market vaults: each trading pair has its own vault contract
+     * that holds deposited tokens. This differs from centralized exchanges where deposit/withdraw are exchange-wide.
+     * The approve step (ERC-20 allowance) has no equivalent in the standard CCXT unified interface.
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
-     * @param {string} currency currency code to approve (e.g. 'SOM' or 'USD')
+     * @param {string} currency currency code to approve (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to approve for spending
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
@@ -103,10 +108,12 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultDeposit
-     * @description generates an unsigned EVM transaction for depositing tokens into a market vault. The token must first be approved via vaultApprove.
+     * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault.
+     * The token must first be approved via vaultApprove. DreamDEX vaults are per-market (each trading pair
+     * has its own vault contract), unlike centralized exchanges where funds are deposited exchange-wide.
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
-     * @param {string} currency currency code to deposit (e.g. 'SOM' or 'USD')
+     * @param {string} currency currency code to deposit (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to deposit
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
@@ -116,10 +123,12 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultWithdraw
-     * @description generates an unsigned EVM transaction for withdrawing tokens from a market vault back to the wallet
+     * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault back to the wallet.
+     * DreamDEX vaults are per-market (each trading pair has its own vault contract), unlike centralized
+     * exchanges where withdrawals are exchange-wide.
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
-     * @param {string} currency currency code to withdraw (e.g. 'SOM' or 'USD')
+     * @param {string} currency currency code to withdraw (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to withdraw
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
