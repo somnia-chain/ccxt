@@ -1,0 +1,1126 @@
+
+//  ---------------------------------------------------------------------------
+
+import Exchange from './abstract/dreamdex.js';
+import { ArgumentsRequired, AuthenticationError, BadRequest, BadSymbol, ExchangeError, InsufficientFunds, InvalidOrder, NotSupported, OrderNotFound, PermissionDenied, RateLimitExceeded } from './base/errors.js';
+import { TICK_SIZE } from './base/functions/number.js';
+import { keccak_256 as keccak } from './static_dependencies/noble-hashes/sha3.js';
+import { secp256k1 } from './static_dependencies/noble-curves/secp256k1.js';
+import { ecdsa } from './base/functions/crypto.js';
+import type { Dict, int, Int, Str, Num, Market, Currencies, Order, OrderType, OrderSide, Balances, OrderBook, Ticker, Trade, OHLCV } from './base/types.js';
+
+//  ---------------------------------------------------------------------------
+
+/**
+ * @class dreamdex
+ * @augments Exchange
+ * @description Dreamdex (Somnia DEX) - a non-custodial decentralized exchange on the Somnia network (chain ID 50312).
+ * createOrder returns an unsigned EVM transaction for the user to sign and broadcast on-chain.
+ * Note: Somnia is currently in testnet. The API base URL points to the testnet environment and will be
+ * updated to the production URL once mainnet launches.
+ */
+export default class dreamdex extends Exchange {
+    describe (): any {
+        return this.deepExtend (super.describe (), {
+            'id': 'dreamdex',
+            'name': 'Dreamdex',
+            'countries': [],
+            'version': 'v0',
+            'rateLimit': 200,
+            'certified': false,
+            'pro': true,
+            'dex': true,
+            'has': {
+                'CORS': undefined,
+                'spot': true,
+                'margin': false,
+                'swap': false,
+                'future': false,
+                'option': false,
+                'addMargin': false,
+                'cancelAllOrders': false,
+                'cancelAllOrdersAfter': false,
+                'cancelOrder': true,
+                'cancelWithdraw': false,
+                'closeAllPositions': false,
+                'closePosition': false,
+                'createConvertTrade': false,
+                'createDepositAddress': false,
+                'createMarketBuyOrderWithCost': false,
+                'createMarketOrder': true,
+                'createMarketOrderWithCost': false,
+                'createMarketSellOrderWithCost': false,
+                'createOrder': true,
+                'createOrderWithTakeProfitAndStopLoss': false,
+                'createReduceOnlyOrder': false,
+                'createStopLimitOrder': false,
+                'createStopLossOrder': false,
+                'createStopMarketOrder': false,
+                'createStopOrder': false,
+                'createTakeProfitOrder': false,
+                'createTrailingAmountOrder': false,
+                'createTrailingPercentOrder': false,
+                'createTriggerOrder': false,
+                'fetchAccounts': false,
+                'fetchBalance': true,
+                'fetchCanceledOrders': false,
+                'fetchClosedOrder': false,
+                'fetchClosedOrders': false,
+                'fetchConvertCurrencies': false,
+                'fetchConvertQuote': false,
+                'fetchConvertTrade': false,
+                'fetchConvertTradeHistory': false,
+                'fetchCurrencies': true,
+                'fetchDepositAddress': false,
+                'fetchDepositAddresses': false,
+                'fetchDepositAddressesByNetwork': false,
+                'fetchDeposits': false,
+                'fetchDepositsWithdrawals': false,
+                'fetchFundingHistory': false,
+                'fetchFundingInterval': false,
+                'fetchFundingIntervals': false,
+                'fetchFundingRate': false,
+                'fetchFundingRateHistory': false,
+                'fetchFundingRates': false,
+                'fetchIndexOHLCV': false,
+                'fetchLedger': false,
+                'fetchLeverage': false,
+                'fetchMarginAdjustmentHistory': false,
+                'fetchMarginMode': false,
+                'fetchMarkets': true,
+                'fetchMarkOHLCV': false,
+                'fetchMarkPrice': false,
+                'fetchMarkPrices': false,
+                'fetchMyTrades': false,
+                'fetchOHLCV': true,
+                'fetchOpenInterestHistory': false,
+                'fetchOpenOrder': false,
+                'fetchOpenOrders': true,
+                'fetchOrder': true,
+                'fetchOrderBook': true,
+                'fetchOrders': true,
+                'fetchOrderTrades': false,
+                'fetchPosition': false,
+                'fetchPositionHistory': false,
+                'fetchPositionMode': false,
+                'fetchPositions': false,
+                'fetchPositionsHistory': false,
+                'fetchPremiumIndexOHLCV': false,
+                'fetchStatus': false,
+                'fetchTicker': true,
+                'fetchTickers': false,
+                'fetchTime': false,
+                'fetchTrades': true,
+                'fetchTradingFee': false,
+                'fetchTradingFees': false,
+                'fetchTransactions': false,
+                'fetchTransfers': false,
+                'fetchWithdrawals': false,
+                'reduceMargin': false,
+                'sandbox': false,
+                'setLeverage': false,
+                'setMargin': false,
+                'setPositionMode': false,
+                'transfer': false,
+                'withdraw': false,
+            },
+            'timeframes': {
+                '1m': '1m',
+                '5m': '5m',
+                '15m': '15m',
+                '1h': '1h',
+                '4h': '4h',
+                '1d': '1d',
+            },
+            'urls': {
+                'logo': 'https://somnia.network/favicon.ico',
+                'api': {
+                    'rest': 'https://dev.dreamdex.somnia.host',
+                },
+                'www': 'https://somnia.network',
+                'doc': [
+                    'https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json',
+                    'https://dev.dreamdex.somnia.host/v0/.well-known/async.json',
+                ],
+            },
+            'api': {
+                'public': {
+                    'get': {
+                        'v0/currencies': 1,
+                        'v0/markets': 1,
+                        'v0/markets/{symbol}/tickers': 1,
+                        'v0/markets/{symbol}/trades': 1,
+                        'v0/markets/{symbol}/candles': 1,
+                        'v0/orderbooks': 1,
+                        'v0/auth/nonce': 1,
+                    },
+                    'post': {
+                        'v0/auth/login': 1,
+                    },
+                },
+                'private': {
+                    'get': {
+                        'v0/markets/{symbol}/orders': 1,
+                        'v0/markets/{symbol}/orders/{id}': 1,
+                        'v0/markets/{symbol}/vault/balance': 1,
+                    },
+                    'post': {
+                        'v0/markets/{symbol}/orders': 1,
+                        'v0/markets/{symbol}/vault/deposit': 1,
+                        'v0/markets/{symbol}/vault/withdraw': 1,
+                        'v0/markets/{symbol}/vault/approve': 1,
+                    },
+                    'delete': {
+                        'v0/markets/{symbol}/orders/{id}': 1,
+                    },
+                },
+            },
+            'features': {
+                'spot': {
+                    'sandbox': false,
+                    'createOrder': {
+                        'marginMode': false,
+                        'triggerPrice': false,
+                        'triggerPriceType': undefined,
+                        'triggerDirection': false,
+                        'stopLossPrice': false,
+                        'takeProfitPrice': false,
+                        'attachedStopLossTakeProfit': undefined,
+                        'timeInForce': {
+                            'IOC': true,
+                            'FOK': true,
+                            'PO': true,
+                            'GTD': false,
+                        },
+                        'hedged': false,
+                        'leverage': false,
+                        'marketBuyRequiresPrice': false,
+                        'marketBuyByCost': false,
+                        'selfTradePrevention': true,
+                        'trailing': false,
+                        'iceberg': false,
+                    },
+                    'createOrders': undefined,
+                    'fetchMyTrades': undefined,
+                    'fetchOrder': {
+                        'marginMode': false,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchOpenOrders': {
+                        'marginMode': false,
+                        'limit': undefined,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchOrders': {
+                        'marginMode': false,
+                        'limit': undefined,
+                        'daysBack': undefined,
+                        'untilDays': undefined,
+                        'trigger': false,
+                        'trailing': false,
+                        'symbolRequired': true,
+                    },
+                    'fetchClosedOrders': undefined,
+                    'fetchOHLCV': {
+                        'limit': 1000,
+                    },
+                },
+                'swap': {
+                    'linear': undefined,
+                    'inverse': undefined,
+                },
+                'future': {
+                    'linear': undefined,
+                    'inverse': undefined,
+                },
+            },
+            'requiredCredentials': {
+                'apiKey': false,
+                'secret': false,
+                'walletAddress': true,
+                'privateKey': true,
+            },
+            'commonCurrencies': {
+                'USD': 'USDC',
+            },
+            'precisionMode': TICK_SIZE,
+            'options': {
+                'authToken': undefined,
+                'authTokenExpires': undefined,
+                'chainId': 50312,
+            },
+            'exceptions': {
+                'exact': {
+                    'not_implemented': NotSupported,
+                    'invalid_order_id': BadRequest,
+                    'order_not_found': OrderNotFound,
+                    'insufficient_balance': InsufficientFunds,
+                    'invalid_amount': InvalidOrder,
+                    'invalid_price': InvalidOrder,
+                    'invalid_market': BadSymbol,
+                    'market_not_found': BadSymbol,
+                    'rate_limit_exceeded': RateLimitExceeded,
+                    'permission_denied': PermissionDenied,
+                },
+                'broad': {
+                    'authorization failed': AuthenticationError,
+                    'insufficient': InsufficientFunds,
+                    'not found': OrderNotFound,
+                },
+            },
+        });
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchCurrencies
+     * @description fetches all available currencies on the exchange
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an associative dictionary of currencies
+     */
+    async fetchCurrencies (params = {}): Promise<Currencies> {
+        const response = await this.publicGetV0Currencies (params);
+        //
+        //     {
+        //         "currencies": [
+        //             { "id": "0xe8F76...", "code": "SOMI", "name": "SOMI", "decimals": "18" },
+        //             { "id": "0xB4AFC...", "code": "USDC", "name": "USDC", "decimals": "6" }
+        //         ]
+        //     }
+        //
+        const currencies = this.safeList (response, 'currencies', []);
+        const result: Dict = {};
+        for (let i = 0; i < currencies.length; i++) {
+            const currency = currencies[i];
+            const id = this.safeString (currency, 'code');
+            const code = this.safeCurrencyCode (id);
+            const name = this.safeString (currency, 'name');
+            const decimals = this.safeInteger (currency, 'decimals');
+            let precision = undefined;
+            if (decimals !== undefined) {
+                precision = this.parseNumber (this.parsePrecision (this.numberToString (decimals)));
+            }
+            result[code] = this.safeCurrencyStructure ({
+                'id': id,
+                'code': code,
+                'name': name,
+                'type': 'crypto',
+                'active': true,
+                'deposit': true,
+                'withdraw': true,
+                'fee': undefined,
+                'precision': precision,
+                'limits': {
+                    'deposit': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                    'withdraw': {
+                        'min': undefined,
+                        'max': undefined,
+                    },
+                },
+                'networks': {},
+                'info': currency,
+            });
+        }
+        return result;
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchMarkets
+     * @description retrieves data on all markets for dreamdex
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {Market[]} an array of objects representing market data
+     */
+    async fetchMarkets (params = {}): Promise<Market[]> {
+        const response = await this.publicGetV0Markets (params);
+        //
+        //     {
+        //         "markets": [
+        //             {
+        //                 "symbol": "SOMI:USDC",
+        //                 "base": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+        //                 "quote": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
+        //                 "baseDecimals": 18,
+        //                 "quoteDecimals": 6,
+        //                 "contract": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
+        //                 "tickSize": "0.00001",
+        //                 "lotSize": "0.000001"
+        //             }
+        //         ]
+        //     }
+        //
+        const markets = this.safeList (response, 'markets', []);
+        return this.parseMarkets (markets);
+    }
+
+    parseMarket (market: Dict): Market {
+        const id = this.safeString (market, 'symbol');
+        // symbol is "BASE:QUOTE" using exchange currency codes (e.g. "SOMI:USDC")
+        // market.base/quote hold on-chain token contract addresses (preserved in info)
+        // info.contract holds the pool/market contract address
+        const parts = id.split (':');
+        const baseId = this.safeString (parts, 0);
+        const quoteId = this.safeString (parts, 1);
+        const base = this.safeCurrencyCode (baseId);
+        const quote = this.safeCurrencyCode (quoteId);
+        const symbol = base + '/' + quote;
+        return {
+            'id': id,
+            'symbol': symbol,
+            'base': base,
+            'quote': quote,
+            'settle': undefined,
+            'baseId': baseId,
+            'quoteId': quoteId,
+            'settleId': undefined,
+            'type': 'spot',
+            'spot': true,
+            'margin': false,
+            'swap': false,
+            'future': false,
+            'option': false,
+            'active': true,
+            'contract': false,
+            'linear': undefined,
+            'inverse': undefined,
+            'taker': this.parseNumber ('0'),
+            'maker': this.parseNumber ('0'),
+            'contractSize': undefined,
+            'expiry': undefined,
+            'expiryDatetime': undefined,
+            'strike': undefined,
+            'optionType': undefined,
+            'precision': {
+                'amount': this.safeNumber (market, 'lotSize', this.parseNumber (this.parsePrecision (this.safeString (market, 'baseDecimals')))),
+                'price': this.safeNumber (market, 'tickSize', this.parseNumber (this.parsePrecision (this.safeString (market, 'quoteDecimals')))),
+            },
+            'limits': {
+                'leverage': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+                'amount': {
+                    'min': this.safeNumber (market, 'minQuantity'),
+                    'max': undefined,
+                },
+                'price': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+                'cost': {
+                    'min': undefined,
+                    'max': undefined,
+                },
+            },
+            'created': undefined,
+            'info': market,
+        };
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchOrderBook
+     * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol
+     * @param {int} [limit] the maximum amount of order book entries to return
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} A dictionary of [order book structures]{@link https://docs.ccxt.com/#/?id=order-book-structure} indexed by market symbols
+     */
+    async fetchOrderBook (symbol: string, limit: Int = undefined, params = {}): Promise<OrderBook> {
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbols': market['id'],
+        };
+        if (limit !== undefined) {
+            request['depth'] = limit;
+        }
+        const response = await this.publicGetV0Orderbooks (this.extend (request, params));
+        //
+        //     {
+        //         "orderbooks": [
+        //             {
+        //                 "symbol": "SOM:USD",
+        //                 "timestamp": 1765534169841,
+        //                 "bids": [ { "price": "1.24", "quantity": "500" } ],
+        //                 "asks": [ { "price": "1.26", "quantity": "300" } ],
+        //                 "nonce": 42
+        //             }
+        //         ]
+        //     }
+        //
+        const orderbooks = this.safeList (response, 'orderbooks', []);
+        const data = this.safeDict (orderbooks, 0, {});
+        const timestamp = this.safeInteger (data, 'timestamp');
+        const orderbook = this.parseOrderBook (data, symbol, timestamp, 'bids', 'asks', 'price', 'quantity');
+        orderbook['nonce'] = this.safeInteger (data, 'nonce');
+        return orderbook;
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchTicker
+     * @description fetches a price ticker, a statistical calculation with the information for a specific market
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async fetchTicker (symbol: string, params = {}): Promise<Ticker> {
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+        };
+        const response = await this.publicGetV0MarketsSymbolTickers (this.extend (request, params));
+        //
+        //     {
+        //         "symbols": [
+        //             { "symbol": "SOM:USD", "timestamp": 1765534169841, "high": "1.30", "low": "1.20" }
+        //         ]
+        //     }
+        //
+        const symbols = this.safeList (response, 'symbols', []);
+        const ticker = this.safeDict (symbols, 0, {});
+        return this.parseTicker (ticker, market);
+    }
+
+    parseTicker (ticker: Dict, market: Market = undefined): Ticker {
+        const marketId = this.safeString (ticker, 'symbol');
+        market = this.safeMarket (marketId, market, ':');
+        const timestamp = this.safeInteger (ticker, 'timestamp');
+        return this.safeTicker ({
+            'symbol': market['symbol'],
+            'timestamp': timestamp,
+            'datetime': this.iso8601 (timestamp),
+            'high': this.safeString (ticker, 'high'),
+            'low': this.safeString (ticker, 'low'),
+            'bid': undefined,
+            'bidVolume': undefined,
+            'ask': undefined,
+            'askVolume': undefined,
+            'vwap': undefined,
+            'open': undefined,
+            'close': undefined,
+            'last': undefined,
+            'previousClose': undefined,
+            'change': undefined,
+            'percentage': undefined,
+            'average': undefined,
+            'baseVolume': undefined,
+            'quoteVolume': undefined,
+            'info': ticker,
+        }, market);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchTrades
+     * @description get the list of most recent trades for a particular symbol
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol
+     * @param {int} [since] timestamp in ms of the earliest trade to fetch
+     * @param {int} [limit] the maximum number of trades to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+     */
+    async fetchTrades (symbol: string, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Trade[]> {
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+        };
+        if (since !== undefined) {
+            request['since'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.publicGetV0MarketsSymbolTrades (this.extend (request, params));
+        //
+        //     {
+        //         "symbol": "SOM:USD",
+        //         "trades": [
+        //             { "id": "t1", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
+        //         ]
+        //     }
+        //
+        const trades = this.safeList (response, 'trades', []);
+        return this.parseTrades (trades, market, since, limit);
+    }
+
+    parseTrade (trade: Dict, market: Market = undefined): Trade {
+        const marketId = this.safeString (trade, 'symbol');
+        market = this.safeMarket (marketId, market, ':');
+        const timestamp = this.safeInteger (trade, 'timestamp');
+        return this.safeTrade ({
+            'id': this.safeString (trade, 'id'),
+            'info': trade,
+            'timestamp': timestamp,
+            'datetime': this.iso8601 (timestamp),
+            'symbol': market['symbol'],
+            'order': undefined,
+            'type': undefined,
+            'side': this.safeString (trade, 'side'),
+            'takerOrMaker': undefined,
+            'price': this.safeString (trade, 'price'),
+            'amount': this.safeString (trade, 'amount'),
+            'cost': this.safeString (trade, 'cost'),
+            'fee': undefined,
+        }, market);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchOHLCV
+     * @description fetches historical candlestick data containing the open, high, low, close price, and the volume of a market
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol
+     * @param {string} [timeframe] the length of time each candle represents, default '1m'
+     * @param {int} [since] timestamp in ms of the earliest candle to fetch
+     * @param {int} [limit] the maximum number of candles to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {int[][]} A list of candles ordered as timestamp, open, high, low, close, volume
+     */
+    async fetchOHLCV (symbol: string, timeframe: string = '1m', since: Int = undefined, limit: Int = undefined, params = {}): Promise<OHLCV[]> {
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+            'interval': this.safeString (this.timeframes, timeframe, timeframe),
+        };
+        if (since !== undefined) {
+            request['since'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.publicGetV0MarketsSymbolCandles (this.extend (request, params));
+        //
+        //     {
+        //         "symbol": "SOM:USD",
+        //         "interval": "1m",
+        //         "candles": [
+        //             { "timestamp": 1765534140000, "open": "1.24", "high": "1.26", "low": "1.23", "close": "1.25", "volume": "1000" }
+        //         ]
+        //     }
+        //
+        const candles = this.safeList (response, 'candles', []);
+        return this.parseOHLCVs (candles, market, timeframe, since, limit);
+    }
+
+    parseOHLCV (ohlcv, market: Market = undefined): OHLCV {
+        return [
+            this.safeInteger (ohlcv, 'timestamp'),
+            this.safeNumber (ohlcv, 'open'),
+            this.safeNumber (ohlcv, 'high'),
+            this.safeNumber (ohlcv, 'low'),
+            this.safeNumber (ohlcv, 'close'),
+            this.safeNumber (ohlcv, 'volume'),
+        ];
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchBalance
+     * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} params.symbol unified market symbol (required — vault is per-market)
+     * @returns {object} a [balance structure]{@link https://docs.ccxt.com/#/?id=balance-structure}
+     */
+    async fetchBalance (params = {}): Promise<Balances> {
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const symbol = this.safeString (params, 'symbol');
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' fetchBalance() requires a params.symbol argument (vault is per-market)');
+        }
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+            'walletAddress': this.walletAddress,
+        };
+        params = this.omit (params, 'symbol');
+        const response = await this.privateGetV0MarketsSymbolVaultBalance (this.extend (request, params));
+        //
+        //     {
+        //         "balances": [
+        //             { "currency": "SOM", "amount": "1000.5" },
+        //             { "currency": "USD", "amount": "500.25" }
+        //         ]
+        //     }
+        //
+        const balances = this.safeList (response, 'balances', []);
+        return this.parseBalance (balances);
+    }
+
+    parseBalance (response): Balances {
+        const result: Dict = { 'info': response };
+        for (let i = 0; i < response.length; i++) {
+            const balance = this.safeDict (response, i, {});
+            const currencyId = this.safeString (balance, 'currency');
+            const code = this.safeCurrencyCode (currencyId);
+            const account = this.account ();
+            const total = this.safeString (balance, 'amount');
+            account['total'] = total;
+            account['free'] = total;
+            result[code] = account;
+        }
+        return this.safeBalance (result);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#vaultApprove
+     * @description generates an unsigned EVM transaction that approves the pool contract to spend a token on behalf of the wallet.
+     * Must be called before vaultDeposit. DreamDEX uses per-market vaults: each trading pair has its own vault contract
+     * that holds deposited tokens. This differs from centralized exchanges where deposit/withdraw are exchange-wide.
+     * The approve step (ERC-20 allowance) has no equivalent in the standard CCXT unified interface.
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol identifying the vault
+     * @param {string} currency currency code to approve (e.g. 'SOM' or 'USDC')
+     * @param {float} amount the amount to approve for spending
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
+     * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
+     */
+    async vaultApprove (symbol: string, currency: string, amount: Num, params = {}): Promise<Dict> {
+        return await this.vaultAction ('approve', symbol, currency, amount, params);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#vaultDeposit
+     * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault.
+     * The token must first be approved via vaultApprove. DreamDEX vaults are per-market (each trading pair
+     * has its own vault contract), unlike centralized exchanges where funds are deposited exchange-wide.
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol identifying the vault
+     * @param {string} currency currency code to deposit (e.g. 'SOM' or 'USDC')
+     * @param {float} amount the amount to deposit
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
+     * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
+     */
+    async vaultDeposit (symbol: string, currency: string, amount: Num, params = {}): Promise<Dict> {
+        return await this.vaultAction ('deposit', symbol, currency, amount, params);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#vaultWithdraw
+     * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault back to the wallet.
+     * DreamDEX vaults are per-market (each trading pair has its own vault contract), unlike centralized
+     * exchanges where withdrawals are exchange-wide.
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol identifying the vault
+     * @param {string} currency currency code to withdraw (e.g. 'SOM' or 'USDC')
+     * @param {float} amount the amount to withdraw
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
+     * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
+     */
+    async vaultWithdraw (symbol: string, currency: string, amount: Num, params = {}): Promise<Dict> {
+        return await this.vaultAction ('withdraw', symbol, currency, amount, params);
+    }
+
+    async vaultAction (action: string, symbol: string, currency: string, amount: Num, params = {}): Promise<Dict> {
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const walletAddress = this.safeString (params, 'walletAddress', this.walletAddress);
+        params = this.omit (params, 'walletAddress');
+        const currencyObj = this.currency (currency);
+        const request: Dict = {
+            'symbol': market['id'],
+            'walletAddress': walletAddress,
+            'currency': currencyObj['id'],
+            'amount': this.numberToString (amount),
+        };
+        let response = undefined;
+        if (action === 'approve') {
+            response = await this.privatePostV0MarketsSymbolVaultApprove (this.extend (request, params));
+        } else if (action === 'deposit') {
+            response = await this.privatePostV0MarketsSymbolVaultDeposit (this.extend (request, params));
+        } else if (action === 'withdraw') {
+            response = await this.privatePostV0MarketsSymbolVaultWithdraw (this.extend (request, params));
+        }
+        //
+        //     {
+        //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+        //         "data": "0x80702f83...",
+        //         "value": "0",
+        //         "chainId": "50312",
+        //         "gasLimit": "250000",
+        //         "nonce": "42"
+        //     }
+        //
+        return response;
+    }
+
+    /**
+     * @method
+     * @name dreamdex#createOrder
+     * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
+     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+     * The returned order structure has the unsigned transaction payload in the info field.
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol
+     * @param {string} type 'limit' or 'market'
+     * @param {string} side 'buy' or 'sell'
+     * @param {float} amount how much of currency you want to trade in units of base currency
+     * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.walletAddress] the wallet address to place the order from (defaults to this.walletAddress)
+     * @param {string} [params.timeInForce] 'IOC', 'FOK', or 'PO' - maps to API orderType (immediateOrCancel, fillOrKill, postOnly)
+     * @param {bool} [params.postOnly] true to create a post-only order (alternative to timeInForce 'PO')
+     * @param {string} [params.fundingSource] 'wallet' or 'vault' - where to source tokens (default is 'wallet', 'vault' uses pre-deposited balance)
+     * @param {string} [params.selfMatchingOption] 'cancelTaker' or 'cancelMaker' - self-trade prevention behavior
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure} with the unsigned EVM transaction in the info field
+     */
+    async createOrder (symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const walletAddress = this.safeString (params, 'walletAddress', this.walletAddress);
+        const fundingSource = this.safeString (params, 'fundingSource');
+        const selfMatchingOption = this.safeString (params, 'selfMatchingOption');
+        params = this.omit (params, [ 'walletAddress', 'fundingSource', 'selfMatchingOption' ]);
+        const isMarketOrder = (type === 'market');
+        if (!isMarketOrder && price === undefined) {
+            throw new ArgumentsRequired (this.id + ' createOrder() requires a price argument for limit orders');
+        }
+        let postOnly = undefined;
+        [ postOnly, params ] = this.handlePostOnly (isMarketOrder, false, params);
+        const timeInForce = this.safeStringUpper (params, 'timeInForce');
+        params = this.omit (params, 'timeInForce');
+        const request: Dict = {
+            'symbol': market['id'],
+            'walletAddress': walletAddress,
+            'type': type,
+            'side': side,
+            'amount': this.amountToPrecision (symbol, amount),
+        };
+        if (!isMarketOrder) {
+            request['price'] = this.priceToPrecision (symbol, price);
+        }
+        if (postOnly) {
+            request['orderType'] = 'postOnly';
+        } else if (timeInForce === 'IOC') {
+            request['orderType'] = 'immediateOrCancel';
+        } else if (timeInForce === 'FOK') {
+            request['orderType'] = 'fillOrKill';
+        }
+        if (fundingSource !== undefined) {
+            request['fundingSource'] = fundingSource;
+        }
+        if (selfMatchingOption !== undefined) {
+            request['selfMatchingOption'] = selfMatchingOption;
+        }
+        const response = await this.privatePostV0MarketsSymbolOrders (this.extend (request, params));
+        //
+        //     {
+        //         "chainId": "50312",
+        //         "data": "0x80702f83...",
+        //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+        //         "value": "0"
+        //     }
+        //
+        return this.safeOrder ({
+            'id': undefined,
+            'clientOrderId': undefined,
+            'timestamp': undefined,
+            'datetime': undefined,
+            'lastTradeTimestamp': undefined,
+            'status': undefined,
+            'symbol': market['symbol'],
+            'type': type,
+            'side': side,
+            'price': price,
+            'amount': amount,
+            'filled': undefined,
+            'remaining': undefined,
+            'average': undefined,
+            'cost': undefined,
+            'trades': undefined,
+            'fee': undefined,
+            'info': response,
+        }, market);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchOrder
+     * @description fetches information on an order made by the user
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} id the order id
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOrder (id: string, symbol: Str = undefined, params = {}): Promise<Order> {
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' fetchOrder() requires a symbol argument');
+        }
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+            'id': id,
+        };
+        const response = await this.privateGetV0MarketsSymbolOrdersId (this.extend (request, params));
+        //
+        //     {
+        //         "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+        //         "status": "open",
+        //         "createdAt": 1765534169841,
+        //         "symbol": "SOM:USD",
+        //         "type": "limit",
+        //         "side": "buy",
+        //         "price": "1.25",
+        //         "amount": "500",
+        //         "filled": "150",
+        //         "remaining": "350",
+        //         "walletAddress": "0x1234...",
+        //         "txHash": "0xabc..."
+        //     }
+        //
+        return this.parseOrder (response, market);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchOrders
+     * @description fetches a list of orders placed by the user for a specific market
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {int} [since] timestamp in ms of the earliest order to retrieve
+     * @param {int} [limit] the maximum number of orders to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected'
+     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' fetchOrders() requires a symbol argument');
+        }
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+        };
+        const response = await this.privateGetV0MarketsSymbolOrders (this.extend (request, params));
+        //
+        //     { "orders": [ ... ] }
+        //
+        const orders = this.safeList (response, 'orders', []);
+        return this.parseOrders (orders, market, since, limit);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchOpenOrders
+     * @description fetches a list of open orders placed by the user for a specific market
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {int} [since] timestamp in ms of the earliest order to retrieve
+     * @param {int} [limit] the maximum number of orders to retrieve
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async fetchOpenOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' fetchOpenOrders() requires a symbol argument');
+        }
+        const request: Dict = {
+            'status': 'open',
+        };
+        return await this.fetchOrders (symbol, since, limit, this.extend (request, params));
+    }
+
+    /**
+     * @method
+     * @name dreamdex#cancelOrder
+     * @description cancels an open order
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} id order id
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+     */
+    async cancelOrder (id: string, symbol: Str = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' cancelOrder() requires a symbol argument');
+        }
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+            'id': id,
+        };
+        const response = await this.privateDeleteV0MarketsSymbolOrdersId (this.extend (request, params));
+        return this.parseOrder (response, market);
+    }
+
+    parseOrder (order: Dict, market: Market = undefined): Order {
+        //
+        //     {
+        //         "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+        //         "status": "open",
+        //         "createdAt": 1765534169841,
+        //         "symbol": "SOM:USD",
+        //         "type": "limit",
+        //         "side": "buy",
+        //         "price": "1.25",
+        //         "amount": "500",
+        //         "filled": "150",
+        //         "remaining": "350",
+        //         "walletAddress": "0x1234...",
+        //         "txHash": "0xabc..."
+        //     }
+        //
+        const marketId = this.safeString (order, 'symbol');
+        market = this.safeMarket (marketId, market, ':');
+        const timestamp = this.safeInteger (order, 'createdAt');
+        const price = this.safeNumber (order, 'price');
+        return this.safeOrder ({
+            'id': this.safeString (order, 'id'),
+            'clientOrderId': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601 (timestamp),
+            'lastTradeTimestamp': undefined,
+            'status': this.parseOrderStatus (this.safeString (order, 'status')),
+            'symbol': market['symbol'],
+            'type': this.safeString (order, 'type'),
+            'side': this.safeString (order, 'side'),
+            'price': price,
+            'amount': this.safeNumber (order, 'amount'),
+            'filled': this.safeNumber (order, 'filled'),
+            'remaining': this.safeNumber (order, 'remaining'),
+            'average': price,
+            'cost': undefined,
+            'trades': undefined,
+            'fee': undefined,
+            'info': order,
+        }, market);
+    }
+
+    parseOrderStatus (status: Str) {
+        const statuses: Dict = {
+            'open': 'open',
+            'closed': 'closed',
+            'canceled': 'canceled',
+            'expired': 'expired',
+            'rejected': 'rejected',
+        };
+        return this.safeString (statuses, status, status);
+    }
+
+    hashMessage (message) {
+        const binaryMessage = this.encode (message);
+        const binaryMessageLength = this.binaryLength (binaryMessage);
+        const x19 = this.base16ToBinary ('19');
+        const newline = this.base16ToBinary ('0a');
+        const prefix = this.binaryConcat (x19, this.encode ('Ethereum Signed Message:'), newline, this.encode (this.numberToString (binaryMessageLength))); // eslint-disable-line quotes
+        return '0x' + this.hash (this.binaryConcat (prefix, binaryMessage), keccak, 'hex');
+    }
+
+    signHash (hash, privateKey) {
+        this.checkRequiredCredentials ();
+        const signature = ecdsa (hash.slice (-64), privateKey.slice (-64), secp256k1, undefined);
+        const r = signature['r'];
+        const s = signature['s'];
+        const v = this.intToBase16 (this.sum (27, signature['v']));
+        return '0x' + r.padStart (64, '0') + s.padStart (64, '0') + v;
+    }
+
+    async authenticateRest (params = {}) {
+        const cachedToken = this.safeString (this.options, 'authToken');
+        const cachedExpires = this.safeInteger (this.options, 'authTokenExpires');
+        const now = this.milliseconds ();
+        if ((cachedToken !== undefined) && (cachedExpires !== undefined) && (now < cachedExpires)) {
+            return cachedToken;
+        }
+        const nonceResponse = await this.publicGetV0AuthNonce (params);
+        const nonce = this.safeString (nonceResponse, 'nonce');
+        const issuedAt = this.iso8601 (now);
+        const url = this.safeString (this.urls['api'], 'rest');
+        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to Somnia DEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 50312' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
+        const hash = this.hashMessage (message);
+        const sig = this.signHash (hash, this.privateKey);
+        const loginRequest: Dict = {
+            'message': message,
+            'signature': sig,
+        };
+        const loginResponse = await this.publicPostV0AuthLogin (loginRequest);
+        //
+        //     { "token": "eyJhbGciOi...", "expiresAt": 1765537769841 }
+        //
+        const token = this.safeString (loginResponse, 'token');
+        const expiresAt = this.safeInteger (loginResponse, 'expiresAt');
+        this.options['authToken'] = token;
+        this.options['authTokenExpires'] = expiresAt;
+        return token;
+    }
+
+    sign (path, api = 'public', method = 'GET', params = {}, headers = undefined, body = undefined) {
+        let url = this.safeString (this.urls['api'], 'rest') + '/' + this.implodeParams (path, params);
+        const query = this.omit (params, this.extractParams (path));
+        if (api === 'private') {
+            const token = this.safeString (this.options, 'authToken');
+            headers = {
+                'Authorization': 'Bearer ' + token,
+            };
+            if (method === 'POST') {
+                headers['Content-Type'] = 'application/json';
+                body = this.json (query);
+            } else {
+                if (Object.keys (query).length) {
+                    url += '?' + this.urlencode (query);
+                }
+            }
+        } else {
+            if (method === 'POST') {
+                headers = {
+                    'Content-Type': 'application/json',
+                };
+                body = this.json (query);
+            } else {
+                if (Object.keys (query).length) {
+                    url += '?' + this.urlencode (query);
+                }
+            }
+        }
+        return { 'url': url, 'method': method, 'body': body, 'headers': headers };
+    }
+
+    handleErrors (httpCode: int, reason: string, url: string, method: string, headers: Dict, body: string, response, requestHeaders, requestBody) {
+        if (response === undefined) {
+            return undefined;
+        }
+        const errorName = this.safeString (response, 'name');
+        if (errorName !== undefined) {
+            const feedback = this.id + ' ' + body;
+            this.throwExactlyMatchedException (this.exceptions['exact'], errorName, feedback);
+            this.throwBroadlyMatchedException (this.exceptions['broad'], body, feedback);
+            if (httpCode >= 400) {
+                throw new ExchangeError (feedback);
+            }
+        }
+        return undefined;
+    }
+}
