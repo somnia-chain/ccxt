@@ -1,0 +1,308 @@
+{
+    "exchange": "dreamdex",
+    "skipKeys": [],
+    "outputType": "json",
+    "options": {
+        "authToken": "test-token",
+        "authTokenExpires": 9999999999999
+    },
+    "methods": {
+        "fetchCurrencies": [
+            {
+                "description": "Fetch all currencies",
+                "method": "fetchCurrencies",
+                "url": "https://dev.dreamdex.somnia.host/v0/currencies",
+                "input": [],
+                "output": null
+            }
+        ],
+        "fetchMarkets": [
+            {
+                "description": "Fetch all markets",
+                "method": "fetchMarkets",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets",
+                "input": [],
+                "output": null
+            }
+        ],
+        "fetchOrders": [
+            {
+                "description": "Spot orders for SOM/USDC",
+                "method": "fetchOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOpenOrders": [
+            {
+                "description": "Open orders for SOM/USDC",
+                "method": "fetchOpenOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders?status=open",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            }
+        ],
+        "createOrder": [
+            {
+                "description": "Prepare limit buy order for SOM/USDC",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\"}"
+            },
+            {
+                "description": "Prepare market buy order for SOM/USDC",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "market",
+                    "buy",
+                    10
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"market\",\"side\":\"buy\",\"amount\":\"10\"}"
+            },
+            {
+                "description": "Limit sell order for SOM/USDC",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "sell",
+                    5,
+                    2.0
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"sell\",\"amount\":\"5\",\"price\":\"2\"}"
+            },
+            {
+                "description": "Market sell order for SOM/USDC",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "market",
+                    "sell",
+                    20
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"market\",\"side\":\"sell\",\"amount\":\"20\"}"
+            },
+            {
+                "description": "Limit order with timeInForce IOC",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5,
+                    { "timeInForce": "IOC" }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"orderType\":\"immediateOrCancel\"}"
+            },
+            {
+                "description": "Limit order with postOnly",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5,
+                    { "postOnly": true }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"orderType\":\"postOnly\"}"
+            },
+            {
+                "description": "Limit order with fundingSource vault and selfMatchingOption cancelTaker",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5,
+                    { "fundingSource": "vault", "selfMatchingOption": "cancelTaker" }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"fundingSource\":\"vault\",\"selfMatchingOption\":\"cancelTaker\"}"
+            },
+            {
+                "description": "Limit order with timeInForce FOK",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5,
+                    { "timeInForce": "FOK" }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"orderType\":\"fillOrKill\"}"
+            }
+        ],
+        "cancelOrder": [
+            {
+                "description": "Cancel order for SOM/USDC",
+                "method": "cancelOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders/01KC1F8N2NBP5GEYKE66CRJ34A",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USDC"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOrder": [
+            {
+                "description": "Fetch order for SOM/USDC",
+                "method": "fetchOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders/01KC1F8N2NBP5GEYKE66CRJ34A",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USDC"
+                ],
+                "output": null
+            }
+        ],
+        "fetchOrderBook": [
+            {
+                "description": "Fetch order book for SOM/USDC",
+                "method": "fetchOrderBook",
+                "url": "https://dev.dreamdex.somnia.host/v0/orderbooks?symbols=SOM%3AUSD",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            },
+            {
+                "description": "Fetch order book for SOM/USDC with depth limit",
+                "method": "fetchOrderBook",
+                "url": "https://dev.dreamdex.somnia.host/v0/orderbooks?symbols=SOM%3AUSD&depth=10",
+                "input": [
+                    "SOM/USDC",
+                    10
+                ],
+                "output": null
+            }
+        ],
+        "fetchTicker": [
+            {
+                "description": "Fetch ticker for SOM/USDC",
+                "method": "fetchTicker",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/tickers",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            }
+        ],
+        "fetchTrades": [
+            {
+                "description": "Fetch trades for SOM/USDC",
+                "method": "fetchTrades",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/trades",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            },
+            {
+                "description": "Fetch trades for SOM/USDC with since and limit",
+                "method": "fetchTrades",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/trades?since=1765534169841&limit=50",
+                "input": [
+                    "SOM/USDC",
+                    1765534169841,
+                    50
+                ],
+                "output": null
+            }
+        ],
+        "fetchOHLCV": [
+            {
+                "description": "Fetch OHLCV for SOM/USDC",
+                "method": "fetchOHLCV",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/candles?interval=1m",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            },
+            {
+                "description": "Fetch OHLCV for SOM/USDC with 1h timeframe",
+                "method": "fetchOHLCV",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/candles?interval=1h",
+                "input": [
+                    "SOM/USDC",
+                    "1h"
+                ],
+                "output": null
+            }
+        ],
+        "fetchBalance": [
+            {
+                "description": "Fetch vault balance for SOM/USDC market",
+                "method": "fetchBalance",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/vault/balance?walletAddress=wallet",
+                "input": [
+                    { "symbol": "SOM/USDC" }
+                ],
+                "output": null
+            }
+        ],
+        "vaultDeposit": [
+            {
+                "description": "Deposit SOM into SOM/USDC vault",
+                "method": "vaultDeposit",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/vault/deposit",
+                "input": [
+                    "SOM/USDC",
+                    "SOM",
+                    100
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"currency\":\"SOM\",\"amount\":\"100\"}"
+            }
+        ],
+        "vaultWithdraw": [
+            {
+                "description": "Withdraw USDC from SOM/USDC vault",
+                "method": "vaultWithdraw",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/vault/withdraw",
+                "input": [
+                    "SOM/USDC",
+                    "USDC",
+                    50
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"currency\":\"USD\",\"amount\":\"50\"}"
+            }
+        ],
+        "vaultApprove": [
+            {
+                "description": "Approve SOM for SOM/USDC vault",
+                "method": "vaultApprove",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/vault/approve",
+                "input": [
+                    "SOM/USDC",
+                    "SOM",
+                    100
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"currency\":\"SOM\",\"amount\":\"100\"}"
+            }
+        ]
+    }
+}

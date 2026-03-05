@@ -1,0 +1,987 @@
+{
+    "exchange": "dreamdex",
+    "skipKeys": [],
+    "methods": {
+        "fetchOrders": [
+            {
+                "description": "Spot orders for SOM/USDC",
+                "method": "fetchOrders",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "orders": [
+                        {
+                            "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                            "status": "open",
+                            "createdAt": 1765534169841,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "buy",
+                            "price": "1.25",
+                            "amount": "500",
+                            "filled": "150",
+                            "remaining": "350",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                        "clientOrderId": null,
+                        "timestamp": 1765534169841,
+                        "datetime": "2025-12-12T10:09:29.841Z",
+                        "lastTradeTimestamp": null,
+                        "status": "open",
+                        "symbol": "SOM/USDC",
+                        "type": "limit",
+                        "side": "buy",
+                        "price": 1.25,
+                        "amount": 500,
+                        "filled": 150,
+                        "remaining": 350,
+                        "average": 1.25,
+                        "cost": 187.5,
+                        "trades": [],
+                        "fee": null,
+                        "info": {
+                            "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                            "status": "open",
+                            "createdAt": 1765534169841,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "buy",
+                            "price": "1.25",
+                            "amount": "500",
+                            "filled": "150",
+                            "remaining": "350",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                        },
+                        "fees": [],
+                        "lastUpdateTimestamp": null,
+                        "timeInForce": null,
+                        "postOnly": null,
+                        "reduceOnly": null,
+                        "stopPrice": null,
+                        "triggerPrice": null,
+                        "takeProfitPrice": null,
+                        "stopLossPrice": null
+                    }
+                ]
+            },
+            {
+                "description": "Fully filled closed order for SOM/USDC",
+                "method": "fetchOrders",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "orders": [
+                        {
+                            "id": "01KC2A9P3QCR6HFZLG77DSK45B",
+                            "status": "closed",
+                            "createdAt": 1765534200000,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "sell",
+                            "price": "1.30",
+                            "amount": "200",
+                            "filled": "200",
+                            "remaining": "0",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0xaabbccddee1234567890abcdef1234567890abcdef1234567890abcdef123456"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "01KC2A9P3QCR6HFZLG77DSK45B",
+                        "clientOrderId": null,
+                        "timestamp": 1765534200000,
+                        "datetime": "2025-12-12T10:10:00.000Z",
+                        "lastTradeTimestamp": null,
+                        "status": "closed",
+                        "symbol": "SOM/USDC",
+                        "type": "limit",
+                        "side": "sell",
+                        "price": 1.3,
+                        "amount": 200,
+                        "filled": 200,
+                        "remaining": 0,
+                        "average": 1.3,
+                        "cost": 260,
+                        "trades": [],
+                        "fee": null,
+                        "info": {
+                            "id": "01KC2A9P3QCR6HFZLG77DSK45B",
+                            "status": "closed",
+                            "createdAt": 1765534200000,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "sell",
+                            "price": "1.30",
+                            "amount": "200",
+                            "filled": "200",
+                            "remaining": "0",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0xaabbccddee1234567890abcdef1234567890abcdef1234567890abcdef123456"
+                        },
+                        "fees": [],
+                        "lastUpdateTimestamp": null,
+                        "timeInForce": null,
+                        "postOnly": null,
+                        "reduceOnly": null,
+                        "stopPrice": null,
+                        "triggerPrice": null,
+                        "takeProfitPrice": null,
+                        "stopLossPrice": null
+                    }
+                ]
+            },
+            {
+                "description": "Canceled order with partial fill for SOM/USDC",
+                "method": "fetchOrders",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "orders": [
+                        {
+                            "id": "01KC3B0Q4RDS7IGAMH88ETL56C",
+                            "status": "canceled",
+                            "createdAt": 1765534260000,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "buy",
+                            "price": "1.20",
+                            "amount": "500",
+                            "filled": "200",
+                            "remaining": "300",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0x1122334455667788990011223344556677889900112233445566778899001122"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "01KC3B0Q4RDS7IGAMH88ETL56C",
+                        "clientOrderId": null,
+                        "timestamp": 1765534260000,
+                        "datetime": "2025-12-12T10:11:00.000Z",
+                        "lastTradeTimestamp": null,
+                        "status": "canceled",
+                        "symbol": "SOM/USDC",
+                        "type": "limit",
+                        "side": "buy",
+                        "price": 1.2,
+                        "amount": 500,
+                        "filled": 200,
+                        "remaining": 300,
+                        "average": 1.2,
+                        "cost": 240,
+                        "trades": [],
+                        "fee": null,
+                        "info": {
+                            "id": "01KC3B0Q4RDS7IGAMH88ETL56C",
+                            "status": "canceled",
+                            "createdAt": 1765534260000,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "buy",
+                            "price": "1.20",
+                            "amount": "500",
+                            "filled": "200",
+                            "remaining": "300",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0x1122334455667788990011223344556677889900112233445566778899001122"
+                        },
+                        "fees": [],
+                        "lastUpdateTimestamp": null,
+                        "timeInForce": null,
+                        "postOnly": null,
+                        "reduceOnly": null,
+                        "stopPrice": null,
+                        "triggerPrice": null,
+                        "takeProfitPrice": null,
+                        "stopLossPrice": null
+                    }
+                ]
+            }
+        ],
+        "fetchOrderBook": [
+            {
+                "description": "Order book for SOM/USDC",
+                "method": "fetchOrderBook",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "orderbooks": [
+                        {
+                            "symbol": "SOM:USD",
+                            "timestamp": 1765534169841,
+                            "bids": [
+                                { "price": "1.24", "quantity": "500" },
+                                { "price": "1.23", "quantity": "300" }
+                            ],
+                            "asks": [
+                                { "price": "1.26", "quantity": "400" },
+                                { "price": "1.27", "quantity": "200" }
+                            ],
+                            "nonce": 42
+                        }
+                    ]
+                },
+                "parsedResponse": {
+                    "symbol": "SOM/USDC",
+                    "bids": [
+                        [ 1.24, 500 ],
+                        [ 1.23, 300 ]
+                    ],
+                    "asks": [
+                        [ 1.26, 400 ],
+                        [ 1.27, 200 ]
+                    ],
+                    "timestamp": 1765534169841,
+                    "datetime": "2025-12-12T10:09:29.841Z",
+                    "nonce": 42
+                }
+            },
+            {
+                "description": "Empty order book for SOM/USDC",
+                "method": "fetchOrderBook",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "orderbooks": [
+                        {
+                            "symbol": "SOM:USD",
+                            "timestamp": 1765534300000,
+                            "bids": [],
+                            "asks": [],
+                            "nonce": 0
+                        }
+                    ]
+                },
+                "parsedResponse": {
+                    "symbol": "SOM/USDC",
+                    "bids": [],
+                    "asks": [],
+                    "timestamp": 1765534300000,
+                    "datetime": "2025-12-12T10:11:40.000Z",
+                    "nonce": 0
+                }
+            }
+        ],
+        "fetchTicker": [
+            {
+                "description": "Ticker for SOM/USDC",
+                "method": "fetchTicker",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "symbols": [
+                        {
+                            "symbol": "SOM:USD",
+                            "timestamp": 1765534169841,
+                            "high": "1.30",
+                            "low": "1.20"
+                        }
+                    ]
+                },
+                "parsedResponse": {
+                    "symbol": "SOM/USDC",
+                    "timestamp": 1765534169841,
+                    "datetime": "2025-12-12T10:09:29.841Z",
+                    "high": 1.3,
+                    "low": 1.2,
+                    "bid": null,
+                    "bidVolume": null,
+                    "ask": null,
+                    "askVolume": null,
+                    "vwap": null,
+                    "open": null,
+                    "close": null,
+                    "last": null,
+                    "previousClose": null,
+                    "change": null,
+                    "percentage": null,
+                    "average": null,
+                    "baseVolume": null,
+                    "quoteVolume": null,
+                    "info": {
+                        "symbol": "SOM:USD",
+                        "timestamp": 1765534169841,
+                        "high": "1.30",
+                        "low": "1.20"
+                    },
+                    "indexPrice": null,
+                    "markPrice": null
+                }
+            }
+        ],
+        "fetchTrades": [
+            {
+                "description": "Trades for SOM/USDC",
+                "method": "fetchTrades",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "symbol": "SOM:USD",
+                    "trades": [
+                        {
+                            "id": "t1",
+                            "timestamp": 1765534169841,
+                            "symbol": "SOM:USD",
+                            "side": "buy",
+                            "price": "1.25",
+                            "amount": "100",
+                            "cost": "125"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "t1",
+                        "info": {
+                            "id": "t1",
+                            "timestamp": 1765534169841,
+                            "symbol": "SOM:USD",
+                            "side": "buy",
+                            "price": "1.25",
+                            "amount": "100",
+                            "cost": "125"
+                        },
+                        "timestamp": 1765534169841,
+                        "datetime": "2025-12-12T10:09:29.841Z",
+                        "symbol": "SOM/USDC",
+                        "order": null,
+                        "type": null,
+                        "side": "buy",
+                        "takerOrMaker": null,
+                        "price": 1.25,
+                        "amount": 100,
+                        "cost": 125,
+                        "fee": {
+                            "cost": null,
+                            "currency": null
+                        },
+                        "fees": []
+                    }
+                ]
+            },
+            {
+                "description": "Multiple trades (buy and sell) for SOM/USDC",
+                "method": "fetchTrades",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "symbol": "SOM:USD",
+                    "trades": [
+                        {
+                            "id": "t10",
+                            "timestamp": 1765534200000,
+                            "symbol": "SOM:USD",
+                            "side": "buy",
+                            "price": "1.26",
+                            "amount": "250",
+                            "cost": "315"
+                        },
+                        {
+                            "id": "t11",
+                            "timestamp": 1765534201000,
+                            "symbol": "SOM:USD",
+                            "side": "sell",
+                            "price": "1.24",
+                            "amount": "100",
+                            "cost": "124"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "t10",
+                        "info": {
+                            "id": "t10",
+                            "timestamp": 1765534200000,
+                            "symbol": "SOM:USD",
+                            "side": "buy",
+                            "price": "1.26",
+                            "amount": "250",
+                            "cost": "315"
+                        },
+                        "timestamp": 1765534200000,
+                        "datetime": "2025-12-12T10:10:00.000Z",
+                        "symbol": "SOM/USDC",
+                        "order": null,
+                        "type": null,
+                        "side": "buy",
+                        "takerOrMaker": null,
+                        "price": 1.26,
+                        "amount": 250,
+                        "cost": 315,
+                        "fee": {
+                            "cost": null,
+                            "currency": null
+                        },
+                        "fees": []
+                    },
+                    {
+                        "id": "t11",
+                        "info": {
+                            "id": "t11",
+                            "timestamp": 1765534201000,
+                            "symbol": "SOM:USD",
+                            "side": "sell",
+                            "price": "1.24",
+                            "amount": "100",
+                            "cost": "124"
+                        },
+                        "timestamp": 1765534201000,
+                        "datetime": "2025-12-12T10:10:01.000Z",
+                        "symbol": "SOM/USDC",
+                        "order": null,
+                        "type": null,
+                        "side": "sell",
+                        "takerOrMaker": null,
+                        "price": 1.24,
+                        "amount": 100,
+                        "cost": 124,
+                        "fee": {
+                            "cost": null,
+                            "currency": null
+                        },
+                        "fees": []
+                    }
+                ]
+            }
+        ],
+        "createOrder": [
+            {
+                "description": "Create limit buy order returns unsigned tx",
+                "method": "createOrder",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    10,
+                    1.5
+                ],
+                "httpResponse": {
+                    "chainId": "50312",
+                    "data": "0x80702f830000000000000000000000000000000000000000",
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "value": "0"
+                },
+                "parsedResponse": {
+                    "id": null,
+                    "clientOrderId": null,
+                    "timestamp": null,
+                    "datetime": null,
+                    "lastTradeTimestamp": null,
+                    "status": null,
+                    "symbol": "SOM/USDC",
+                    "type": "limit",
+                    "side": "buy",
+                    "price": 1.5,
+                    "amount": 10,
+                    "filled": null,
+                    "remaining": null,
+                    "average": null,
+                    "cost": null,
+                    "trades": [],
+                    "fee": null,
+                    "info": {
+                        "chainId": "50312",
+                        "data": "0x80702f830000000000000000000000000000000000000000",
+                        "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                        "value": "0"
+                    },
+                    "fees": [],
+                    "lastUpdateTimestamp": null,
+                    "timeInForce": null,
+                    "postOnly": null,
+                    "reduceOnly": null,
+                    "stopPrice": null,
+                    "triggerPrice": null,
+                    "takeProfitPrice": null,
+                    "stopLossPrice": null
+                }
+            }
+        ],
+        "fetchOHLCV": [
+            {
+                "description": "OHLCV for SOM/USDC",
+                "method": "fetchOHLCV",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "symbol": "SOM:USD",
+                    "interval": "1m",
+                    "candles": [
+                        {
+                            "timestamp": 1765534140000,
+                            "open": "1.24",
+                            "high": "1.26",
+                            "low": "1.23",
+                            "close": "1.25",
+                            "volume": "1000"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    [
+                        1765534140000,
+                        1.24,
+                        1.26,
+                        1.23,
+                        1.25,
+                        1000
+                    ]
+                ]
+            }
+        ],
+        "fetchCurrencies": [
+            {
+                "description": "Currencies list with SOM and USD (mapped to USDC)",
+                "method": "fetchCurrencies",
+                "input": [],
+                "httpResponse": {
+                    "currencies": [
+                        { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": "18" },
+                        { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": "6" }
+                    ]
+                },
+                "parsedResponse": {
+                    "SOM": {
+                        "info": { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": "18" },
+                        "id": "SOM",
+                        "numericId": null,
+                        "code": "SOM",
+                        "precision": 1e-18,
+                        "type": "crypto",
+                        "name": "Somnia",
+                        "active": true,
+                        "deposit": true,
+                        "withdraw": true,
+                        "fee": null,
+                        "fees": {},
+                        "networks": {},
+                        "limits": {
+                            "deposit": { "min": null, "max": null },
+                            "withdraw": { "min": null, "max": null }
+                        }
+                    },
+                    "USDC": {
+                        "info": { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": "6" },
+                        "id": "USD",
+                        "numericId": null,
+                        "code": "USDC",
+                        "precision": 0.000001,
+                        "type": "crypto",
+                        "name": "US Dollar",
+                        "active": true,
+                        "deposit": true,
+                        "withdraw": true,
+                        "fee": null,
+                        "fees": {},
+                        "networks": {},
+                        "limits": {
+                            "deposit": { "min": null, "max": null },
+                            "withdraw": { "min": null, "max": null }
+                        }
+                    }
+                }
+            }
+        ],
+        "fetchMarkets": [
+            {
+                "description": "Markets list with SOM/USDC",
+                "method": "fetchMarkets",
+                "input": [],
+                "httpResponse": {
+                    "markets": [
+                        {
+                            "symbol": "SOM:USD",
+                            "base": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+                            "quote": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
+                            "baseDecimals": 18,
+                            "quoteDecimals": 6,
+                            "contract": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
+                            "tickSize": "0.00001",
+                            "lotSize": "0.000001"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "SOM:USD",
+                        "symbol": "SOM/USDC",
+                        "base": "SOM",
+                        "quote": "USDC",
+                        "settle": null,
+                        "baseId": "SOM",
+                        "quoteId": "USD",
+                        "settleId": null,
+                        "type": "spot",
+                        "spot": true,
+                        "margin": false,
+                        "swap": false,
+                        "future": false,
+                        "option": false,
+                        "active": true,
+                        "contract": false,
+                        "linear": null,
+                        "inverse": null,
+                        "taker": 0,
+                        "maker": 0,
+                        "contractSize": null,
+                        "expiry": null,
+                        "expiryDatetime": null,
+                        "strike": null,
+                        "optionType": null,
+                        "precision": {
+                            "amount": 0.000001,
+                            "price": 0.00001
+                        },
+                        "limits": {
+                            "leverage": { "min": null, "max": null },
+                            "amount": { "min": null, "max": null },
+                            "price": { "min": null, "max": null },
+                            "cost": { "min": null, "max": null }
+                        },
+                        "created": null,
+                        "info": {
+                            "symbol": "SOM:USD",
+                            "base": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+                            "quote": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
+                            "baseDecimals": 18,
+                            "quoteDecimals": 6,
+                            "contract": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
+                            "tickSize": "0.00001",
+                            "lotSize": "0.000001"
+                        }
+                    }
+                ]
+            }
+        ],
+        "fetchBalance": [
+            {
+                "description": "Vault balance for SOM/USDC market",
+                "method": "fetchBalance",
+                "input": [
+                    { "symbol": "SOM/USDC" }
+                ],
+                "httpResponse": {
+                    "balances": [
+                        { "currency": "SOM", "amount": "1000.5" },
+                        { "currency": "USD", "amount": "500.25" }
+                    ]
+                },
+                "parsedResponse": {
+                    "info": [
+                        { "currency": "SOM", "amount": "1000.5" },
+                        { "currency": "USD", "amount": "500.25" }
+                    ],
+                    "SOM": { "free": 1000.5, "used": 0, "total": 1000.5 },
+                    "USDC": { "free": 500.25, "used": 0, "total": 500.25 },
+                    "free": { "SOM": 1000.5, "USDC": 500.25 },
+                    "used": { "SOM": 0, "USDC": 0 },
+                    "total": { "SOM": 1000.5, "USDC": 500.25 }
+                }
+            }
+        ],
+        "fetchOrder": [
+            {
+                "description": "Single open order for SOM/USDC",
+                "method": "fetchOrder",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "status": "open",
+                    "createdAt": 1765534169841,
+                    "symbol": "SOM:USD",
+                    "type": "limit",
+                    "side": "buy",
+                    "price": "1.25",
+                    "amount": "500",
+                    "filled": "150",
+                    "remaining": "350",
+                    "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                    "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "parsedResponse": {
+                    "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "clientOrderId": null,
+                    "timestamp": 1765534169841,
+                    "datetime": "2025-12-12T10:09:29.841Z",
+                    "lastTradeTimestamp": null,
+                    "status": "open",
+                    "symbol": "SOM/USDC",
+                    "type": "limit",
+                    "side": "buy",
+                    "price": 1.25,
+                    "amount": 500,
+                    "filled": 150,
+                    "remaining": 350,
+                    "average": 1.25,
+                    "cost": 187.5,
+                    "trades": [],
+                    "fee": null,
+                    "info": {
+                        "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                        "status": "open",
+                        "createdAt": 1765534169841,
+                        "symbol": "SOM:USD",
+                        "type": "limit",
+                        "side": "buy",
+                        "price": "1.25",
+                        "amount": "500",
+                        "filled": "150",
+                        "remaining": "350",
+                        "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                        "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                    },
+                    "fees": [],
+                    "lastUpdateTimestamp": null,
+                    "timeInForce": null,
+                    "postOnly": null,
+                    "reduceOnly": null,
+                    "stopPrice": null,
+                    "triggerPrice": null,
+                    "takeProfitPrice": null,
+                    "stopLossPrice": null
+                }
+            }
+        ],
+        "fetchOpenOrders": [
+            {
+                "description": "Open orders for SOM/USDC",
+                "method": "fetchOpenOrders",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "orders": [
+                        {
+                            "id": "01KC4C1R5SFT8JHAMJ99FUM67D",
+                            "status": "open",
+                            "createdAt": 1765534320000,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "sell",
+                            "price": "1.30",
+                            "amount": "300",
+                            "filled": "0",
+                            "remaining": "300",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0x2233445566778899aabbccddeeff00112233445566778899aabbccddeeff0011"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "01KC4C1R5SFT8JHAMJ99FUM67D",
+                        "clientOrderId": null,
+                        "timestamp": 1765534320000,
+                        "datetime": "2025-12-12T10:12:00.000Z",
+                        "lastTradeTimestamp": null,
+                        "status": "open",
+                        "symbol": "SOM/USDC",
+                        "type": "limit",
+                        "side": "sell",
+                        "price": 1.3,
+                        "amount": 300,
+                        "filled": 0,
+                        "remaining": 300,
+                        "average": 1.3,
+                        "cost": 0,
+                        "trades": [],
+                        "fee": null,
+                        "info": {
+                            "id": "01KC4C1R5SFT8JHAMJ99FUM67D",
+                            "status": "open",
+                            "createdAt": 1765534320000,
+                            "symbol": "SOM:USD",
+                            "type": "limit",
+                            "side": "sell",
+                            "price": "1.30",
+                            "amount": "300",
+                            "filled": "0",
+                            "remaining": "300",
+                            "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                            "txHash": "0x2233445566778899aabbccddeeff00112233445566778899aabbccddeeff0011"
+                        },
+                        "fees": [],
+                        "lastUpdateTimestamp": null,
+                        "timeInForce": null,
+                        "postOnly": null,
+                        "reduceOnly": null,
+                        "stopPrice": null,
+                        "triggerPrice": null,
+                        "takeProfitPrice": null,
+                        "stopLossPrice": null
+                    }
+                ]
+            }
+        ],
+        "cancelOrder": [
+            {
+                "description": "Cancel partially filled order for SOM/USDC",
+                "method": "cancelOrder",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "status": "canceled",
+                    "createdAt": 1765534169841,
+                    "symbol": "SOM:USD",
+                    "type": "limit",
+                    "side": "buy",
+                    "price": "1.25",
+                    "amount": "500",
+                    "filled": "100",
+                    "remaining": "400",
+                    "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                    "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                },
+                "parsedResponse": {
+                    "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "clientOrderId": null,
+                    "timestamp": 1765534169841,
+                    "datetime": "2025-12-12T10:09:29.841Z",
+                    "lastTradeTimestamp": null,
+                    "status": "canceled",
+                    "symbol": "SOM/USDC",
+                    "type": "limit",
+                    "side": "buy",
+                    "price": 1.25,
+                    "amount": 500,
+                    "filled": 100,
+                    "remaining": 400,
+                    "average": 1.25,
+                    "cost": 125,
+                    "trades": [],
+                    "fee": null,
+                    "info": {
+                        "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
+                        "status": "canceled",
+                        "createdAt": 1765534169841,
+                        "symbol": "SOM:USD",
+                        "type": "limit",
+                        "side": "buy",
+                        "price": "1.25",
+                        "amount": "500",
+                        "filled": "100",
+                        "remaining": "400",
+                        "walletAddress": "0x1234567890abcdef1234567890abcdef12345678",
+                        "txHash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+                    },
+                    "fees": [],
+                    "lastUpdateTimestamp": null,
+                    "timeInForce": null,
+                    "postOnly": null,
+                    "reduceOnly": null,
+                    "stopPrice": null,
+                    "triggerPrice": null,
+                    "takeProfitPrice": null,
+                    "stopLossPrice": null
+                }
+            }
+        ],
+        "vaultDeposit": [
+            {
+                "description": "Deposit SOM into SOM/USDC vault returns unsigned tx",
+                "method": "vaultDeposit",
+                "input": [
+                    "SOM/USDC",
+                    "SOM",
+                    100
+                ],
+                "httpResponse": {
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "data": "0x80702f830000000000000000000000000000000000000000",
+                    "value": "0",
+                    "chainId": "50312",
+                    "gasLimit": "250000",
+                    "nonce": "42"
+                },
+                "parsedResponse": {
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "data": "0x80702f830000000000000000000000000000000000000000",
+                    "value": "0",
+                    "chainId": "50312",
+                    "gasLimit": "250000",
+                    "nonce": "42"
+                }
+            }
+        ],
+        "vaultWithdraw": [
+            {
+                "description": "Withdraw USDC from SOM/USDC vault returns unsigned tx",
+                "method": "vaultWithdraw",
+                "input": [
+                    "SOM/USDC",
+                    "USDC",
+                    50
+                ],
+                "httpResponse": {
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "data": "0xa9059cbb0000000000000000000000000000000000000000",
+                    "value": "0",
+                    "chainId": "50312",
+                    "gasLimit": "200000",
+                    "nonce": "43"
+                },
+                "parsedResponse": {
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "data": "0xa9059cbb0000000000000000000000000000000000000000",
+                    "value": "0",
+                    "chainId": "50312",
+                    "gasLimit": "200000",
+                    "nonce": "43"
+                }
+            }
+        ],
+        "vaultApprove": [
+            {
+                "description": "Approve SOM for SOM/USDC vault returns unsigned tx",
+                "method": "vaultApprove",
+                "input": [
+                    "SOM/USDC",
+                    "SOM",
+                    100
+                ],
+                "httpResponse": {
+                    "to": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+                    "data": "0x095ea7b30000000000000000000000000000000000000000",
+                    "value": "0",
+                    "chainId": "50312",
+                    "gasLimit": "100000",
+                    "nonce": "44"
+                },
+                "parsedResponse": {
+                    "to": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+                    "data": "0x095ea7b30000000000000000000000000000000000000000",
+                    "value": "0",
+                    "chainId": "50312",
+                    "gasLimit": "100000",
+                    "nonce": "44"
+                }
+            }
+        ]
+    }
+}

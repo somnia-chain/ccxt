@@ -3,6 +3,25 @@
         "skip": "exchange doesn't function for some reasons during last few days",
         "until": "2026-06-07"
     },
+    "dreamdex": {
+        "skipMethods": {
+            "fetchTickers": "no all-tickers endpoint",
+            "fetchCurrencies": {
+                "amountOfCurrencies": "dev API only has 2 currencies",
+                "activeMajorCurrencies": "dev API only has 2 currencies",
+                "activeCurrenciesQuota": "dev API only has 2 currencies"
+            },
+            "ticker": {
+                "bid": "API only returns high/low",
+                "ask": "API only returns high/low",
+                "open": "API only returns high/low",
+                "close": "API only returns high/low",
+                "last": "API only returns high/low",
+                "baseVolume": "API only returns high/low",
+                "quoteVolume": "API only returns high/low"
+            }
+        }
+    },
     "alp": {
         "skipMethods": {
             "fetchCurrencies": {

@@ -1,0 +1,94 @@
+{
+    "SOM/USDC": {
+        "id": "SOM:USD",
+        "symbol": "SOM/USDC",
+        "base": "SOM",
+        "quote": "USDC",
+        "baseId": "SOM",
+        "quoteId": "USD",
+        "active": true,
+        "type": "spot",
+        "spot": true,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "margin": false,
+        "contract": false,
+        "precision": {
+            "amount": 1e-18,
+            "price": 0.000001
+        },
+        "limits": {
+            "leverage": {
+                "min": null,
+                "max": null
+            },
+            "amount": {
+                "min": 1,
+                "max": null
+            },
+            "price": {
+                "min": null,
+                "max": null
+            },
+            "cost": {
+                "min": null,
+                "max": null
+            }
+        },
+        "info": {
+            "symbol": "SOM:USD",
+            "base": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+            "quote": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
+            "baseDecimals": 18,
+            "quoteDecimals": 6,
+            "minQuantity": "1"
+        }
+    },
+    "ETH/USDC": {
+        "id": "ETH:USD",
+        "symbol": "ETH/USDC",
+        "base": "ETH",
+        "quote": "USDC",
+        "baseId": "ETH",
+        "quoteId": "USD",
+        "active": true,
+        "type": "spot",
+        "spot": true,
+        "swap": false,
+        "future": false,
+        "option": false,
+        "margin": false,
+        "contract": false,
+        "precision": {
+            "amount": 1e-18,
+            "price": 0.01
+        },
+        "limits": {
+            "leverage": {
+                "min": null,
+                "max": null
+            },
+            "amount": {
+                "min": 0.001,
+                "max": null
+            },
+            "price": {
+                "min": null,
+                "max": null
+            },
+            "cost": {
+                "min": null,
+                "max": null
+            }
+        },
+        "info": {
+            "symbol": "ETH:USD",
+            "base": "0xA3F1150AE3A236157E87B22Ba1943d0c0cF0F8D3",
+            "quote": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
+            "baseDecimals": 18,
+            "quoteDecimals": 6,
+            "minQuantity": "0.001"
+        }
+    }
+}
