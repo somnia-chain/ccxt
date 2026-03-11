@@ -289,8 +289,11 @@
                         {
                             "symbol": "SOM:USD",
                             "timestamp": 1765534169841,
+                            "open": "1.20",
                             "high": "1.30",
-                            "low": "1.20"
+                            "low": "1.18",
+                            "close": "1.25",
+                            "volume": "1000"
                         }
                     ]
                 },
@@ -299,26 +302,29 @@
                     "timestamp": 1765534169841,
                     "datetime": "2025-12-12T10:09:29.841Z",
                     "high": 1.3,
-                    "low": 1.2,
+                    "low": 1.18,
                     "bid": null,
                     "bidVolume": null,
                     "ask": null,
                     "askVolume": null,
                     "vwap": null,
-                    "open": null,
-                    "close": null,
-                    "last": null,
+                    "open": 1.2,
+                    "close": 1.25,
+                    "last": 1.25,
                     "previousClose": null,
-                    "change": null,
-                    "percentage": null,
-                    "average": null,
-                    "baseVolume": null,
+                    "change": 0.05,
+                    "percentage": 4.166666666666667,
+                    "average": 1.225,
+                    "baseVolume": 1000,
                     "quoteVolume": null,
                     "info": {
                         "symbol": "SOM:USD",
                         "timestamp": 1765534169841,
+                        "open": "1.20",
                         "high": "1.30",
-                        "low": "1.20"
+                        "low": "1.18",
+                        "close": "1.25",
+                        "volume": "1000"
                     },
                     "indexPrice": null,
                     "markPrice": null
@@ -454,6 +460,94 @@
                         "price": 1.24,
                         "amount": 100,
                         "cost": 124,
+                        "fee": {
+                            "cost": null,
+                            "currency": null
+                        },
+                        "fees": []
+                    }
+                ]
+            }
+        ],
+        "fetchMyTrades": [
+            {
+                "description": "My trades for SOM/USDC",
+                "method": "fetchMyTrades",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "httpResponse": {
+                    "symbol": "SOM:USD",
+                    "trades": [
+                        {
+                            "id": "123:456",
+                            "timestamp": 1765534169841,
+                            "symbol": "SOM:USD",
+                            "side": "buy",
+                            "price": "1.25",
+                            "amount": "100",
+                            "cost": "125"
+                        },
+                        {
+                            "id": "123:457",
+                            "timestamp": 1765534170000,
+                            "symbol": "SOM:USD",
+                            "side": "sell",
+                            "price": "1.26",
+                            "amount": "50",
+                            "cost": "63"
+                        }
+                    ]
+                },
+                "parsedResponse": [
+                    {
+                        "id": "123:456",
+                        "info": {
+                            "id": "123:456",
+                            "timestamp": 1765534169841,
+                            "symbol": "SOM:USD",
+                            "side": "buy",
+                            "price": "1.25",
+                            "amount": "100",
+                            "cost": "125"
+                        },
+                        "timestamp": 1765534169841,
+                        "datetime": "2025-12-12T10:09:29.841Z",
+                        "symbol": "SOM/USDC",
+                        "order": null,
+                        "type": null,
+                        "side": "buy",
+                        "takerOrMaker": null,
+                        "price": 1.25,
+                        "amount": 100,
+                        "cost": 125,
+                        "fee": {
+                            "cost": null,
+                            "currency": null
+                        },
+                        "fees": []
+                    },
+                    {
+                        "id": "123:457",
+                        "info": {
+                            "id": "123:457",
+                            "timestamp": 1765534170000,
+                            "symbol": "SOM:USD",
+                            "side": "sell",
+                            "price": "1.26",
+                            "amount": "50",
+                            "cost": "63"
+                        },
+                        "timestamp": 1765534170000,
+                        "datetime": "2025-12-12T10:09:30.000Z",
+                        "symbol": "SOM/USDC",
+                        "order": null,
+                        "type": null,
+                        "side": "sell",
+                        "takerOrMaker": null,
+                        "price": 1.26,
+                        "amount": 50,
+                        "cost": 63,
                         "fee": {
                             "cost": null,
                             "currency": null
