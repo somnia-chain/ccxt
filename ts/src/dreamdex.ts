@@ -91,7 +91,7 @@ export default class dreamdex extends Exchange {
                 'fetchMarkOHLCV': false,
                 'fetchMarkPrice': false,
                 'fetchMarkPrices': false,
-                'fetchMyTrades': false,
+                'fetchMyTrades': true,
                 'fetchOHLCV': true,
                 'fetchOpenInterestHistory': false,
                 'fetchOpenOrder': false,
@@ -162,6 +162,7 @@ export default class dreamdex extends Exchange {
                     'get': {
                         'v0/markets/{symbol}/orders': 1,
                         'v0/markets/{symbol}/orders/{id}': 1,
+                        'v0/markets/{symbol}/trades/mine': 1,
                         'v0/markets/{symbol}/vault/balance': 1,
                     },
                     'post': {
@@ -201,7 +202,13 @@ export default class dreamdex extends Exchange {
                         'iceberg': false,
                     },
                     'createOrders': undefined,
-                    'fetchMyTrades': undefined,
+                    'fetchMyTrades': {
+                        'marginMode': false,
+                        'limit': 1000,
+                        'daysBack': undefined,
+                        'untilDays': undefined,
+                        'symbolRequired': true,
+                    },
                     'fetchOrder': {
                         'marginMode': false,
                         'trigger': false,
@@ -486,7 +493,7 @@ export default class dreamdex extends Exchange {
         //
         //     {
         //         "symbols": [
-        //             { "symbol": "SOM:USD", "timestamp": 1765534169841, "high": "1.30", "low": "1.20" }
+        //             { "symbol": "SOM:USD", "timestamp": 1765534169841, "open": "1.20", "high": "1.30", "low": "1.18", "close": "1.25", "volume": "1000" }
         //         ]
         //     }
         //
@@ -499,6 +506,7 @@ export default class dreamdex extends Exchange {
         const marketId = this.safeString (ticker, 'symbol');
         market = this.safeMarket (marketId, market, ':');
         const timestamp = this.safeInteger (ticker, 'timestamp');
+        const close = this.safeString (ticker, 'close');
         return this.safeTicker ({
             'symbol': market['symbol'],
             'timestamp': timestamp,
@@ -510,14 +518,14 @@ export default class dreamdex extends Exchange {
             'ask': undefined,
             'askVolume': undefined,
             'vwap': undefined,
-            'open': undefined,
-            'close': undefined,
-            'last': undefined,
+            'open': this.safeString (ticker, 'open'),
+            'close': close,
+            'last': close,
             'previousClose': undefined,
             'change': undefined,
             'percentage': undefined,
             'average': undefined,
-            'baseVolume': undefined,
+            'baseVolume': this.safeString (ticker, 'volume'),
             'quoteVolume': undefined,
             'info': ticker,
         }, market);
@@ -552,6 +560,46 @@ export default class dreamdex extends Exchange {
         //         "symbol": "SOM:USD",
         //         "trades": [
         //             { "id": "t1", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
+        //         ]
+        //     }
+        //
+        const trades = this.safeList (response, 'trades', []);
+        return this.parseTrades (trades, market, since, limit);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchMyTrades
+     * @description fetch all trades made by the user
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {int} [since] timestamp in ms of the earliest trade to fetch
+     * @param {int} [limit] the maximum number of trades to fetch
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+     */
+    async fetchMyTrades (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Trade[]> {
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' fetchMyTrades() requires a symbol argument');
+        }
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+        };
+        if (since !== undefined) {
+            request['since'] = since;
+        }
+        if (limit !== undefined) {
+            request['limit'] = limit;
+        }
+        const response = await this.privateGetV0MarketsSymbolTradesMine (this.extend (request, params));
+        //
+        //     {
+        //         "symbol": "SOM:USD",
+        //         "trades": [
+        //             { "id": "123:456", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
         //         ]
         //     }
         //

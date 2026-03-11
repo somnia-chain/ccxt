@@ -3,7 +3,7 @@
 
 import dreamdexRest from '../dreamdex.js';
 import { ArrayCacheByTimestamp, ArrayCache } from '../base/ws/Cache.js';
-import type { Int, Str, OrderBook, Trade, OHLCV, Dict } from '../base/types.js';
+import type { Int, OrderBook, Trade, OHLCV, Dict } from '../base/types.js';
 import Client from '../base/ws/Client.js';
 
 //  ---------------------------------------------------------------------------
@@ -180,8 +180,7 @@ export default class dreamdex extends dreamdexRest {
         const type = this.safeString (message, 'type');
         if (!(symbol in this.trades)) {
             const tradesLimit = this.safeInteger (this.options, 'tradesLimit', 1000);
-            const stored = new ArrayCache (tradesLimit);
-            this.trades[symbol] = stored;
+            this.trades[symbol] = new ArrayCache (tradesLimit);
         }
         const stored = this.trades[symbol];
         if (type === 'snapshot') {

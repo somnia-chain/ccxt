@@ -233,6 +233,28 @@
                 "output": null
             }
         ],
+        "fetchMyTrades": [
+            {
+                "description": "Fetch my trades for SOM/USDC",
+                "method": "fetchMyTrades",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/trades/mine",
+                "input": [
+                    "SOM/USDC"
+                ],
+                "output": null
+            },
+            {
+                "description": "Fetch my trades for SOM/USDC with since and limit",
+                "method": "fetchMyTrades",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/trades/mine?since=1765534169841&limit=50",
+                "input": [
+                    "SOM/USDC",
+                    1765534169841,
+                    50
+                ],
+                "output": null
+            }
+        ],
         "fetchOHLCV": [
             {
                 "description": "Fetch OHLCV for SOM/USDC",

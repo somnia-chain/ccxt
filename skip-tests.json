@@ -7,18 +7,14 @@
         "skipMethods": {
             "fetchTickers": "no all-tickers endpoint",
             "fetchCurrencies": {
-                "amountOfCurrencies": "dev API only has 2 currencies",
-                "activeMajorCurrencies": "dev API only has 2 currencies",
-                "activeCurrenciesQuota": "dev API only has 2 currencies"
+                "amountOfCurrencies": "only 5 currencies listed currently",
+                "activeMajorCurrencies": "has WBTC/WETH not BTC/ETH, no USDT",
+                "activeCurrenciesQuota": "only 5 currencies listed currently"
             },
             "ticker": {
-                "bid": "API only returns high/low",
-                "ask": "API only returns high/low",
-                "open": "API only returns high/low",
-                "close": "API only returns high/low",
-                "last": "API only returns high/low",
-                "baseVolume": "API only returns high/low",
-                "quoteVolume": "API only returns high/low"
+                "bid": "no bid/ask in ticker endpoint",
+                "ask": "no bid/ask in ticker endpoint",
+                "quoteVolume": "API returns base volume only"
             }
         }
     },
