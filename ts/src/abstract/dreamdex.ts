@@ -19,6 +19,7 @@ interface Exchange {
     publicPostV0AuthLogin (params?: {}): Promise<implicitReturnType>;
     privateGetV0MarketsSymbolOrders (params?: {}): Promise<implicitReturnType>;
     privateGetV0MarketsSymbolOrdersId (params?: {}): Promise<implicitReturnType>;
+    privateGetV0MarketsSymbolTradesMine (params?: {}): Promise<implicitReturnType>;
     privateGetV0MarketsSymbolVaultBalance (params?: {}): Promise<implicitReturnType>;
     privatePostV0MarketsSymbolOrders (params?: {}): Promise<implicitReturnType>;
     privatePostV0MarketsSymbolVaultDeposit (params?: {}): Promise<implicitReturnType>;
