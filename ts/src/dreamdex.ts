@@ -7,7 +7,7 @@ import { TICK_SIZE } from './base/functions/number.js';
 import { keccak_256 as keccak } from './static_dependencies/noble-hashes/sha3.js';
 import { secp256k1 } from './static_dependencies/noble-curves/secp256k1.js';
 import { ecdsa } from './base/functions/crypto.js';
-import type { Dict, int, Int, Str, Num, Market, Currencies, Order, OrderType, OrderSide, Balances, OrderBook, Ticker, Trade, OHLCV } from './base/types.js';
+import type { Dict, int, Int, Str, Strings, Num, Market, Currencies, Order, OrderType, OrderSide, Balances, OrderBook, Ticker, Tickers, Trade, OHLCV } from './base/types.js';
 
 //  ---------------------------------------------------------------------------
 
@@ -53,14 +53,15 @@ export default class dreamdex extends Exchange {
                 'createOrder': true,
                 'createOrderWithTakeProfitAndStopLoss': false,
                 'createReduceOnlyOrder': false,
-                'createStopLimitOrder': false,
+                'createStopLimitOrder': true,
                 'createStopLossOrder': false,
-                'createStopMarketOrder': false,
-                'createStopOrder': false,
+                'createStopMarketOrder': true,
+                'createStopOrder': true,
                 'createTakeProfitOrder': false,
                 'createTrailingAmountOrder': false,
                 'createTrailingPercentOrder': false,
-                'createTriggerOrder': false,
+                'createTriggerOrder': true,
+                'editOrder': true,
                 'fetchAccounts': false,
                 'fetchBalance': true,
                 'fetchCanceledOrders': false,
@@ -108,7 +109,7 @@ export default class dreamdex extends Exchange {
                 'fetchPremiumIndexOHLCV': false,
                 'fetchStatus': false,
                 'fetchTicker': true,
-                'fetchTickers': false,
+                'fetchTickers': true,
                 'fetchTime': false,
                 'fetchTrades': true,
                 'fetchTradingFee': false,
@@ -152,6 +153,7 @@ export default class dreamdex extends Exchange {
                         'v0/markets/{symbol}/trades': 1,
                         'v0/markets/{symbol}/candles': 1,
                         'v0/orderbooks': 1,
+                        'v0/tickers': 1,
                         'v0/auth/nonce': 1,
                     },
                     'post': {
@@ -160,19 +162,26 @@ export default class dreamdex extends Exchange {
                 },
                 'private': {
                     'get': {
+                        'v0/orders': 1,
                         'v0/markets/{symbol}/orders': 1,
                         'v0/markets/{symbol}/orders/{id}': 1,
                         'v0/markets/{symbol}/trades/mine': 1,
                         'v0/markets/{symbol}/vault/balance': 1,
+                    'v0/markets/{symbol}/stop-orders': 1,
                     },
                     'post': {
                         'v0/markets/{symbol}/orders': 1,
                         'v0/markets/{symbol}/vault/deposit': 1,
                         'v0/markets/{symbol}/vault/withdraw': 1,
                         'v0/markets/{symbol}/vault/approve': 1,
+                    'v0/markets/{symbol}/stop-orders': 1,
+                    },
+                    'patch': {
+                        'v0/markets/{symbol}/orders/{id}/reduce': 1,
                     },
                     'delete': {
                         'v0/markets/{symbol}/orders/{id}': 1,
+                        'v0/markets/{symbol}/stop-orders/{id}': 1,
                     },
                 },
             },
@@ -181,9 +190,9 @@ export default class dreamdex extends Exchange {
                     'sandbox': false,
                     'createOrder': {
                         'marginMode': false,
-                        'triggerPrice': false,
+                        'triggerPrice': true,
                         'triggerPriceType': undefined,
-                        'triggerDirection': false,
+                        'triggerDirection': true,
                         'stopLossPrice': false,
                         'takeProfitPrice': false,
                         'attachedStopLossTakeProfit': undefined,
@@ -218,18 +227,18 @@ export default class dreamdex extends Exchange {
                     'fetchOpenOrders': {
                         'marginMode': false,
                         'limit': undefined,
-                        'trigger': false,
+                        'trigger': true,
                         'trailing': false,
-                        'symbolRequired': true,
+                        'symbolRequired': false,
                     },
                     'fetchOrders': {
                         'marginMode': false,
                         'limit': undefined,
                         'daysBack': undefined,
                         'untilDays': undefined,
-                        'trigger': false,
+                        'trigger': true,
                         'trailing': false,
-                        'symbolRequired': true,
+                        'symbolRequired': false,
                     },
                     'fetchClosedOrders': undefined,
                     'fetchOHLCV': {
@@ -500,6 +509,38 @@ export default class dreamdex extends Exchange {
         const symbols = this.safeList (response, 'symbols', []);
         const ticker = this.safeDict (symbols, 0, {});
         return this.parseTicker (ticker, market);
+    }
+
+    /**
+     * @method
+     * @name dreamdex#fetchTickers
+     * @description fetches price tickers for multiple markets
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string[]|undefined} [symbols] unified market symbols to fetch tickers for, all tickers are returned if not specified
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    async fetchTickers (symbols: Strings = undefined, params = {}): Promise<Tickers> {
+        await this.loadMarkets ();
+        const request: Dict = {};
+        if (symbols !== undefined) {
+            const marketIds = [];
+            for (let i = 0; i < symbols.length; i++) {
+                const market = this.market (symbols[i]);
+                marketIds.push (market['id']);
+            }
+            request['symbols'] = marketIds.join (',');
+        }
+        const response = await this.publicGetV0Tickers (this.extend (request, params));
+        //
+        //     {
+        //         "symbols": [
+        //             { "symbol": "SOM:USD", "timestamp": 1765534169841, "open": "1.20", "high": "1.30", "low": "1.18", "close": "1.25", "volume": "1000" }
+        //         ]
+        //     }
+        //
+        const tickers = this.safeList (response, 'symbols', []);
+        return this.parseTickers (tickers, symbols);
     }
 
     parseTicker (ticker: Dict, market: Market = undefined): Ticker {
@@ -831,6 +872,9 @@ export default class dreamdex extends Exchange {
      * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address to place the order from (defaults to this.walletAddress)
+     * @param {float} [params.triggerPrice] the price at which a stop order is triggered - routes to the stop-orders endpoint
+     * @param {float} [params.stopPrice] alias for triggerPrice
+     * @param {string} [params.triggerOperator] 'gte' or 'lte' - trigger condition (default: 'lte' for sell, 'gte' for buy)
      * @param {string} [params.timeInForce] 'IOC', 'FOK', or 'PO' - maps to API orderType (immediateOrCancel, fillOrKill, postOnly)
      * @param {bool} [params.postOnly] true to create a post-only order (alternative to timeInForce 'PO')
      * @param {string} [params.fundingSource] 'wallet' or 'vault' - where to source tokens (default is 'wallet', 'vault' uses pre-deposited balance)
@@ -842,6 +886,60 @@ export default class dreamdex extends Exchange {
         await this.loadMarkets ();
         const market = this.market (symbol);
         const walletAddress = this.safeString (params, 'walletAddress', this.walletAddress);
+        const triggerPrice = this.safeString2 (params, 'triggerPrice', 'stopPrice');
+        if (triggerPrice !== undefined) {
+            let triggerOperator = this.safeString (params, 'triggerOperator');
+            if (triggerOperator === undefined) {
+                triggerOperator = (side === 'sell') ? 'lte' : 'gte';
+            }
+            params = this.omit (params, [ 'walletAddress', 'triggerPrice', 'stopPrice', 'triggerOperator' ]);
+            const isMarket = (type === 'market');
+            if (!isMarket && price === undefined) {
+                throw new ArgumentsRequired (this.id + ' createOrder() requires a price argument for stop limit orders');
+            }
+            const stopRequest: Dict = {
+                'symbol': market['id'],
+                'walletAddress': walletAddress,
+                'type': type,
+                'side': side,
+                'amount': this.amountToPrecision (symbol, amount),
+                'triggerPrice': this.priceToPrecision (symbol, triggerPrice),
+                'triggerOperator': triggerOperator,
+            };
+            if (!isMarket) {
+                stopRequest['price'] = this.priceToPrecision (symbol, price);
+            }
+            const stopResponse = await this.privatePostV0MarketsSymbolStopOrders (this.extend (stopRequest, params));
+            //
+            //     {
+            //         "to": "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
+            //         "data": "0x...",
+            //         "value": "100000000000000000",
+            //         "chainId": "50312"
+            //     }
+            //
+            return this.safeOrder ({
+                'id': undefined,
+                'clientOrderId': undefined,
+                'timestamp': undefined,
+                'datetime': undefined,
+                'lastTradeTimestamp': undefined,
+                'status': undefined,
+                'symbol': market['symbol'],
+                'type': type,
+                'side': side,
+                'price': price,
+                'amount': amount,
+                'filled': undefined,
+                'remaining': undefined,
+                'average': undefined,
+                'cost': undefined,
+                'triggerPrice': this.parseNumber (triggerPrice),
+                'trades': undefined,
+                'fee': undefined,
+                'info': stopResponse,
+            }, market);
+        }
         const fundingSource = this.safeString (params, 'fundingSource');
         const selfMatchingOption = this.safeString (params, 'selfMatchingOption');
         params = this.omit (params, [ 'walletAddress', 'fundingSource', 'selfMatchingOption' ]);
@@ -951,25 +1049,45 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchOrders
-     * @description fetches a list of orders placed by the user for a specific market
+     * @description fetches a list of orders placed by the user
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} [symbol] unified market symbol; when omitted returns orders across all markets
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected'
+     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected' (or 'pending', 'triggered', 'cancelled', 'failed' for stop orders)
+     * @param {bool} [params.stop] set to true to fetch stop orders instead of regular orders (requires symbol)
+     * @param {bool} [params.trigger] alias for params.stop
      * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     async fetchOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
-        if (symbol === undefined) {
-            throw new ArgumentsRequired (this.id + ' fetchOrders() requires a symbol argument');
-        }
         await this.authenticateRest ();
         await this.loadMarkets ();
+        const stop = this.safeBool2 (params, 'stop', 'trigger');
+        if (symbol === undefined) {
+            if (stop) {
+                throw new ArgumentsRequired (this.id + ' fetchOrders() requires a symbol argument for stop orders');
+            }
+            const response = await this.privateGetV0Orders (params);
+            //
+            //     { "orders": [ ... ] }
+            //
+            const orders = this.safeList (response, 'orders', []);
+            return this.parseOrders (orders, undefined, since, limit);
+        }
         const market = this.market (symbol);
         const request: Dict = {
             'symbol': market['id'],
         };
+        if (stop) {
+            params = this.omit (params, [ 'stop', 'trigger' ]);
+            const response = await this.privateGetV0MarketsSymbolStopOrders (this.extend (request, params));
+            //
+            //     { "stopOrders": [ ... ] }
+            //
+            const stopOrders = this.safeList (response, 'stopOrders', []);
+            return this.parseOrders (stopOrders, market, since, limit);
+        }
         const response = await this.privateGetV0MarketsSymbolOrders (this.extend (request, params));
         //
         //     { "orders": [ ... ] }
@@ -981,20 +1099,20 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchOpenOrders
-     * @description fetches a list of open orders placed by the user for a specific market
+     * @description fetches a list of open orders placed by the user
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} [symbol] unified market symbol; when omitted returns open orders across all markets
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {bool} [params.stop] set to true to fetch pending stop orders (requires symbol)
+     * @param {bool} [params.trigger] alias for params.stop
      * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     async fetchOpenOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
-        if (symbol === undefined) {
-            throw new ArgumentsRequired (this.id + ' fetchOpenOrders() requires a symbol argument');
-        }
+        const stop = this.safeBool2 (params, 'stop', 'trigger');
         const request: Dict = {
-            'status': 'open',
+            'status': stop ? 'pending' : 'open',
         };
         return await this.fetchOrders (symbol, since, limit, this.extend (request, params));
     }
@@ -1007,6 +1125,8 @@ export default class dreamdex extends Exchange {
      * @param {string} id order id
      * @param {string} symbol unified market symbol, required for dreamdex
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
+     * @param {bool} [params.trigger] alias for params.stop
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     async cancelOrder (id: string, symbol: Str = undefined, params = {}) {
@@ -1016,15 +1136,108 @@ export default class dreamdex extends Exchange {
         await this.authenticateRest ();
         await this.loadMarkets ();
         const market = this.market (symbol);
+        const stop = this.safeBool2 (params, 'stop', 'trigger');
         const request: Dict = {
             'symbol': market['id'],
             'id': id,
         };
+        if (stop) {
+            params = this.omit (params, [ 'stop', 'trigger' ]);
+            const response = await this.privateDeleteV0MarketsSymbolStopOrdersId (this.extend (request, params));
+            // stop order cancel returns unsigned EVM transaction, not an order object
+            return this.safeOrder ({
+                'id': id,
+                'clientOrderId': undefined,
+                'timestamp': undefined,
+                'datetime': undefined,
+                'lastTradeTimestamp': undefined,
+                'status': undefined,
+                'symbol': market['symbol'],
+                'type': undefined,
+                'side': undefined,
+                'price': undefined,
+                'amount': undefined,
+                'filled': undefined,
+                'remaining': undefined,
+                'average': undefined,
+                'cost': undefined,
+                'trades': undefined,
+                'fee': undefined,
+                'info': response,
+            }, market);
+        }
         const response = await this.privateDeleteV0MarketsSymbolOrdersId (this.extend (request, params));
         return this.parseOrder (response, market);
     }
 
+    /**
+     * @method
+     * @name dreamdex#editOrder
+     * @description reduces the remaining quantity of an open order (the only edit the API supports)
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} id order id
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} type not used, kept for CCXT unified signature
+     * @param {string} side not used, kept for CCXT unified signature
+     * @param {float} amount the new remaining quantity (must be less than current remaining)
+     * @param {float} [price] not supported -- will throw if provided
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure} with the unsigned EVM transaction in the info field
+     */
+    async editOrder (id: string, symbol: string, type: OrderType, side: OrderSide, amount: Num = undefined, price: Num = undefined, params = {}) {
+        if (symbol === undefined) {
+            throw new ArgumentsRequired (this.id + ' editOrder() requires a symbol argument');
+        }
+        if (amount === undefined) {
+            throw new ArgumentsRequired (this.id + ' editOrder() requires an amount argument (newQuantityRemaining)');
+        }
+        if (price !== undefined) {
+            throw new NotSupported (this.id + ' editOrder() does not support changing price, only reducing quantity');
+        }
+        await this.authenticateRest ();
+        await this.loadMarkets ();
+        const market = this.market (symbol);
+        const request: Dict = {
+            'symbol': market['id'],
+            'id': id,
+            'newQuantityRemaining': this.amountToPrecision (symbol, amount),
+        };
+        const response = await this.privatePatchV0MarketsSymbolOrdersIdReduce (this.extend (request, params));
+        //
+        //     {
+        //         "to": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
+        //         "data": "0x...",
+        //         "value": "0",
+        //         "chainId": "50312"
+        //     }
+        //
+        return this.safeOrder ({
+            'id': id,
+            'clientOrderId': undefined,
+            'timestamp': undefined,
+            'datetime': undefined,
+            'lastTradeTimestamp': undefined,
+            'status': undefined,
+            'symbol': market['symbol'],
+            'type': type,
+            'side': side,
+            'price': undefined,
+            'amount': amount,
+            'filled': undefined,
+            'remaining': amount,
+            'average': undefined,
+            'cost': undefined,
+            'trades': undefined,
+            'fee': undefined,
+            'info': response,
+        }, market);
+    }
+
     parseOrder (order: Dict, market: Market = undefined): Order {
+        const rawTriggerPrice = this.safeString (order, 'triggerPrice');
+        if (rawTriggerPrice !== undefined) {
+            return this.parseStopOrder (order, market);
+        }
         //
         //     {
         //         "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
@@ -1074,6 +1287,57 @@ export default class dreamdex extends Exchange {
             'canceled': 'canceled',
             'expired': 'expired',
             'rejected': 'rejected',
+        };
+        return this.safeString (statuses, status, status);
+    }
+
+    parseStopOrder (order: Dict, market: Market = undefined): Order {
+        //
+        //     {
+        //         "id": "01KC3B1P4RDS7IGAMH88ETL56C",
+        //         "status": "pending",
+        //         "createdAt": 1765534169841,
+        //         "symbol": "SOM:USD",
+        //         "type": "market",
+        //         "side": "sell",
+        //         "triggerPrice": "1.00",
+        //         "triggerOperator": "lte",
+        //         "spotOrderId": "01KC4C2Q5SES8JBBNJ99FUM67D",
+        //         "walletAddress": "0x1234..."
+        //     }
+        //
+        const marketId = this.safeString (order, 'symbol');
+        market = this.safeMarket (marketId, market, ':');
+        const timestamp = this.safeInteger (order, 'createdAt');
+        return this.safeOrder ({
+            'id': this.safeString (order, 'id'),
+            'clientOrderId': undefined,
+            'timestamp': timestamp,
+            'datetime': this.iso8601 (timestamp),
+            'lastTradeTimestamp': undefined,
+            'status': this.parseStopOrderStatus (this.safeString (order, 'status')),
+            'symbol': market['symbol'],
+            'type': this.safeString (order, 'type'),
+            'side': this.safeString (order, 'side'),
+            'price': undefined,
+            'amount': undefined,
+            'filled': undefined,
+            'remaining': undefined,
+            'average': undefined,
+            'cost': undefined,
+            'triggerPrice': this.safeNumber (order, 'triggerPrice'),
+            'trades': undefined,
+            'fee': undefined,
+            'info': order,
+        }, market);
+    }
+
+    parseStopOrderStatus (status: Str) {
+        const statuses: Dict = {
+            'pending': 'open',
+            'triggered': 'closed',
+            'cancelled': 'canceled',
+            'failed': 'rejected',
         };
         return this.safeString (statuses, status, status);
     }
@@ -1133,7 +1397,7 @@ export default class dreamdex extends Exchange {
             headers = {
                 'Authorization': 'Bearer ' + token,
             };
-            if (method === 'POST') {
+            if ((method === 'POST') || (method === 'PATCH')) {
                 headers['Content-Type'] = 'application/json';
                 body = this.json (query);
             } else {

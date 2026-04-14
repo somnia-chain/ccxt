@@ -34,6 +34,37 @@
                     "SOM/USDC"
                 ],
                 "output": null
+            },
+            {
+                "description": "Stop orders for SOM/USDC",
+                "method": "fetchOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders",
+                "input": [
+                    "SOM/USDC",
+                    null,
+                    null,
+                    { "stop": true }
+                ],
+                "output": null
+            },
+            {
+                "description": "Cross-market orders (no symbol)",
+                "method": "fetchOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/orders",
+                "input": [],
+                "output": null
+            },
+            {
+                "description": "Cross-market orders with status filter",
+                "method": "fetchOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/orders?status=open",
+                "input": [
+                    null,
+                    null,
+                    null,
+                    { "status": "open" }
+                ],
+                "output": null
             }
         ],
         "fetchOpenOrders": [
@@ -44,6 +75,25 @@
                 "input": [
                     "SOM/USDC"
                 ],
+                "output": null
+            },
+            {
+                "description": "Pending stop orders for SOM/USDC",
+                "method": "fetchOpenOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders?status=pending",
+                "input": [
+                    "SOM/USDC",
+                    null,
+                    null,
+                    { "stop": true }
+                ],
+                "output": null
+            },
+            {
+                "description": "Open orders across all markets (no symbol)",
+                "method": "fetchOpenOrders",
+                "url": "https://dev.dreamdex.somnia.host/v0/orders?status=open",
+                "input": [],
                 "output": null
             }
         ],
@@ -153,6 +203,62 @@
                     { "timeInForce": "FOK" }
                 ],
                 "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"orderType\":\"fillOrKill\"}"
+            },
+            {
+                "description": "Stop market sell order (stop-loss, inferred lte)",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders",
+                "input": [
+                    "SOM/USDC",
+                    "market",
+                    "sell",
+                    100,
+                    null,
+                    { "triggerPrice": 1.0 }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"market\",\"side\":\"sell\",\"amount\":\"100\",\"triggerPrice\":\"1\",\"triggerOperator\":\"lte\"}"
+            },
+            {
+                "description": "Stop market buy order (stop-buy, inferred gte)",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders",
+                "input": [
+                    "SOM/USDC",
+                    "market",
+                    "buy",
+                    50,
+                    null,
+                    { "triggerPrice": 1.5 }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"market\",\"side\":\"buy\",\"amount\":\"50\",\"triggerPrice\":\"1.5\",\"triggerOperator\":\"gte\"}"
+            },
+            {
+                "description": "Stop limit sell order with explicit triggerOperator gte (take-profit)",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "sell",
+                    100,
+                    1.95,
+                    { "triggerPrice": 2.0, "triggerOperator": "gte" }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"sell\",\"amount\":\"100\",\"triggerPrice\":\"2\",\"triggerOperator\":\"gte\",\"price\":\"1.95\"}"
+            },
+            {
+                "description": "Stop order with stopPrice alias",
+                "method": "createOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders",
+                "input": [
+                    "SOM/USDC",
+                    "market",
+                    "sell",
+                    100,
+                    null,
+                    { "stopPrice": 1.0 }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"market\",\"side\":\"sell\",\"amount\":\"100\",\"triggerPrice\":\"1\",\"triggerOperator\":\"lte\"}"
             }
         ],
         "cancelOrder": [
@@ -165,6 +271,32 @@
                     "SOM/USDC"
                 ],
                 "output": null
+            },
+            {
+                "description": "Cancel stop order for SOM/USDC",
+                "method": "cancelOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/stop-orders/01KC3B1P4RDS7IGAMH88ETL56C",
+                "input": [
+                    "01KC3B1P4RDS7IGAMH88ETL56C",
+                    "SOM/USDC",
+                    { "stop": true }
+                ],
+                "output": null
+            }
+        ],
+        "editOrder": [
+            {
+                "description": "Reduce order remaining quantity for SOM/USDC",
+                "method": "editOrder",
+                "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/orders/01KC1F8N2NBP5GEYKE66CRJ34A/reduce",
+                "input": [
+                    "01KC1F8N2NBP5GEYKE66CRJ34A",
+                    "SOM/USDC",
+                    "limit",
+                    "buy",
+                    50
+                ],
+                "output": "{\"newQuantityRemaining\":\"50\"}"
             }
         ],
         "fetchOrder": [
@@ -207,6 +339,24 @@
                 "url": "https://dev.dreamdex.somnia.host/v0/markets/SOM:USD/tickers",
                 "input": [
                     "SOM/USDC"
+                ],
+                "output": null
+            }
+        ],
+        "fetchTickers": [
+            {
+                "description": "Fetch all tickers",
+                "method": "fetchTickers",
+                "url": "https://dev.dreamdex.somnia.host/v0/tickers",
+                "input": [],
+                "output": null
+            },
+            {
+                "description": "Fetch tickers for specific symbols",
+                "method": "fetchTickers",
+                "url": "https://dev.dreamdex.somnia.host/v0/tickers?symbols=SOM%3AUSD",
+                "input": [
+                    ["SOM/USDC"]
                 ],
                 "output": null
             }
