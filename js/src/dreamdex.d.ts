@@ -1,5 +1,5 @@
 import Exchange from './abstract/dreamdex.js';
-import type { Dict, int, Int, Str, Num, Market, Currencies, Order, OrderType, OrderSide, Balances, OrderBook, Ticker, Trade, OHLCV } from './base/types.js';
+import type { Dict, int, Int, Str, Strings, Num, Market, Currencies, Order, OrderType, OrderSide, Balances, OrderBook, Ticker, Tickers, Trade, OHLCV } from './base/types.js';
 /**
  * @class dreamdex
  * @augments Exchange
@@ -50,6 +50,16 @@ export default class dreamdex extends Exchange {
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
      */
     fetchTicker(symbol: string, params?: {}): Promise<Ticker>;
+    /**
+     * @method
+     * @name dreamdex#fetchTickers
+     * @description fetches price tickers for multiple markets
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string[]|undefined} [symbols] unified market symbols to fetch tickers for, all tickers are returned if not specified
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+     */
+    fetchTickers(symbols?: Strings, params?: {}): Promise<Tickers>;
     parseTicker(ticker: Dict, market?: Market): Ticker;
     /**
      * @method
@@ -162,6 +172,9 @@ export default class dreamdex extends Exchange {
      * @param {float} [price] the price at which the order is to be fulfilled, in units of the quote currency, ignored in market orders
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address to place the order from (defaults to this.walletAddress)
+     * @param {float} [params.triggerPrice] the price at which a stop order is triggered - routes to the stop-orders endpoint
+     * @param {float} [params.stopPrice] alias for triggerPrice
+     * @param {string} [params.triggerOperator] 'gte' or 'lte' - trigger condition (default: 'lte' for sell, 'gte' for buy)
      * @param {string} [params.timeInForce] 'IOC', 'FOK', or 'PO' - maps to API orderType (immediateOrCancel, fillOrKill, postOnly)
      * @param {bool} [params.postOnly] true to create a post-only order (alternative to timeInForce 'PO')
      * @param {string} [params.fundingSource] 'wallet' or 'vault' - where to source tokens (default is 'wallet', 'vault' uses pre-deposited balance)
@@ -183,25 +196,29 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchOrders
-     * @description fetches a list of orders placed by the user for a specific market
+     * @description fetches a list of orders placed by the user
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} [symbol] unified market symbol; when omitted returns orders across all markets
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected'
+     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected' (or 'pending', 'triggered', 'cancelled', 'failed' for stop orders)
+     * @param {bool} [params.stop] set to true to fetch stop orders instead of regular orders (requires symbol)
+     * @param {bool} [params.trigger] alias for params.stop
      * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     fetchOrders(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Order[]>;
     /**
      * @method
      * @name dreamdex#fetchOpenOrders
-     * @description fetches a list of open orders placed by the user for a specific market
+     * @description fetches a list of open orders placed by the user
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} [symbol] unified market symbol; when omitted returns open orders across all markets
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {bool} [params.stop] set to true to fetch pending stop orders (requires symbol)
+     * @param {bool} [params.trigger] alias for params.stop
      * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     fetchOpenOrders(symbol?: Str, since?: Int, limit?: Int, params?: {}): Promise<Order[]>;
@@ -213,11 +230,30 @@ export default class dreamdex extends Exchange {
      * @param {string} id order id
      * @param {string} symbol unified market symbol, required for dreamdex
      * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
+     * @param {bool} [params.trigger] alias for params.stop
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
     cancelOrder(id: string, symbol?: Str, params?: {}): Promise<Order>;
+    /**
+     * @method
+     * @name dreamdex#editOrder
+     * @description reduces the remaining quantity of an open order (the only edit the API supports)
+     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @param {string} id order id
+     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} type not used, kept for CCXT unified signature
+     * @param {string} side not used, kept for CCXT unified signature
+     * @param {float} amount the new remaining quantity (must be less than current remaining)
+     * @param {float} [price] not supported -- will throw if provided
+     * @param {object} [params] extra parameters specific to the exchange API endpoint
+     * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure} with the unsigned EVM transaction in the info field
+     */
+    editOrder(id: string, symbol: string, type: OrderType, side: OrderSide, amount?: Num, price?: Num, params?: {}): Promise<Order>;
     parseOrder(order: Dict, market?: Market): Order;
     parseOrderStatus(status: Str): string;
+    parseStopOrder(order: Dict, market?: Market): Order;
+    parseStopOrderStatus(status: Str): string;
     hashMessage(message: any): string;
     signHash(hash: any, privateKey: any): string;
     authenticateRest(params?: {}): Promise<string>;
