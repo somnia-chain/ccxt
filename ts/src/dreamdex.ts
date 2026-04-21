@@ -1055,7 +1055,7 @@ export default class dreamdex extends Exchange {
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
      * @param {object} [params] extra parameters specific to the exchange API endpoint
-     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected' (or 'pending', 'triggered', 'cancelled', 'failed' for stop orders)
+     * @param {string} [params.status] order status to filter by: 'open', 'closed', 'canceled', 'expired', 'rejected' (or 'pending', 'triggered', 'canceled', 'failed' for stop orders)
      * @param {bool} [params.stop] set to true to fetch stop orders instead of regular orders (requires symbol)
      * @param {bool} [params.trigger] alias for params.stop
      * @returns {Order[]} a list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
@@ -1337,7 +1337,7 @@ export default class dreamdex extends Exchange {
         const statuses: Dict = {
             'pending': 'open',
             'triggered': 'closed',
-            'cancelled': 'canceled',
+            'canceled': 'canceled',
             'failed': 'rejected',
         };
         return this.safeString (statuses, status, status);
