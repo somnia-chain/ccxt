@@ -758,17 +758,23 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultApprove
-     * @description generates an unsigned EVM transaction that approves the pool contract to spend a token on behalf of the wallet.
-     * Must be called before vaultDeposit. DreamDEX uses per-market vaults: each trading pair has its own vault contract
-     * that holds deposited tokens. This differs from centralized exchanges where deposit/withdraw are exchange-wide.
+     * @description generates an unsigned ERC-20 approve transaction that authorizes the pool contract
+     * to spend a token on behalf of the wallet. Must be called before vaultDeposit for ERC-20 tokens.
+     * DreamDEX uses per-market vaults: each trading pair has its own vault contract that holds deposited
+     * tokens. This differs from centralized exchanges where deposit/withdraw are exchange-wide.
      * The approve step (ERC-20 allowance) has no equivalent in the standard CCXT unified interface.
+     *
+     * Returns `undefined` when no approval is required — e.g. when the currency is the chain's native
+     * token (deposited via a payable function rather than ERC-20 transferFrom). Callers should treat
+     * `undefined` as a signal to skip signing and proceed directly to vaultDeposit.
      * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to approve (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to approve for spending
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
-     * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
+     * @returns {object|undefined} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce },
+     *  or undefined if no approval is required for this currency
      */
     async vaultApprove(symbol, currency, amount, params = {}) {
         return await this.vaultAction('approve', symbol, currency, amount, params);
@@ -788,7 +794,8 @@ export default class dreamdex extends Exchange {
      * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
      */
     async vaultDeposit(symbol, currency, amount, params = {}) {
-        return await this.vaultAction('deposit', symbol, currency, amount, params);
+        // Deposit always produces a tx — the null-return path is reserved for approve.
+        return (await this.vaultAction('deposit', symbol, currency, amount, params));
     }
     /**
      * @method
@@ -805,7 +812,8 @@ export default class dreamdex extends Exchange {
      * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
      */
     async vaultWithdraw(symbol, currency, amount, params = {}) {
-        return await this.vaultAction('withdraw', symbol, currency, amount, params);
+        // Withdraw always produces a tx — the null-return path is reserved for approve.
+        return (await this.vaultAction('withdraw', symbol, currency, amount, params));
     }
     async vaultAction(action, symbol, currency, amount, params = {}) {
         await this.authenticateRest();
@@ -840,6 +848,11 @@ export default class dreamdex extends Exchange {
         //         "nonce": "42"
         //     }
         //
+        // The approve endpoint responds with JSON null when no approval is required
+        // (e.g. native-token currencies). Normalize to undefined so callers can truthy-check.
+        if (response === null) {
+            return undefined;
+        }
         return response;
     }
     /**
