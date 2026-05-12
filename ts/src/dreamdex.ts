@@ -894,7 +894,7 @@ export default class dreamdex extends Exchange {
      * @param {string} [params.selfMatchingOption] 'cancelTaker' or 'cancelMaker' - self-trade prevention behavior
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure} with the unsigned EVM transaction in the info field
      */
-    async createOrder (symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}) {
+    async createOrder (symbol: string, type: OrderType, side: OrderSide, amount: number, price: Num = undefined, params = {}): Promise<Order> {
         await this.authenticateRest ();
         await this.loadMarkets ();
         const market = this.market (symbol);
