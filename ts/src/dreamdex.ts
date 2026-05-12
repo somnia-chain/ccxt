@@ -136,12 +136,12 @@ export default class dreamdex extends Exchange {
             'urls': {
                 'logo': 'https://somnia.network/favicon.ico',
                 'api': {
-                    'rest': 'https://dev.dreamdex.somnia.host',
+                    'rest': 'https://stg.api.dreamdex.io',
                 },
                 'www': 'https://somnia.network',
                 'doc': [
-                    'https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json',
-                    'https://dev.dreamdex.somnia.host/v0/.well-known/async.json',
+                    'https://stg.api.dreamdex.io/v0/.well-known/oapi.json',
+                    'https://stg.api.dreamdex.io/v0/.well-known/async.json',
                 ],
             },
             'api': {
@@ -295,7 +295,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchCurrencies
      * @description fetches all available currencies on the exchange
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} an associative dictionary of currencies
      */
@@ -352,7 +352,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchMarkets
      * @description retrieves data on all markets for dreamdex
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {Market[]} an array of objects representing market data
      */
@@ -446,7 +446,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchOrderBook
      * @description fetches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
      * @param {int} [limit] the maximum amount of order book entries to return
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -487,7 +487,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchTicker
      * @description fetches a price ticker, a statistical calculation with the information for a specific market
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a [ticker structure]{@link https://docs.ccxt.com/#/?id=ticker-structure}
@@ -515,7 +515,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchTickers
      * @description fetches price tickers for multiple markets
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string[]|undefined} [symbols] unified market symbols to fetch tickers for, all tickers are returned if not specified
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
@@ -576,7 +576,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchTrades
      * @description get the list of most recent trades for a particular symbol
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
      * @param {int} [since] timestamp in ms of the earliest trade to fetch
      * @param {int} [limit] the maximum number of trades to fetch
@@ -612,7 +612,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchMyTrades
      * @description fetch all trades made by the user
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol, required for dreamdex
      * @param {int} [since] timestamp in ms of the earliest trade to fetch
      * @param {int} [limit] the maximum number of trades to fetch
@@ -673,7 +673,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchOHLCV
      * @description fetches historical candlestick data containing the open, high, low, close price, and the volume of a market
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
      * @param {string} [timeframe] the length of time each candle represents, default '1m'
      * @param {int} [since] timestamp in ms of the earliest candle to fetch
@@ -723,7 +723,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchBalance
      * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} params.symbol unified market symbol (required — vault is per-market)
      * @returns {object} a [balance structure]{@link https://docs.ccxt.com/#/?id=balance-structure}
@@ -781,7 +781,7 @@ export default class dreamdex extends Exchange {
      * Returns `undefined` when no approval is required - e.g. when the currency is the chain's native
      * token (deposited via a payable function rather than ERC-20 transferFrom). Callers should treat
      * `undefined` as a signal to skip signing and proceed directly to vaultDeposit.
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to approve (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to approve for spending
@@ -800,7 +800,7 @@ export default class dreamdex extends Exchange {
      * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault.
      * The token must first be approved via vaultApprove. DreamDEX vaults are per-market (each trading pair
      * has its own vault contract), unlike centralized exchanges where funds are deposited exchange-wide.
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to deposit (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to deposit
@@ -819,7 +819,7 @@ export default class dreamdex extends Exchange {
      * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault back to the wallet.
      * DreamDEX vaults are per-market (each trading pair has its own vault contract), unlike centralized
      * exchanges where withdrawals are exchange-wide.
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to withdraw (e.g. 'SOM' or 'USDC')
      * @param {float} amount the amount to withdraw
@@ -877,7 +877,7 @@ export default class dreamdex extends Exchange {
      * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
      * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
      * The returned order structure has the unsigned transaction payload in the info field.
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
      * @param {string} type 'limit' or 'market'
      * @param {string} side 'buy' or 'sell'
@@ -1022,7 +1022,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchOrder
      * @description fetches information on an order made by the user
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id the order id
      * @param {string} symbol unified market symbol, required for dreamdex
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -1063,7 +1063,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchOrders
      * @description fetches a list of orders placed by the user
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} [symbol] unified market symbol; when omitted returns orders across all markets
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
@@ -1104,7 +1104,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#fetchOpenOrders
      * @description fetches a list of open orders placed by the user
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} [symbol] unified market symbol; when omitted returns open orders across all markets
      * @param {int} [since] timestamp in ms of the earliest order to retrieve
      * @param {int} [limit] the maximum number of orders to retrieve
@@ -1125,7 +1125,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#cancelOrder
      * @description cancels an open order
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
      * @param {string} symbol unified market symbol, required for dreamdex
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -1178,7 +1178,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#editOrder
      * @description reduces the remaining quantity of an open order (the only edit the API supports)
-     * @see https://dev.dreamdex.somnia.host/v0/.well-known/oapi.json
+     * @see https://stg.api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
      * @param {string} symbol unified market symbol, required for dreamdex
      * @param {string} type not used, kept for CCXT unified signature
