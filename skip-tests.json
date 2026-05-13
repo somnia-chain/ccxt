@@ -6,7 +6,6 @@
     "dreamdex": {
         "preferredSpotSymbol": "SOMI/USDso",
         "skipMethods": {
-            "fetchTickers": "no all-tickers endpoint",
             "fetchCurrencies": {
                 "amountOfCurrencies": "only 5 currencies listed currently",
                 "activeMajorCurrencies": "has WBTC/WETH not BTC/ETH, no USDT",
