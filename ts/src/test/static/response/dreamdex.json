@@ -867,6 +867,66 @@
                     "takeProfitPrice": null,
                     "stopLossPrice": null
                 }
+            },
+            {
+                "description": "Create wallet-funded order with approval required",
+                "method": "createOrder",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "sell",
+                    100,
+                    1.5,
+                    { "fundingSource": "wallet" }
+                ],
+                "httpResponse": {
+                    "chainId": "50312",
+                    "data": "0x80702f830000000000000000000000000000000000000000",
+                    "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                    "value": "0",
+                    "approval": {
+                        "token": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+                        "amount": "100.5"
+                    }
+                },
+                "parsedResponse": {
+                    "id": null,
+                    "clientOrderId": null,
+                    "timestamp": null,
+                    "datetime": null,
+                    "lastTradeTimestamp": null,
+                    "status": null,
+                    "symbol": "SOM/USDC",
+                    "type": "limit",
+                    "side": "sell",
+                    "price": 1.5,
+                    "amount": 100,
+                    "filled": null,
+                    "remaining": null,
+                    "average": null,
+                    "cost": null,
+                    "trades": [],
+                    "fee": null,
+                    "info": {
+                        "chainId": "50312",
+                        "data": "0x80702f830000000000000000000000000000000000000000",
+                        "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
+                        "value": "0",
+                        "approval": {
+                            "token": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
+                            "amount": "100.5"
+                        }
+                    },
+                    "fees": [],
+                    "lastUpdateTimestamp": null,
+                    "timeInForce": null,
+                    "postOnly": null,
+                    "reduceOnly": null,
+                    "stopPrice": null,
+                    "triggerPrice": null,
+                    "takeProfitPrice": null,
+                    "stopLossPrice": null
+                }
             }
         ],
         "fetchOHLCV": [
@@ -909,13 +969,13 @@
                 "input": [],
                 "httpResponse": {
                     "currencies": [
-                        { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": "18" },
-                        { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": "6" }
+                        { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": 18 },
+                        { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": 6 }
                     ]
                 },
                 "parsedResponse": {
                     "SOM": {
-                        "info": { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": "18" },
+                        "info": { "id": "0xe8F76a822B57b973c7a89006092364fFF8f69040", "code": "SOM", "name": "Somnia", "decimals": 18 },
                         "id": "SOM",
                         "numericId": null,
                         "code": "SOM",
@@ -934,7 +994,7 @@
                         }
                     },
                     "USDC": {
-                        "info": { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": "6" },
+                        "info": { "id": "0xB4AFC6030660AFE516A79cA578AED32903A2C440", "code": "USD", "name": "US Dollar", "decimals": 6 },
                         "id": "USD",
                         "numericId": null,
                         "code": "USDC",
@@ -970,7 +1030,8 @@
                             "quoteDecimals": 6,
                             "contract": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
                             "tickSize": "0.00001",
-                            "lotSize": "0.000001"
+                            "lotSize": "0.000001",
+                            "minQuantity": "0.000001"
                         }
                     ]
                 },
@@ -1007,7 +1068,7 @@
                         },
                         "limits": {
                             "leverage": { "min": null, "max": null },
-                            "amount": { "min": null, "max": null },
+                            "amount": { "min": 0.000001, "max": null },
                             "price": { "min": null, "max": null },
                             "cost": { "min": null, "max": null }
                         },
@@ -1020,7 +1081,8 @@
                             "quoteDecimals": 6,
                             "contract": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
                             "tickSize": "0.00001",
-                            "lotSize": "0.000001"
+                            "lotSize": "0.000001",
+                            "minQuantity": "0.000001"
                         }
                     }
                 ]
@@ -1334,6 +1396,17 @@
                     "gasLimit": "100000",
                     "nonce": "44"
                 }
+            },
+            {
+                "description": "Approve native token returns null (no approval needed)",
+                "method": "vaultApprove",
+                "input": [
+                    "SOM/USDC",
+                    "SOM",
+                    100
+                ],
+                "httpResponse": null,
+                "parsedResponse": null
             }
         ]
     }

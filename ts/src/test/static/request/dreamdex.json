@@ -205,6 +205,20 @@
                 "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"buy\",\"amount\":\"10\",\"price\":\"1.5\",\"orderType\":\"fillOrKill\"}"
             },
             {
+                "description": "Limit order with wallet fundingSource",
+                "method": "createOrder",
+                "url": "https://stg.api.dreamdex.io/v0/markets/SOM:USD/orders",
+                "input": [
+                    "SOM/USDC",
+                    "limit",
+                    "sell",
+                    100,
+                    1.5,
+                    { "fundingSource": "wallet" }
+                ],
+                "output": "{\"walletAddress\":\"wallet\",\"type\":\"limit\",\"side\":\"sell\",\"amount\":\"100\",\"price\":\"1.5\",\"fundingSource\":\"wallet\"}"
+            },
+            {
                 "description": "Stop market sell order (stop-loss, inferred lte)",
                 "method": "createOrder",
                 "url": "https://stg.api.dreamdex.io/v0/markets/SOM:USD/stop-orders",

@@ -304,8 +304,8 @@ export default class dreamdex extends Exchange {
         //
         //     {
         //         "currencies": [
-        //             { "id": "0xe8F76...", "code": "SOMI", "name": "SOMI", "decimals": "18" },
-        //             { "id": "0xB4AFC...", "code": "USDC", "name": "USDC", "decimals": "6" }
+        //             { "id": "0xe8F76...", "code": "SOMI", "name": "SOMI", "decimals": 18 },
+        //             { "id": "0xB4AFC...", "code": "USDC", "name": "USDC", "decimals": 6 }
         //         ]
         //     }
         //
