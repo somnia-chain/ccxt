@@ -1096,7 +1096,7 @@ export default class dreamdex extends Exchange {
     async fetchOpenOrders (symbol: Str = undefined, since: Int = undefined, limit: Int = undefined, params = {}): Promise<Order[]> {
         const stop = this.safeBool2 (params, 'stop', 'trigger');
         const request: Dict = {
-            'status': stop ? 'pending' : 'open',
+            'status': (stop) ? 'pending' : 'open',
         };
         return await this.fetchOrders (symbol, since, limit, this.extend (request, params));
     }
