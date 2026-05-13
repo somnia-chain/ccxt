@@ -18,29 +18,29 @@ func NewBequantCore() *BequantCore {
     return p
 }
 
-func  (this *BequantCore) Describe() any  {
+func  (this *BequantCore) Describe() interface{}  {
     // eslint-disable-next-line new-cap
     restInstance := ccxt.NewBequant(nil)
-    var restDescribe any = restInstance.Describe()
-    var extended any = this.DeepExtend(this.base.Describe(), restDescribe)
-    return this.DeepExtend(extended, map[string]any {
+    var restDescribe interface{} = restInstance.Describe()
+    var extended interface{} = this.DeepExtend(this.base.Describe(), restDescribe)
+    return this.DeepExtend(extended, map[string]interface{} {
         "id": "bequant",
         "name": "Bequant",
-        "countries": []any{"MT"},
+        "countries": []interface{}{"MT"},
         "pro": true,
-        "urls": map[string]any {
+        "urls": map[string]interface{} {
             "logo": "https://user-images.githubusercontent.com/1294454/55248342-a75dfe00-525a-11e9-8aa2-05e9dca943c6.jpg",
-            "api": map[string]any {
+            "api": map[string]interface{} {
                 "public": "https://api.bequant.io/api/3",
                 "private": "https://api.bequant.io/api/3",
-                "ws": map[string]any {
+                "ws": map[string]interface{} {
                     "public": "wss://api.bequant.io/api/3/ws/public",
                     "private": "wss://api.bequant.io/api/3/ws/trading",
                 },
             },
             "www": "https://bequant.io",
-            "doc": []any{"https://api.bequant.io/"},
-            "fees": []any{"https://bequant.io/fees-and-limits"},
+            "doc": []interface{}{"https://api.bequant.io/"},
+            "fees": []interface{}{"https://bequant.io/fees-and-limits"},
             "referral": "https://bequant.io",
         },
     })

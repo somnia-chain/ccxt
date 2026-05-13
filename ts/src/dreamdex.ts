@@ -770,34 +770,23 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultApprove
-     * @description generates an unsigned ERC-20 approve transaction that authorizes the pool contract
-     * to spend a token on behalf of the wallet. Must be called before vaultDeposit for ERC-20 tokens.
-     * DreamDEX uses per-market vaults: each trading pair has its own vault contract that holds deposited
-     * tokens. This differs from centralized exchanges where deposit/withdraw are exchange-wide.
-     * The approve step (ERC-20 allowance) has no equivalent in the standard CCXT unified interface.
-     *
-     * Returns `undefined` when no approval is required - e.g. when the currency is the chain's native
-     * token (deposited via a payable function rather than ERC-20 transferFrom). Callers should treat
-     * `undefined` as a signal to skip signing and proceed directly to vaultDeposit.
+     * @description generates an unsigned ERC-20 approve transaction, or returns undefined for native tokens
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to approve (e.g. 'SOMI' or 'USDso')
      * @param {float} amount the amount to approve for spending
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
-     * @returns {object|undefined} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce },
-     *  or undefined if no approval is required for this currency
+     * @returns {object|undefined} an unsigned EVM transaction or undefined if no approval is required
      */
-    async vaultApprove (symbol: string, currency: string, amount: Num, params = {}): Promise<Dict | undefined> {
+    async vaultApprove (symbol: string, currency: string, amount: Num, params = {}): Promise<any> {
         return await this.vaultAction ('approve', symbol, currency, amount, params);
     }
 
     /**
      * @method
      * @name dreamdex#vaultDeposit
-     * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault.
-     * The token must first be approved via vaultApprove. DreamDEX vaults are per-market (each trading pair
-     * has its own vault contract), unlike centralized exchanges where funds are deposited exchange-wide.
+     * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to deposit (e.g. 'SOMI' or 'USDso')
@@ -807,16 +796,13 @@ export default class dreamdex extends Exchange {
      * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
      */
     async vaultDeposit (symbol: string, currency: string, amount: Num, params = {}): Promise<Dict> {
-        // Deposit always produces a tx - the null-return path is reserved for approve.
         return (await this.vaultAction ('deposit', symbol, currency, amount, params)) as Dict;
     }
 
     /**
      * @method
      * @name dreamdex#vaultWithdraw
-     * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault back to the wallet.
-     * DreamDEX vaults are per-market (each trading pair has its own vault contract), unlike centralized
-     * exchanges where withdrawals are exchange-wide.
+     * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to withdraw (e.g. 'SOMI' or 'USDso')
@@ -826,11 +812,10 @@ export default class dreamdex extends Exchange {
      * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
      */
     async vaultWithdraw (symbol: string, currency: string, amount: Num, params = {}): Promise<Dict> {
-        // Withdraw always produces a tx - the null-return path is reserved for approve.
         return (await this.vaultAction ('withdraw', symbol, currency, amount, params)) as Dict;
     }
 
-    async vaultAction (action: string, symbol: string, currency: string, amount: Num, params = {}): Promise<Dict | undefined> {
+    async vaultAction (action: string, symbol: string, currency: string, amount: Num, params = {}): Promise<any> {
         await this.authenticateRest ();
         await this.loadMarkets ();
         const market = this.market (symbol);

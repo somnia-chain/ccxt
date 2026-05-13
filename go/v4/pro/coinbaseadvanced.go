@@ -18,8 +18,8 @@ func NewCoinbaseadvancedCore() *CoinbaseadvancedCore {
     return p
 }
 
-func  (this *CoinbaseadvancedCore) Describe() any  {
-    return this.DeepExtend(this.base.Describe(), map[string]any {
+func  (this *CoinbaseadvancedCore) Describe() interface{}  {
+    return this.DeepExtend(this.base.Describe(), map[string]interface{} {
         "id": "coinbaseadvanced",
         "name": "Coinbase Advanced",
         "alias": true,

@@ -59,6 +59,7 @@ Exchange::$exchanges = array(
     'deepcoin',
     'deribit',
     'derive',
+    'dreamdex',
     'dydx',
     'exmo',
     'gate',

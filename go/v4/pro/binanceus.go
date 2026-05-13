@@ -18,21 +18,21 @@ func NewBinanceusCore() *BinanceusCore {
     return p
 }
 
-func  (this *BinanceusCore) Describe() any  {
+func  (this *BinanceusCore) Describe() interface{}  {
     // eslint-disable-next-line new-cap
     restInstance := ccxt.NewBinanceus(nil)
-    var restDescribe any = restInstance.Describe()
-    var parentWsDescribe any = this.base.DescribeData()
-    var extended any = this.DeepExtend(restDescribe, parentWsDescribe)
-    return this.DeepExtend(extended, map[string]any {
+    var restDescribe interface{} = restInstance.Describe()
+    var parentWsDescribe interface{} = this.base.DescribeData()
+    var extended interface{} = this.DeepExtend(restDescribe, parentWsDescribe)
+    return this.DeepExtend(extended, map[string]interface{} {
         "id": "binanceus",
         "name": "Binance US",
-        "countries": []any{"US"},
+        "countries": []interface{}{"US"},
         "certified": false,
-        "urls": map[string]any {
+        "urls": map[string]interface{} {
             "logo": "https://user-images.githubusercontent.com/1294454/65177307-217b7c80-da5f-11e9-876e-0b748ba0a358.jpg",
-            "api": map[string]any {
-                "ws": map[string]any {
+            "api": map[string]interface{} {
+                "ws": map[string]interface{} {
                     "spot": "wss://stream.binance.us:9443/ws",
                 },
                 "web": "https://www.binance.us",
@@ -48,7 +48,7 @@ func  (this *BinanceusCore) Describe() any  {
             "doc": "https://github.com/binance-us/binance-official-api-docs",
             "fees": "https://www.binance.us/en/fee/schedule",
         },
-        "has": map[string]any {
+        "has": map[string]interface{} {
             "createOrderWithTakeProfitAndStopLossWs": false,
             "createReduceOnlyOrderWs": false,
             "createStopLossOrderWs": false,
@@ -67,12 +67,12 @@ func  (this *BinanceusCore) Describe() any  {
             "watchPosition": false,
             "watchPositions": false,
         },
-        "options": map[string]any {
+        "options": map[string]interface{} {
             "fetchCurrencies": false,
             "quoteOrderQty": false,
             "defaultType": "spot",
-            "fetchMarkets": map[string]any {
-                "types": []any{"spot"},
+            "fetchMarkets": map[string]interface{} {
+                "types": []interface{}{"spot"},
             },
         },
     })

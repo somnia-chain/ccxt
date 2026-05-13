@@ -18,16 +18,16 @@ func NewKucoinfuturesCore() *KucoinfuturesCore {
     return p
 }
 
-func  (this *KucoinfuturesCore) Describe() any  {
-    return this.DeepExtend(this.base.Describe(), map[string]any {
+func  (this *KucoinfuturesCore) Describe() interface{}  {
+    return this.DeepExtend(this.base.Describe(), map[string]interface{} {
         "id": "kucoinfutures",
         "name": "KuCoin Futures",
-        "urls": map[string]any {
+        "urls": map[string]interface{} {
             "logo": "https://user-images.githubusercontent.com/1294454/147508995-9e35030a-d046-43a1-a006-6fabd981b554.jpg",
             "www": "https://futures.kucoin.com/",
             "referral": "https://futures.kucoin.com/?rcode=E5wkqe",
         },
-        "has": map[string]any {
+        "has": map[string]interface{} {
             "CORS": nil,
             "spot": false,
             "margin": false,
@@ -36,9 +36,9 @@ func  (this *KucoinfuturesCore) Describe() any  {
             "option": nil,
             "fetchBidsAsks": true,
         },
-        "options": map[string]any {
-            "fetchMarkets": map[string]any {
-                "types": []any{"swap", "future", "contract"},
+        "options": map[string]interface{} {
+            "fetchMarkets": map[string]interface{} {
+                "types": []interface{}{"swap", "future", "contract"},
                 "fetchTickersFees": false,
             },
             "defaultType": "swap",
@@ -54,16 +54,16 @@ func  (this *KucoinfuturesCore) Describe() any  {
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {object} a dictionary of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
  */
-func  (this *KucoinfuturesCore) FetchBidsAsks(optionalArgs ...any) <- chan any {
-            ch := make(chan any)
-            go func() any {
+func  (this *KucoinfuturesCore) FetchBidsAsks(optionalArgs ...interface{}) <- chan interface{} {
+            ch := make(chan interface{})
+            go func() interface{} {
                 defer close(ch)
                 defer ccxt.ReturnPanicError(ch)
                     symbols := ccxt.GetArg(optionalArgs, 0, nil)
             _ = symbols
-            params := ccxt.GetArg(optionalArgs, 1, map[string]any {})
+            params := ccxt.GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
-            var request any = map[string]any {
+            var request interface{} = map[string]interface{} {
                 "method": "futuresPublicGetAllTickers",
             }
         
@@ -86,24 +86,24 @@ func  (this *KucoinfuturesCore) FetchBidsAsks(optionalArgs ...any) <- chan any {
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {object} a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
  */
-func  (this *KucoinfuturesCore) Transfer(code any, amount any, fromAccount any, toAccount any, optionalArgs ...any) <- chan any {
-            ch := make(chan any)
-            go func() any {
+func  (this *KucoinfuturesCore) Transfer(code interface{}, amount interface{}, fromAccount interface{}, toAccount interface{}, optionalArgs ...interface{}) <- chan interface{} {
+            ch := make(chan interface{})
+            go func() interface{} {
                 defer close(ch)
                 defer ccxt.ReturnPanicError(ch)
-                    params := ccxt.GetArg(optionalArgs, 0, map[string]any {})
+                    params := ccxt.GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
             retRes658 := (<-this.LoadMarkets())
             ccxt.PanicOnError(retRes658)
-            var currency any = this.Currency(code)
-            var amountToPrecision any = this.CurrencyToPrecision(code, amount)
-            var request any = map[string]any {
+            var currency interface{} = this.Currency(code)
+            var amountToPrecision interface{} = this.CurrencyToPrecision(code, amount)
+            var request interface{} = map[string]interface{} {
                 "currency": this.SafeString(currency, "id"),
                 "amount": amountToPrecision,
             }
-            var toAccountString any = this.ParseTransferType(toAccount)
-            var response any = nil
+            var toAccountString interface{} = this.ParseTransferType(toAccount)
+            var response interface{} = nil
             if ccxt.IsTrue(ccxt.IsTrue(ccxt.IsEqual(toAccountString, "TRADE")) || ccxt.IsTrue(ccxt.IsEqual(toAccountString, "MAIN"))) {
                 ccxt.AddElementToObject(request, "recAccountType", toAccountString)
                 
@@ -117,9 +117,9 @@ func  (this *KucoinfuturesCore) Transfer(code any, amount any, fromAccount any, 
             } else {
                 panic(ccxt.BadRequest(ccxt.Add(this.Id, " transfer() only supports transfers between future/swap, spot and funding accounts")))
             }
-            var data any = this.SafeDict(response, "data", map[string]any {})
+            var data interface{} = this.SafeDict(response, "data", map[string]interface{} {})
         
-            ch <- this.Extend(this.ParseTransfer(data, currency), map[string]any {
+            ch <- this.Extend(this.ParseTransfer(data, currency), map[string]interface{} {
                 "amount": this.ParseNumber(amountToPrecision),
                 "fromAccount": fromAccount,
                 "toAccount": toAccount,
@@ -129,8 +129,8 @@ func  (this *KucoinfuturesCore) Transfer(code any, amount any, fromAccount any, 
             }()
             return ch
         }
-func  (this *KucoinfuturesCore) ParseTransferType(transferType any) any  {
-    var transferTypes any = map[string]any {
+func  (this *KucoinfuturesCore) ParseTransferType(transferType interface{}) interface{}  {
+    var transferTypes interface{} = map[string]interface{} {
         "spot": "TRADE",
         "funding": "MAIN",
     }

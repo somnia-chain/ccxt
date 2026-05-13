@@ -141,6 +141,7 @@ from ccxt.delta import delta                                          # noqa: F4
 from ccxt.deribit import deribit                                      # noqa: F401
 from ccxt.derive import derive                                        # noqa: F401
 from ccxt.digifinex import digifinex                                  # noqa: F401
+from ccxt.dreamdex import dreamdex                                    # noqa: F401
 from ccxt.dydx import dydx                                            # noqa: F401
 from ccxt.exmo import exmo                                            # noqa: F401
 from ccxt.fmfwio import fmfwio                                        # noqa: F401
@@ -253,6 +254,7 @@ exchanges = [
     'deribit',
     'derive',
     'digifinex',
+    'dreamdex',
     'dydx',
     'exmo',
     'fmfwio',

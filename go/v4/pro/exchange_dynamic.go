@@ -167,6 +167,10 @@ func DynamicallyCreateInstance(exchangeId string, exchangeArgs map[string]any) (
         deriveItf := NewDeriveCore()
         deriveItf.Init(exchangeArgs)
         return deriveItf, true
+    case "dreamdex":
+        dreamdexItf := NewDreamdexCore()
+        dreamdexItf.Init(exchangeArgs)
+        return dreamdexItf, true
     case "dydx":
         dydxItf := NewDydxCore()
         dydxItf.Init(exchangeArgs)

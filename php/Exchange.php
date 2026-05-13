@@ -386,6 +386,7 @@ class Exchange {
         'deribit',
         'derive',
         'digifinex',
+        'dreamdex',
         'dydx',
         'exmo',
         'fmfwio',

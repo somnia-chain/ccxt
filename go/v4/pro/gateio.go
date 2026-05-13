@@ -18,8 +18,8 @@ func NewGateioCore() *GateioCore {
     return p
 }
 
-func  (this *GateioCore) Describe() any  {
-    return this.DeepExtend(this.base.Describe(), map[string]any {
+func  (this *GateioCore) Describe() interface{}  {
+    return this.DeepExtend(this.base.Describe(), map[string]interface{} {
         "alias": true,
         "id": "gateio",
     })

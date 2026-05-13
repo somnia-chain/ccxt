@@ -18,28 +18,28 @@ func NewMyokxCore() *MyokxCore {
     return p
 }
 
-func  (this *MyokxCore) Describe() any  {
-    return this.DeepExtend(this.base.Describe(), map[string]any {
+func  (this *MyokxCore) Describe() interface{}  {
+    return this.DeepExtend(this.base.Describe(), map[string]interface{} {
         "id": "myokx",
         "name": "MyOKX (EEA)",
         "hostname": "eea.okx.com",
-        "urls": map[string]any {
-            "api": map[string]any {
+        "urls": map[string]interface{} {
+            "api": map[string]interface{} {
                 "rest": "https://{hostname}",
                 "ws": "wss://wseea.okx.com:8443/ws/v5",
             },
             "www": "https://my.okx.com",
             "doc": "https://my.okx.com/docs-v5/en/#overview",
             "fees": "https://my.okx.com/pages/products/fees.html",
-            "referral": map[string]any {
+            "referral": map[string]interface{} {
                 "url": "https://www.my.okx.com/join/CCXT2023",
                 "discount": 0.2,
             },
-            "test": map[string]any {
+            "test": map[string]interface{} {
                 "ws": "wss://wseeapap.okx.com:8443/ws/v5",
             },
         },
-        "has": map[string]any {
+        "has": map[string]interface{} {
             "swap": false,
             "future": false,
             "option": false,

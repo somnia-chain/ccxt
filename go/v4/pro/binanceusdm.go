@@ -18,26 +18,26 @@ func NewBinanceusdmCore() *BinanceusdmCore {
     return p
 }
 
-func  (this *BinanceusdmCore) Describe() any  {
+func  (this *BinanceusdmCore) Describe() interface{}  {
     // eslint-disable-next-line new-cap
     restInstance := ccxt.NewBinanceusdm(nil)
-    var restDescribe any = restInstance.Describe()
-    var extended any = this.DeepExtend(this.base.Describe(), restDescribe)
-    return this.DeepExtend(extended, map[string]any {
+    var restDescribe interface{} = restInstance.Describe()
+    var extended interface{} = this.DeepExtend(this.base.Describe(), restDescribe)
+    return this.DeepExtend(extended, map[string]interface{} {
         "id": "binanceusdm",
         "name": "Binance USDⓈ-M",
-        "urls": map[string]any {
+        "urls": map[string]interface{} {
             "logo": "https://user-images.githubusercontent.com/1294454/117738721-668c8d80-b205-11eb-8c49-3fad84c4a07f.jpg",
             "doc": "https://developers.binance.com/en",
         },
-        "options": map[string]any {
-            "fetchMarkets": map[string]any {
-                "types": []any{"linear"},
+        "options": map[string]interface{} {
+            "fetchMarkets": map[string]interface{} {
+                "types": []interface{}{"linear"},
             },
             "defaultSubType": "linear",
         },
-        "exceptions": map[string]any {
-            "exact": map[string]any {
+        "exceptions": map[string]interface{} {
+            "exact": map[string]interface{} {
                 "-5021": ccxt.InvalidOrder,
                 "-5022": ccxt.InvalidOrder,
                 "-5028": ccxt.InvalidOrder,

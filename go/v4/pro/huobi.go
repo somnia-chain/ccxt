@@ -18,8 +18,8 @@ func NewHuobiCore() *HuobiCore {
     return p
 }
 
-func  (this *HuobiCore) Describe() any  {
-    return this.DeepExtend(this.base.Describe(), map[string]any {
+func  (this *HuobiCore) Describe() interface{}  {
+    return this.DeepExtend(this.base.Describe(), map[string]interface{} {
         "alias": true,
         "id": "huobi",
     })

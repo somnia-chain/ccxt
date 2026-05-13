@@ -136,6 +136,9 @@ func CreateExchange(exchangeId string, options map[string]any) ccxt.IExchange {
     case "derive":
         itf := NewDerive(options)
         return itf
+    case "dreamdex":
+        itf := NewDreamdex(options)
+        return itf
     case "dydx":
         itf := NewDydx(options)
         return itf
