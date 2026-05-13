@@ -14,16 +14,13 @@ import type { Dict, int, Int, Str, Strings, Num, Market, Currencies, Order, Orde
 /**
  * @class dreamdex
  * @augments Exchange
- * @description Dreamdex (Somnia DEX) - a non-custodial decentralized exchange on the Somnia network (chain ID 50312).
- * createOrder returns an unsigned EVM transaction for the user to sign and broadcast on-chain.
- * Note: Somnia is currently in testnet. The API base URL points to the testnet environment and will be
- * updated to the production URL once mainnet launches.
+ * @description dreamDEX - a non-custodial decentralized exchange on the Somnia network (chain ID 50312)
  */
 export default class dreamdex extends Exchange {
     describe (): any {
         return this.deepExtend (super.describe (), {
             'id': 'dreamdex',
-            'name': 'Dreamdex',
+            'name': 'dreamDEX',
             'countries': [],
             'version': 'v0',
             'rateLimit': 200,
@@ -349,7 +346,7 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchMarkets
-     * @description retrieves data on all markets for dreamdex
+     * @description retrieves data on all markets for dreamDEX
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {Market[]} an array of objects representing market data
@@ -611,7 +608,7 @@ export default class dreamdex extends Exchange {
      * @name dreamdex#fetchMyTrades
      * @description fetch all trades made by the user
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {int} [since] timestamp in ms of the earliest trade to fetch
      * @param {int} [limit] the maximum number of trades to fetch
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -720,7 +717,7 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchBalance
-     * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+     * @description query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} params.symbol unified market symbol (required — vault is per-market)
@@ -1007,7 +1004,7 @@ export default class dreamdex extends Exchange {
      * @description fetches information on an order made by the user
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id the order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
@@ -1110,7 +1107,7 @@ export default class dreamdex extends Exchange {
      * @description cancels an open order
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
      * @param {bool} [params.trigger] alias for params.stop
@@ -1163,7 +1160,7 @@ export default class dreamdex extends Exchange {
      * @description reduces the remaining quantity of an open order (the only edit the API supports)
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {string} type not used, kept for CCXT unified signature
      * @param {string} side not used, kept for CCXT unified signature
      * @param {float} amount the new remaining quantity (must be less than current remaining)
@@ -1359,7 +1356,7 @@ export default class dreamdex extends Exchange {
         const nonce = this.safeString (nonceResponse, 'nonce');
         const issuedAt = this.iso8601 (now);
         const url = this.safeString (this.urls['api'], 'rest');
-        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to Somnia DEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 50312' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
+        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to dreamDEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 50312' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
         const hash = this.hashMessage (message);
         const sig = this.signHash (hash, this.privateKey);
         const loginRequest: Dict = {
