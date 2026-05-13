@@ -4,6 +4,7 @@
         "until": "2026-06-07"
     },
     "dreamdex": {
+        "preferredSpotSymbol": "SOMI/USDso",
         "skipMethods": {
             "fetchTickers": "no all-tickers endpoint",
             "fetchCurrencies": {

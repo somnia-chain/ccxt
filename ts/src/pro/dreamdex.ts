@@ -67,7 +67,7 @@ export default class dreamdex extends dreamdexRest {
         //     {
         //         "channel": "orderbook",
         //         "type": "snapshot",
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "timestamp": 1765534169841,
         //         "bids": [ { "price": "1.24", "quantity": "500" } ],
         //         "asks": [ { "price": "1.26", "quantity": "300" } ],
@@ -78,7 +78,7 @@ export default class dreamdex extends dreamdexRest {
         //     {
         //         "channel": "orderbook",
         //         "type": "update",
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "timestamp": 1765534169842,
         //         "bids": [ { "price": "1.24", "quantity": "0" } ],
         //         "asks": [ { "price": "1.27", "quantity": "200" } ],
@@ -160,9 +160,9 @@ export default class dreamdex extends dreamdexRest {
         //     {
         //         "channel": "trades",
         //         "type": "snapshot",
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "trades": [
-        //             { "id": "t1", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "quantity": "100", "cost": "125" }
+        //             { "id": "t1", "timestamp": 1765534169841, "symbol": "SOMI:USDso", "side": "buy", "price": "1.25", "quantity": "100", "cost": "125" }
         //         ]
         //     }
         //
@@ -170,8 +170,8 @@ export default class dreamdex extends dreamdexRest {
         //     {
         //         "channel": "trades",
         //         "type": "update",
-        //         "symbol": "SOM:USD",
-        //         "trade": { "id": "t2", "timestamp": 1765534169842, "symbol": "SOM:USD", "side": "sell", "price": "1.24", "quantity": "50", "cost": "62" }
+        //         "symbol": "SOMI:USDso",
+        //         "trade": { "id": "t2", "timestamp": 1765534169842, "symbol": "SOMI:USDso", "side": "sell", "price": "1.24", "quantity": "50", "cost": "62" }
         //     }
         //
         const marketId = this.safeString (message, 'symbol');
@@ -200,7 +200,7 @@ export default class dreamdex extends dreamdexRest {
 
     parseWsTrade (trade: Dict, market = undefined): Trade {
         //
-        //     { "id": "t1", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "quantity": "100", "cost": "125" }
+        //     { "id": "t1", "timestamp": 1765534169841, "symbol": "SOMI:USDso", "side": "buy", "price": "1.25", "quantity": "100", "cost": "125" }
         //
         const marketId = this.safeString (trade, 'symbol');
         market = this.safeMarket (marketId, market, ':');
@@ -263,7 +263,7 @@ export default class dreamdex extends dreamdexRest {
         //     {
         //         "channel": "ohlcv",
         //         "type": "snapshot",
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "timeframe": "1m",
         //         "candles": [
         //             { "timestamp": 1765534140000, "open": "1.24", "high": "1.26", "low": "1.23", "close": "1.25", "volume": "1000" }
@@ -274,7 +274,7 @@ export default class dreamdex extends dreamdexRest {
         //     {
         //         "channel": "ohlcv",
         //         "type": "update",
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "timeframe": "1m",
         //         "candle": { "timestamp": 1765534200000, "open": "1.25", "high": "1.27", "low": "1.24", "close": "1.26", "volume": "500" }
         //     }

@@ -260,9 +260,7 @@ export default class dreamdex extends Exchange {
                 'walletAddress': true,
                 'privateKey': true,
             },
-            'commonCurrencies': {
-                'USD': 'USDC',
-            },
+            'commonCurrencies': {},
             'precisionMode': TICK_SIZE,
             'options': {
                 'authToken': undefined,
@@ -304,8 +302,8 @@ export default class dreamdex extends Exchange {
         //
         //     {
         //         "currencies": [
-        //             { "id": "0xe8F76...", "code": "SOMI", "name": "SOMI", "decimals": 18 },
-        //             { "id": "0xB4AFC...", "code": "USDC", "name": "USDC", "decimals": 6 }
+        //             { "id": "0x28f34...", "code": "SOMI", "name": "Somnia Token", "decimals": 18 },
+        //             { "id": "0x00000...", "code": "USDso", "name": "USD Somnia", "decimals": 18 }
         //         ]
         //     }
         //
@@ -362,7 +360,7 @@ export default class dreamdex extends Exchange {
         //     {
         //         "markets": [
         //             {
-        //                 "symbol": "SOMI:USDC",
+        //                 "symbol": "SOMI:USDso",
         //                 "base": "0x7747128FAF46b8dC3F2f64Bbad80242534D2f042",
         //                 "quote": "0xB4AFC6030660AFE516A79cA578AED32903A2C440",
         //                 "baseDecimals": 18,
@@ -380,7 +378,7 @@ export default class dreamdex extends Exchange {
 
     parseMarket (market: Dict): Market {
         const id = this.safeString (market, 'symbol');
-        // symbol is "BASE:QUOTE" using exchange currency codes (e.g. "SOMI:USDC")
+        // symbol is "BASE:QUOTE" using exchange currency codes (e.g. "SOMI:USDso")
         // market.base/quote hold on-chain token contract addresses (preserved in info)
         // info.contract holds the pool/market contract address
         const parts = id.split (':');
@@ -466,7 +464,7 @@ export default class dreamdex extends Exchange {
         //     {
         //         "orderbooks": [
         //             {
-        //                 "symbol": "SOM:USD",
+        //                 "symbol": "SOMI:USDso",
         //                 "timestamp": 1765534169841,
         //                 "bids": [ { "price": "1.24", "quantity": "500" } ],
         //                 "asks": [ { "price": "1.26", "quantity": "300" } ],
@@ -502,7 +500,7 @@ export default class dreamdex extends Exchange {
         //
         //     {
         //         "symbols": [
-        //             { "symbol": "SOM:USD", "timestamp": 1765534169841, "open": "1.20", "high": "1.30", "low": "1.18", "close": "1.25", "volume": "1000" }
+        //             { "symbol": "SOMI:USDso", "timestamp": 1765534169841, "open": "1.20", "high": "1.30", "low": "1.18", "close": "1.25", "volume": "1000" }
         //         ]
         //     }
         //
@@ -535,7 +533,7 @@ export default class dreamdex extends Exchange {
         //
         //     {
         //         "symbols": [
-        //             { "symbol": "SOM:USD", "timestamp": 1765534169841, "open": "1.20", "high": "1.30", "low": "1.18", "close": "1.25", "volume": "1000" }
+        //             { "symbol": "SOMI:USDso", "timestamp": 1765534169841, "open": "1.20", "high": "1.30", "low": "1.18", "close": "1.25", "volume": "1000" }
         //         ]
         //     }
         //
@@ -598,9 +596,9 @@ export default class dreamdex extends Exchange {
         const response = await this.publicGetV0MarketsSymbolTrades (this.extend (request, params));
         //
         //     {
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "trades": [
-        //             { "id": "t1", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
+        //             { "id": "t1", "timestamp": 1765534169841, "symbol": "SOMI:USDso", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
         //         ]
         //     }
         //
@@ -638,9 +636,9 @@ export default class dreamdex extends Exchange {
         const response = await this.privateGetV0MarketsSymbolTradesMine (this.extend (request, params));
         //
         //     {
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "trades": [
-        //             { "id": "123:456", "timestamp": 1765534169841, "symbol": "SOM:USD", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
+        //             { "id": "123:456", "timestamp": 1765534169841, "symbol": "SOMI:USDso", "side": "buy", "price": "1.25", "amount": "100", "cost": "125" }
         //         ]
         //     }
         //
@@ -697,7 +695,7 @@ export default class dreamdex extends Exchange {
         const response = await this.publicGetV0MarketsSymbolCandles (this.extend (request, params));
         //
         //     {
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "interval": "1m",
         //         "candles": [
         //             { "timestamp": 1765534140000, "open": "1.24", "high": "1.26", "low": "1.23", "close": "1.25", "volume": "1000" }
@@ -745,8 +743,8 @@ export default class dreamdex extends Exchange {
         //
         //     {
         //         "balances": [
-        //             { "currency": "SOM", "amount": "1000.5" },
-        //             { "currency": "USD", "amount": "500.25" }
+        //             { "currency": "SOMI", "amount": "1000.5" },
+        //             { "currency": "USDso", "amount": "500.25" }
         //         ]
         //     }
         //
@@ -783,7 +781,7 @@ export default class dreamdex extends Exchange {
      * `undefined` as a signal to skip signing and proceed directly to vaultDeposit.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
-     * @param {string} currency currency code to approve (e.g. 'SOM' or 'USDC')
+     * @param {string} currency currency code to approve (e.g. 'SOMI' or 'USDso')
      * @param {float} amount the amount to approve for spending
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
@@ -802,7 +800,7 @@ export default class dreamdex extends Exchange {
      * has its own vault contract), unlike centralized exchanges where funds are deposited exchange-wide.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
-     * @param {string} currency currency code to deposit (e.g. 'SOM' or 'USDC')
+     * @param {string} currency currency code to deposit (e.g. 'SOMI' or 'USDso')
      * @param {float} amount the amount to deposit
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
@@ -821,7 +819,7 @@ export default class dreamdex extends Exchange {
      * exchanges where withdrawals are exchange-wide.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
-     * @param {string} currency currency code to withdraw (e.g. 'SOM' or 'USDC')
+     * @param {string} currency currency code to withdraw (e.g. 'SOMI' or 'USDso')
      * @param {float} amount the amount to withdraw
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
@@ -1045,7 +1043,7 @@ export default class dreamdex extends Exchange {
         //         "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
         //         "status": "open",
         //         "createdAt": 1765534169841,
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
@@ -1247,7 +1245,7 @@ export default class dreamdex extends Exchange {
         //         "id": "01KC1F8N2NBP5GEYKE66CRJ34A",
         //         "status": "open",
         //         "createdAt": 1765534169841,
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
@@ -1301,7 +1299,7 @@ export default class dreamdex extends Exchange {
         //         "id": "01KC3B1P4RDS7IGAMH88ETL56C",
         //         "status": "pending",
         //         "createdAt": 1765534169841,
-        //         "symbol": "SOM:USD",
+        //         "symbol": "SOMI:USDso",
         //         "type": "market",
         //         "side": "sell",
         //         "amount": "100",
