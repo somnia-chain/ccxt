@@ -19,7 +19,7 @@ export default class dreamdex extends dreamdexRest {
             },
             'urls': {
                 'api': {
-                    'ws': 'wss://stg.api.dreamdex.io/v0/ws/public',
+                    'ws': 'wss://api.dreamdex.io/v0/ws/public',
                 },
             },
             'streaming': {
@@ -37,7 +37,7 @@ export default class dreamdex extends dreamdexRest {
      * @method
      * @name dreamdex#watchOrderBook
      * @description watches information on open orders with bid (buy) and ask (sell) prices, volumes and other data
-     * @see https://stg.api.dreamdex.io/v0/.well-known/async.json
+     * @see https://api.dreamdex.io/v0/.well-known/async.json
      * @param {string} symbol unified market symbol
      * @param {int} [limit] the maximum amount of order book entries to return
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -126,7 +126,7 @@ export default class dreamdex extends dreamdexRest {
      * @method
      * @name dreamdex#watchTrades
      * @description watches information on multiple trades made in a market
-     * @see https://stg.api.dreamdex.io/v0/.well-known/async.json
+     * @see https://api.dreamdex.io/v0/.well-known/async.json
      * @param {string} symbol unified market symbol of the market trades were made in
      * @param {int} [since] the earliest time in ms to fetch trades for
      * @param {int} [limit] the maximum number of trade structures to retrieve
@@ -226,7 +226,7 @@ export default class dreamdex extends dreamdexRest {
      * @method
      * @name dreamdex#watchOHLCV
      * @description watches historical candlestick data containing the open, high, low, and close price, and the volume of a market
-     * @see https://stg.api.dreamdex.io/v0/.well-known/async.json
+     * @see https://api.dreamdex.io/v0/.well-known/async.json
      * @param {string} symbol unified symbol of the market to fetch OHLCV data for
      * @param {string} [timeframe] the length of time each candle represents, default '1m'
      * @param {int} [since] timestamp in ms of the earliest candle to fetch
