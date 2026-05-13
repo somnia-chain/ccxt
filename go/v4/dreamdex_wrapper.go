@@ -45,7 +45,7 @@ func (this *Dreamdex) FetchCurrencies(params ...any) (Currencies, error) {
 /**
  * @method
  * @name dreamdex#fetchMarkets
- * @description retrieves data on all markets for dreamdex
+ * @description retrieves data on all markets for dreamDEX
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {Market[]} an array of objects representing market data
@@ -193,7 +193,7 @@ func (this *Dreamdex) FetchTrades(symbol string, options ...FetchTradesOptions) 
  * @name dreamdex#fetchMyTrades
  * @description fetch all trades made by the user
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {int} [since] timestamp in ms of the earliest trade to fetch
  * @param {int} [limit] the maximum number of trades to fetch
  * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -280,7 +280,7 @@ func (this *Dreamdex) FetchOHLCV(symbol string, options ...FetchOHLCVOptions) ([
 /**
  * @method
  * @name dreamdex#fetchBalance
- * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+ * @description query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @param {string} params.symbol unified market symbol (required — vault is per-market)
@@ -297,7 +297,7 @@ func (this *Dreamdex) FetchBalance(params ...any) (Balances, error) {
  * @method
  * @name dreamdex#createOrder
  * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
- * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+ * The order is not placed until the transaction is submitted to the Somnia network (chain ID 5031).
  * The returned order structure has the unsigned transaction payload in the info field.
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} symbol unified market symbol
@@ -345,7 +345,7 @@ func (this *Dreamdex) CreateOrder(symbol string, typeVar string, side string, am
  * @description fetches information on an order made by the user
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} id the order id
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
  */
@@ -471,7 +471,7 @@ func (this *Dreamdex) FetchOpenOrders(options ...FetchOpenOrdersOptions) ([]Orde
  * @description cancels an open order
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} id order id
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
  * @param {bool} [params.trigger] alias for params.stop
@@ -506,7 +506,7 @@ func (this *Dreamdex) CancelOrder(id string, options ...CancelOrderOptions) (Ord
  * @description reduces the remaining quantity of an open order (the only edit the API supports)
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} id order id
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {string} type not used, kept for CCXT unified signature
  * @param {string} side not used, kept for CCXT unified signature
  * @param {float} amount the new remaining quantity (must be less than current remaining)

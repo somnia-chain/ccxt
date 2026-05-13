@@ -16,7 +16,6 @@
                             "status": "open",
                             "createdAt": 1765534169841,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "buy",
                             "price": "1.25",
                             "amount": "500",
@@ -36,7 +35,7 @@
                         "lastTradeTimestamp": null,
                         "status": "open",
                         "symbol": "SOMI/USDso",
-                        "type": "limit",
+                        "type": null,
                         "side": "buy",
                         "price": 1.25,
                         "amount": 500,
@@ -51,7 +50,6 @@
                             "status": "open",
                             "createdAt": 1765534169841,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "buy",
                             "price": "1.25",
                             "amount": "500",
@@ -85,7 +83,6 @@
                             "status": "closed",
                             "createdAt": 1765534200000,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "sell",
                             "price": "1.30",
                             "amount": "200",
@@ -105,7 +102,7 @@
                         "lastTradeTimestamp": null,
                         "status": "closed",
                         "symbol": "SOMI/USDso",
-                        "type": "limit",
+                        "type": null,
                         "side": "sell",
                         "price": 1.3,
                         "amount": 200,
@@ -120,7 +117,6 @@
                             "status": "closed",
                             "createdAt": 1765534200000,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "sell",
                             "price": "1.30",
                             "amount": "200",
@@ -154,7 +150,6 @@
                             "status": "canceled",
                             "createdAt": 1765534260000,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "buy",
                             "price": "1.20",
                             "amount": "500",
@@ -174,7 +169,7 @@
                         "lastTradeTimestamp": null,
                         "status": "canceled",
                         "symbol": "SOMI/USDso",
-                        "type": "limit",
+                        "type": null,
                         "side": "buy",
                         "price": 1.2,
                         "amount": 500,
@@ -189,7 +184,6 @@
                             "status": "canceled",
                             "createdAt": 1765534260000,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "buy",
                             "price": "1.20",
                             "amount": "500",
@@ -217,7 +211,9 @@
                     "SOMI/USDso",
                     null,
                     null,
-                    { "stop": true }
+                    {
+                        "stop": true
+                    }
                 ],
                 "httpResponse": {
                     "stopOrders": [
@@ -285,7 +281,9 @@
                     "SOMI/USDso",
                     null,
                     null,
-                    { "stop": true }
+                    {
+                        "stop": true
+                    }
                 ],
                 "httpResponse": {
                     "stopOrders": [
@@ -359,7 +357,6 @@
                             "status": "open",
                             "createdAt": 1765534169841,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "buy",
                             "price": "1.25",
                             "amount": "500",
@@ -379,7 +376,7 @@
                         "lastTradeTimestamp": null,
                         "status": "open",
                         "symbol": "SOMI/USDso",
-                        "type": "limit",
+                        "type": null,
                         "side": "buy",
                         "price": 1.25,
                         "amount": 500,
@@ -394,7 +391,6 @@
                             "status": "open",
                             "createdAt": 1765534169841,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "buy",
                             "price": "1.25",
                             "amount": "500",
@@ -429,12 +425,24 @@
                             "symbol": "SOMI:USDso",
                             "timestamp": 1765534169841,
                             "bids": [
-                                { "price": "1.24", "quantity": "500" },
-                                { "price": "1.23", "quantity": "300" }
+                                {
+                                    "price": "1.24",
+                                    "quantity": "500"
+                                },
+                                {
+                                    "price": "1.23",
+                                    "quantity": "300"
+                                }
                             ],
                             "asks": [
-                                { "price": "1.26", "quantity": "400" },
-                                { "price": "1.27", "quantity": "200" }
+                                {
+                                    "price": "1.26",
+                                    "quantity": "400"
+                                },
+                                {
+                                    "price": "1.27",
+                                    "quantity": "200"
+                                }
                             ],
                             "nonce": 42
                         }
@@ -443,12 +451,24 @@
                 "parsedResponse": {
                     "symbol": "SOMI/USDso",
                     "bids": [
-                        [ 1.24, 500 ],
-                        [ 1.23, 300 ]
+                        [
+                            1.24,
+                            500
+                        ],
+                        [
+                            1.23,
+                            300
+                        ]
                     ],
                     "asks": [
-                        [ 1.26, 400 ],
-                        [ 1.27, 200 ]
+                        [
+                            1.26,
+                            400
+                        ],
+                        [
+                            1.27,
+                            200
+                        ]
                     ],
                     "timestamp": 1765534169841,
                     "datetime": "2025-12-12T10:09:29.841Z",
@@ -828,7 +848,7 @@
                     1.5
                 ],
                 "httpResponse": {
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "data": "0x80702f830000000000000000000000000000000000000000",
                     "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                     "value": "0"
@@ -852,7 +872,7 @@
                     "trades": [],
                     "fee": null,
                     "info": {
-                        "chainId": "50312",
+                        "chainId": "5031",
                         "data": "0x80702f830000000000000000000000000000000000000000",
                         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                         "value": "0"
@@ -877,10 +897,12 @@
                     "sell",
                     100,
                     1.5,
-                    { "fundingSource": "wallet" }
+                    {
+                        "fundingSource": "wallet"
+                    }
                 ],
                 "httpResponse": {
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "data": "0x80702f830000000000000000000000000000000000000000",
                     "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                     "value": "0",
@@ -908,7 +930,7 @@
                     "trades": [],
                     "fee": null,
                     "info": {
-                        "chainId": "50312",
+                        "chainId": "5031",
                         "data": "0x80702f830000000000000000000000000000000000000000",
                         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                         "value": "0",
@@ -969,13 +991,28 @@
                 "input": [],
                 "httpResponse": {
                     "currencies": [
-                        { "id": "0x28f34DeFd2b4CB48d9eE6d89f2Be4Bc601694c00", "code": "SOMI", "name": "Somnia Token", "decimals": 18 },
-                        { "id": "0x00000022dA000002656c64D9eA6011ea952D008A", "code": "USDso", "name": "USD Somnia", "decimals": 18 }
+                        {
+                            "id": "0x28f34DeFd2b4CB48d9eE6d89f2Be4Bc601694c00",
+                            "code": "SOMI",
+                            "name": "Somnia Token",
+                            "decimals": 18
+                        },
+                        {
+                            "id": "0x00000022dA000002656c64D9eA6011ea952D008A",
+                            "code": "USDso",
+                            "name": "USD Somnia",
+                            "decimals": 18
+                        }
                     ]
                 },
                 "parsedResponse": {
                     "SOMI": {
-                        "info": { "id": "0x28f34DeFd2b4CB48d9eE6d89f2Be4Bc601694c00", "code": "SOMI", "name": "Somnia Token", "decimals": 18 },
+                        "info": {
+                            "id": "0x28f34DeFd2b4CB48d9eE6d89f2Be4Bc601694c00",
+                            "code": "SOMI",
+                            "name": "Somnia Token",
+                            "decimals": 18
+                        },
                         "id": "SOMI",
                         "numericId": null,
                         "code": "SOMI",
@@ -989,12 +1026,23 @@
                         "fees": {},
                         "networks": {},
                         "limits": {
-                            "deposit": { "min": null, "max": null },
-                            "withdraw": { "min": null, "max": null }
+                            "deposit": {
+                                "min": null,
+                                "max": null
+                            },
+                            "withdraw": {
+                                "min": null,
+                                "max": null
+                            }
                         }
                     },
                     "USDso": {
-                        "info": { "id": "0x00000022dA000002656c64D9eA6011ea952D008A", "code": "USDso", "name": "USD Somnia", "decimals": 18 },
+                        "info": {
+                            "id": "0x00000022dA000002656c64D9eA6011ea952D008A",
+                            "code": "USDso",
+                            "name": "USD Somnia",
+                            "decimals": 18
+                        },
                         "id": "USDso",
                         "numericId": null,
                         "code": "USDso",
@@ -1008,8 +1056,14 @@
                         "fees": {},
                         "networks": {},
                         "limits": {
-                            "deposit": { "min": null, "max": null },
-                            "withdraw": { "min": null, "max": null }
+                            "deposit": {
+                                "min": null,
+                                "max": null
+                            },
+                            "withdraw": {
+                                "min": null,
+                                "max": null
+                            }
                         }
                     }
                 }
@@ -1068,10 +1122,22 @@
                             "price": 0.0001
                         },
                         "limits": {
-                            "leverage": { "min": null, "max": null },
-                            "amount": { "min": 1, "max": null },
-                            "price": { "min": null, "max": null },
-                            "cost": { "min": null, "max": null }
+                            "leverage": {
+                                "min": null,
+                                "max": null
+                            },
+                            "amount": {
+                                "min": 1,
+                                "max": null
+                            },
+                            "price": {
+                                "min": null,
+                                "max": null
+                            },
+                            "cost": {
+                                "min": null,
+                                "max": null
+                            }
                         },
                         "created": null,
                         "info": {
@@ -1095,24 +1161,55 @@
                 "description": "Vault balance for SOMI/USDso market",
                 "method": "fetchBalance",
                 "input": [
-                    { "symbol": "SOMI/USDso" }
+                    {
+                        "symbol": "SOMI/USDso"
+                    }
                 ],
                 "httpResponse": {
                     "balances": [
-                        { "currency": "SOMI", "amount": "1000.5" },
-                        { "currency": "USDso", "amount": "500.25" }
+                        {
+                            "currency": "SOMI",
+                            "amount": "1000.5"
+                        },
+                        {
+                            "currency": "USDso",
+                            "amount": "500.25"
+                        }
                     ]
                 },
                 "parsedResponse": {
                     "info": [
-                        { "currency": "SOMI", "amount": "1000.5" },
-                        { "currency": "USDso", "amount": "500.25" }
+                        {
+                            "currency": "SOMI",
+                            "amount": "1000.5"
+                        },
+                        {
+                            "currency": "USDso",
+                            "amount": "500.25"
+                        }
                     ],
-                    "SOMI": { "free": 1000.5, "used": 0, "total": 1000.5 },
-                    "USDso": { "free": 500.25, "used": 0, "total": 500.25 },
-                    "free": { "SOMI": 1000.5, "USDso": 500.25 },
-                    "used": { "SOMI": 0, "USDso": 0 },
-                    "total": { "SOMI": 1000.5, "USDso": 500.25 }
+                    "SOMI": {
+                        "free": 1000.5,
+                        "used": 0,
+                        "total": 1000.5
+                    },
+                    "USDso": {
+                        "free": 500.25,
+                        "used": 0,
+                        "total": 500.25
+                    },
+                    "free": {
+                        "SOMI": 1000.5,
+                        "USDso": 500.25
+                    },
+                    "used": {
+                        "SOMI": 0,
+                        "USDso": 0
+                    },
+                    "total": {
+                        "SOMI": 1000.5,
+                        "USDso": 500.25
+                    }
                 }
             }
         ],
@@ -1129,7 +1226,6 @@
                     "status": "open",
                     "createdAt": 1765534169841,
                     "symbol": "SOMI:USDso",
-                    "type": "limit",
                     "side": "buy",
                     "price": "1.25",
                     "amount": "500",
@@ -1146,7 +1242,7 @@
                     "lastTradeTimestamp": null,
                     "status": "open",
                     "symbol": "SOMI/USDso",
-                    "type": "limit",
+                    "type": null,
                     "side": "buy",
                     "price": 1.25,
                     "amount": 500,
@@ -1161,7 +1257,6 @@
                         "status": "open",
                         "createdAt": 1765534169841,
                         "symbol": "SOMI:USDso",
-                        "type": "limit",
                         "side": "buy",
                         "price": "1.25",
                         "amount": "500",
@@ -1196,7 +1291,6 @@
                             "status": "open",
                             "createdAt": 1765534320000,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "sell",
                             "price": "1.30",
                             "amount": "300",
@@ -1216,7 +1310,7 @@
                         "lastTradeTimestamp": null,
                         "status": "open",
                         "symbol": "SOMI/USDso",
-                        "type": "limit",
+                        "type": null,
                         "side": "sell",
                         "price": 1.3,
                         "amount": 300,
@@ -1231,7 +1325,6 @@
                             "status": "open",
                             "createdAt": 1765534320000,
                             "symbol": "SOMI:USDso",
-                            "type": "limit",
                             "side": "sell",
                             "price": "1.30",
                             "amount": "300",
@@ -1266,7 +1359,6 @@
                     "status": "canceled",
                     "createdAt": 1765534169841,
                     "symbol": "SOMI:USDso",
-                    "type": "limit",
                     "side": "buy",
                     "price": "1.25",
                     "amount": "500",
@@ -1283,7 +1375,7 @@
                     "lastTradeTimestamp": null,
                     "status": "canceled",
                     "symbol": "SOMI/USDso",
-                    "type": "limit",
+                    "type": null,
                     "side": "buy",
                     "price": 1.25,
                     "amount": 500,
@@ -1298,7 +1390,6 @@
                         "status": "canceled",
                         "createdAt": 1765534169841,
                         "symbol": "SOMI:USDso",
-                        "type": "limit",
                         "side": "buy",
                         "price": "1.25",
                         "amount": "500",
@@ -1332,7 +1423,7 @@
                     "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                     "data": "0x80702f830000000000000000000000000000000000000000",
                     "value": "0",
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "gasLimit": "250000",
                     "nonce": "42"
                 },
@@ -1340,7 +1431,7 @@
                     "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                     "data": "0x80702f830000000000000000000000000000000000000000",
                     "value": "0",
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "gasLimit": "250000",
                     "nonce": "42"
                 }
@@ -1359,7 +1450,7 @@
                     "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                     "data": "0xa9059cbb0000000000000000000000000000000000000000",
                     "value": "0",
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "gasLimit": "200000",
                     "nonce": "43"
                 },
@@ -1367,7 +1458,7 @@
                     "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
                     "data": "0xa9059cbb0000000000000000000000000000000000000000",
                     "value": "0",
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "gasLimit": "200000",
                     "nonce": "43"
                 }
@@ -1386,7 +1477,7 @@
                     "to": "0x28f34DeFd2b4CB48d9eE6d89f2Be4Bc601694c00",
                     "data": "0x095ea7b30000000000000000000000000000000000000000",
                     "value": "0",
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "gasLimit": "100000",
                     "nonce": "44"
                 },
@@ -1394,7 +1485,7 @@
                     "to": "0x28f34DeFd2b4CB48d9eE6d89f2Be4Bc601694c00",
                     "data": "0x095ea7b30000000000000000000000000000000000000000",
                     "value": "0",
-                    "chainId": "50312",
+                    "chainId": "5031",
                     "gasLimit": "100000",
                     "nonce": "44"
                 }

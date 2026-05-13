@@ -18,7 +18,7 @@ func NewDreamdexCore() *DreamdexCore {
 func  (this *DreamdexCore) Describe() interface{}  {
     return this.DeepExtend(this.Exchange.Describe(), map[string]interface{} {
         "id": "dreamdex",
-        "name": "Dreamdex",
+        "name": "dreamDEX",
         "countries": []interface{}{},
         "version": "v0",
         "rateLimit": 200,
@@ -257,7 +257,7 @@ func  (this *DreamdexCore) Describe() interface{}  {
         "options": map[string]interface{} {
             "authToken": nil,
             "authTokenExpires": nil,
-            "chainId": 50312,
+            "chainId": 5031,
         },
         "exceptions": map[string]interface{} {
             "exact": map[string]interface{} {
@@ -352,7 +352,7 @@ func  (this *DreamdexCore) FetchCurrencies(optionalArgs ...interface{}) <- chan 
 /**
  * @method
  * @name dreamdex#fetchMarkets
- * @description retrieves data on all markets for dreamdex
+ * @description retrieves data on all markets for dreamDEX
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {Market[]} an array of objects representing market data
@@ -474,8 +474,8 @@ func  (this *DreamdexCore) FetchOrderBook(symbol interface{}, optionalArgs ...in
             params := GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
         
-            retRes4538 := (<-this.LoadMarkets())
-            PanicOnError(retRes4538)
+            retRes4508 := (<-this.LoadMarkets())
+            PanicOnError(retRes4508)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbols": GetValue(market, "id"),
@@ -528,8 +528,8 @@ func  (this *DreamdexCore) FetchTicker(symbol interface{}, optionalArgs ...inter
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes4938 := (<-this.LoadMarkets())
-            PanicOnError(retRes4938)
+            retRes4908 := (<-this.LoadMarkets())
+            PanicOnError(retRes4908)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbol": GetValue(market, "id"),
@@ -572,8 +572,8 @@ func  (this *DreamdexCore) FetchTickers(optionalArgs ...interface{}) <- chan int
             params := GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
         
-            retRes5218 := (<-this.LoadMarkets())
-            PanicOnError(retRes5218)
+            retRes5188 := (<-this.LoadMarkets())
+            PanicOnError(retRes5188)
             var request interface{} = map[string]interface{} {}
             if IsTrue(!IsEqual(symbols, nil)) {
                 var marketIds interface{} = []interface{}{}
@@ -654,8 +654,8 @@ func  (this *DreamdexCore) FetchTrades(symbol interface{}, optionalArgs ...inter
             params := GetArg(optionalArgs, 2, map[string]interface{} {})
             _ = params
         
-            retRes5848 := (<-this.LoadMarkets())
-            PanicOnError(retRes5848)
+            retRes5818 := (<-this.LoadMarkets())
+            PanicOnError(retRes5818)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbol": GetValue(market, "id"),
@@ -690,7 +690,7 @@ func  (this *DreamdexCore) FetchTrades(symbol interface{}, optionalArgs ...inter
  * @name dreamdex#fetchMyTrades
  * @description fetch all trades made by the user
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {int} [since] timestamp in ms of the earliest trade to fetch
  * @param {int} [limit] the maximum number of trades to fetch
  * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -713,11 +713,11 @@ func  (this *DreamdexCore) FetchMyTrades(optionalArgs ...interface{}) <- chan in
                 panic(ArgumentsRequired(Add(this.Id, " fetchMyTrades() requires a symbol argument")))
             }
         
-            retRes6238 := (<-this.AuthenticateRest())
-            PanicOnError(retRes6238)
+            retRes6208 := (<-this.AuthenticateRest())
+            PanicOnError(retRes6208)
         
-            retRes6248 := (<-this.LoadMarkets())
-            PanicOnError(retRes6248)
+            retRes6218 := (<-this.LoadMarkets())
+            PanicOnError(retRes6218)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbol": GetValue(market, "id"),
@@ -795,8 +795,8 @@ func  (this *DreamdexCore) FetchOHLCV(symbol interface{}, optionalArgs ...interf
             params := GetArg(optionalArgs, 3, map[string]interface{} {})
             _ = params
         
-            retRes6828 := (<-this.LoadMarkets())
-            PanicOnError(retRes6828)
+            retRes6798 := (<-this.LoadMarkets())
+            PanicOnError(retRes6798)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbol": GetValue(market, "id"),
@@ -836,7 +836,7 @@ func  (this *DreamdexCore) ParseOHLCV(ohlcv interface{}, optionalArgs ...interfa
 /**
  * @method
  * @name dreamdex#fetchBalance
- * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+ * @description query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @param {string} params.symbol unified market symbol (required — vault is per-market)
@@ -850,11 +850,11 @@ func  (this *DreamdexCore) FetchBalance(optionalArgs ...interface{}) <- chan int
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes7298 := (<-this.AuthenticateRest())
-            PanicOnError(retRes7298)
+            retRes7268 := (<-this.AuthenticateRest())
+            PanicOnError(retRes7268)
         
-            retRes7308 := (<-this.LoadMarkets())
-            PanicOnError(retRes7308)
+            retRes7278 := (<-this.LoadMarkets())
+            PanicOnError(retRes7278)
             var symbol interface{} = this.SafeString(params, "symbol")
             if IsTrue(IsEqual(symbol, nil)) {
                 panic(ArgumentsRequired(Add(this.Id, " fetchBalance() requires a params.symbol argument (vault is per-market)")))
@@ -920,9 +920,9 @@ func  (this *DreamdexCore) VaultApprove(symbol interface{}, currency interface{}
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-                retRes78215 :=  (<-this.VaultAction("approve", symbol, currency, amount, params))
-                PanicOnError(retRes78215)
-                ch <- retRes78215
+                retRes77915 :=  (<-this.VaultAction("approve", symbol, currency, amount, params))
+                PanicOnError(retRes77915)
+                ch <- retRes77915
                 return nil
         
             }()
@@ -988,11 +988,11 @@ func  (this *DreamdexCore) VaultAction(action interface{}, symbol interface{}, c
                     params := GetArg(optionalArgs, 0, map[string]interface{} {})
             _ = params
         
-            retRes8188 := (<-this.AuthenticateRest())
-            PanicOnError(retRes8188)
+            retRes8158 := (<-this.AuthenticateRest())
+            PanicOnError(retRes8158)
         
-            retRes8198 := (<-this.LoadMarkets())
-            PanicOnError(retRes8198)
+            retRes8168 := (<-this.LoadMarkets())
+            PanicOnError(retRes8168)
             var market interface{} = this.Market(symbol)
             var walletAddress interface{} = this.SafeString(params, "walletAddress", this.WalletAddress)
             params = this.Omit(params, "walletAddress")
@@ -1022,7 +1022,7 @@ func  (this *DreamdexCore) VaultAction(action interface{}, symbol interface{}, c
             //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
             //         "data": "0x80702f83...",
             //         "value": "0",
-            //         "chainId": "50312",
+            //         "chainId": "5031",
             //         "gasLimit": "250000",
             //         "nonce": "42"
             //     }
@@ -1044,7 +1044,7 @@ func  (this *DreamdexCore) VaultAction(action interface{}, symbol interface{}, c
  * @method
  * @name dreamdex#createOrder
  * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
- * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+ * The order is not placed until the transaction is submitted to the Somnia network (chain ID 5031).
  * The returned order structure has the unsigned transaction payload in the info field.
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} symbol unified market symbol
@@ -1073,11 +1073,11 @@ func  (this *DreamdexCore) CreateOrder(symbol interface{}, typeVar interface{}, 
             params := GetArg(optionalArgs, 1, map[string]interface{} {})
             _ = params
         
-            retRes8808 := (<-this.AuthenticateRest())
-            PanicOnError(retRes8808)
+            retRes8778 := (<-this.AuthenticateRest())
+            PanicOnError(retRes8778)
         
-            retRes8818 := (<-this.LoadMarkets())
-            PanicOnError(retRes8818)
+            retRes8788 := (<-this.LoadMarkets())
+            PanicOnError(retRes8788)
             var market interface{} = this.Market(symbol)
             var walletAddress interface{} = this.SafeString(params, "walletAddress", this.WalletAddress)
             var triggerPrice interface{} = this.SafeString2(params, "triggerPrice", "stopPrice")
@@ -1112,7 +1112,7 @@ func  (this *DreamdexCore) CreateOrder(symbol interface{}, typeVar interface{}, 
                 //         "to": "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
                 //         "data": "0x...",
                 //         "value": "100000000000000000",
-                //         "chainId": "50312"
+                //         "chainId": "5031"
                 //     }
                 //
         ch <- this.SafeOrder(map[string]interface{} {
@@ -1180,7 +1180,7 @@ func  (this *DreamdexCore) CreateOrder(symbol interface{}, typeVar interface{}, 
         
                 //
             //     {
-            //         "chainId": "50312",
+            //         "chainId": "5031",
             //         "data": "0x80702f83...",
             //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
             //         "value": "0"
@@ -1217,7 +1217,7 @@ func  (this *DreamdexCore) CreateOrder(symbol interface{}, typeVar interface{}, 
  * @description fetches information on an order made by the user
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} id the order id
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
  */
@@ -1234,11 +1234,11 @@ func  (this *DreamdexCore) FetchOrder(id interface{}, optionalArgs ...interface{
                 panic(ArgumentsRequired(Add(this.Id, " fetchOrder() requires a symbol argument")))
             }
         
-            retRes10178 := (<-this.AuthenticateRest())
-            PanicOnError(retRes10178)
+            retRes10148 := (<-this.AuthenticateRest())
+            PanicOnError(retRes10148)
         
-            retRes10188 := (<-this.LoadMarkets())
-            PanicOnError(retRes10188)
+            retRes10158 := (<-this.LoadMarkets())
+            PanicOnError(retRes10158)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbol": GetValue(market, "id"),
@@ -1254,7 +1254,6 @@ func  (this *DreamdexCore) FetchOrder(id interface{}, optionalArgs ...interface{
             //         "status": "open",
             //         "createdAt": 1765534169841,
             //         "symbol": "SOMI:USDso",
-            //         "type": "limit",
             //         "side": "buy",
             //         "price": "1.25",
             //         "amount": "500",
@@ -1298,11 +1297,11 @@ func  (this *DreamdexCore) FetchOrders(optionalArgs ...interface{}) <- chan inte
             params := GetArg(optionalArgs, 3, map[string]interface{} {})
             _ = params
         
-            retRes10598 := (<-this.AuthenticateRest())
-            PanicOnError(retRes10598)
+            retRes10558 := (<-this.AuthenticateRest())
+            PanicOnError(retRes10558)
         
-            retRes10608 := (<-this.LoadMarkets())
-            PanicOnError(retRes10608)
+            retRes10568 := (<-this.LoadMarkets())
+            PanicOnError(retRes10568)
             var stop interface{} = this.SafeBool2(params, "stop", "trigger")
             if IsTrue(IsEqual(symbol, nil)) {
                 if IsTrue(stop) {
@@ -1369,12 +1368,12 @@ func  (this *DreamdexCore) FetchOpenOrders(optionalArgs ...interface{}) <- chan 
             _ = params
             var stop interface{} = this.SafeBool2(params, "stop", "trigger")
             var request interface{} = map[string]interface{} {
-                "status": Ternary(IsTrue(stop), "pending", "open"),
+                "status": Ternary(IsTrue((stop)), "pending", "open"),
             }
         
-                retRes110315 :=  (<-this.FetchOrders(symbol, since, limit, this.Extend(request, params)))
-                PanicOnError(retRes110315)
-                ch <- retRes110315
+                retRes109915 :=  (<-this.FetchOrders(symbol, since, limit, this.Extend(request, params)))
+                PanicOnError(retRes109915)
+                ch <- retRes109915
                 return nil
         
             }()
@@ -1386,7 +1385,7 @@ func  (this *DreamdexCore) FetchOpenOrders(optionalArgs ...interface{}) <- chan 
  * @description cancels an open order
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} id order id
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
  * @param {bool} [params.trigger] alias for params.stop
@@ -1405,11 +1404,11 @@ func  (this *DreamdexCore) CancelOrder(id interface{}, optionalArgs ...interface
                 panic(ArgumentsRequired(Add(this.Id, " cancelOrder() requires a symbol argument")))
             }
         
-            retRes11228 := (<-this.AuthenticateRest())
-            PanicOnError(retRes11228)
+            retRes11188 := (<-this.AuthenticateRest())
+            PanicOnError(retRes11188)
         
-            retRes11238 := (<-this.LoadMarkets())
-            PanicOnError(retRes11238)
+            retRes11198 := (<-this.LoadMarkets())
+            PanicOnError(retRes11198)
             var market interface{} = this.Market(symbol)
             var stop interface{} = this.SafeBool2(params, "stop", "trigger")
             var request interface{} = map[string]interface{} {
@@ -1461,7 +1460,7 @@ func  (this *DreamdexCore) CancelOrder(id interface{}, optionalArgs ...interface
  * @description reduces the remaining quantity of an open order (the only edit the API supports)
  * @see https://api.dreamdex.io/v0/.well-known/oapi.json
  * @param {string} id order id
- * @param {string} symbol unified market symbol, required for dreamdex
+ * @param {string} symbol unified market symbol, required for dreamDEX
  * @param {string} type not used, kept for CCXT unified signature
  * @param {string} side not used, kept for CCXT unified signature
  * @param {float} amount the new remaining quantity (must be less than current remaining)
@@ -1490,11 +1489,11 @@ func  (this *DreamdexCore) EditOrder(id interface{}, symbol interface{}, typeVar
                 panic(NotSupported(Add(this.Id, " editOrder() does not support changing price, only reducing quantity")))
             }
         
-            retRes11838 := (<-this.AuthenticateRest())
-            PanicOnError(retRes11838)
+            retRes11798 := (<-this.AuthenticateRest())
+            PanicOnError(retRes11798)
         
-            retRes11848 := (<-this.LoadMarkets())
-            PanicOnError(retRes11848)
+            retRes11808 := (<-this.LoadMarkets())
+            PanicOnError(retRes11808)
             var market interface{} = this.Market(symbol)
             var request interface{} = map[string]interface{} {
                 "symbol": GetValue(market, "id"),
@@ -1510,7 +1509,7 @@ func  (this *DreamdexCore) EditOrder(id interface{}, symbol interface{}, typeVar
             //         "to": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
             //         "data": "0x...",
             //         "value": "0",
-            //         "chainId": "50312"
+            //         "chainId": "5031"
             //     }
             //
         ch <- this.SafeOrder(map[string]interface{} {
@@ -1551,7 +1550,6 @@ func  (this *DreamdexCore) ParseOrder(order interface{}, optionalArgs ...interfa
     //         "status": "open",
     //         "createdAt": 1765534169841,
     //         "symbol": "SOMI:USDso",
-    //         "type": "limit",
     //         "side": "buy",
     //         "price": "1.25",
     //         "amount": "500",
@@ -1685,7 +1683,7 @@ func  (this *DreamdexCore) AuthenticateRest(optionalArgs ...interface{}) <- chan
             var nonce interface{} = this.SafeString(nonceResponse, "nonce")
             var issuedAt interface{} = this.Iso8601(now)
             var url interface{} = this.SafeString(GetValue(this.Urls, "api"), "rest")
-            var message interface{} = Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(url, " wants you to sign in with your Ethereum account:"), "\n"), this.WalletAddress), "\n"), "\n"), "Sign in to Somnia DEX"), "\n"), "\n"), "URI: "), url), "\n"), "Version: 1"), "\n"), "Chain ID: 50312"), "\n"), "Nonce: "), nonce), "\n"), "Issued At: "), issuedAt) // eslint-disable-line quotes
+            var message interface{} = Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(Add(url, " wants you to sign in with your Ethereum account:"), "\n"), this.WalletAddress), "\n"), "\n"), "Sign in to dreamDEX"), "\n"), "\n"), "URI: "), url), "\n"), "Version: 1"), "\n"), "Chain ID: 5031"), "\n"), "Nonce: "), nonce), "\n"), "Issued At: "), issuedAt) // eslint-disable-line quotes
             var hash interface{} = this.HashMessage(message)
             var sig interface{} = this.SignHash(hash, this.PrivateKey)
             var loginRequest interface{} = map[string]interface{} {

@@ -18,7 +18,7 @@ class dreamdex extends Exchange {
     public function describe(): mixed {
         return $this->deep_extend(parent::describe(), array(
             'id' => 'dreamdex',
-            'name' => 'Dreamdex',
+            'name' => 'dreamDEX',
             'countries' => array(),
             'version' => 'v0',
             'rateLimit' => 200,
@@ -260,7 +260,7 @@ class dreamdex extends Exchange {
             'options' => array(
                 'authToken' => null,
                 'authTokenExpires' => null,
-                'chainId' => 50312,
+                'chainId' => 5031,
             ),
             'exceptions' => array(
                 'exact' => array(
@@ -346,7 +346,7 @@ class dreamdex extends Exchange {
     public function fetch_markets($params = array ()): PromiseInterface {
         return Async\async(function () use ($params) {
             /**
-             * retrieves data on all $markets for dreamdex
+             * retrieves data on all $markets for dreamDEX
              *
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
              *
@@ -620,7 +620,7 @@ class dreamdex extends Exchange {
              *
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
              *
-             * @param {string} $symbol unified $market $symbol, required for dreamdex
+             * @param {string} $symbol unified $market $symbol, required for dreamDEX
              * @param {int} [$since] timestamp in ms of the earliest trade to fetch
              * @param {int} [$limit] the maximum number of $trades to fetch
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
@@ -731,7 +731,7 @@ class dreamdex extends Exchange {
     public function fetch_balance($params = array ()): PromiseInterface {
         return Async\async(function () use ($params) {
             /**
-             * query for balance in a specific $market vault. DreamDEX uses per-$market vaults rather than a single exchange-wide wallet, so $params->symbol is required. The API does not distinguish between free and locked (in-order) $balances, so all balance is reported.
+             * query for balance in a specific $market vault. dreamDEX uses per-$market vaults rather than a single exchange-wide wallet, so $params->symbol is required. The API does not distinguish between free and locked (in-order) $balances, so all balance is reported.
              *
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
              *
@@ -857,7 +857,7 @@ class dreamdex extends Exchange {
             //         "to" => "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
             //         "data" => "0x80702f83...",
             //         "value" => "0",
-            //         "chainId" => "50312",
+            //         "chainId" => "5031",
             //         "gasLimit" => "250000",
             //         "nonce" => "42"
             //     }
@@ -875,7 +875,7 @@ class dreamdex extends Exchange {
         return Async\async(function () use ($symbol, $type, $side, $amount, $price, $params) {
             /**
              * creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
-             * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+             * The order is not placed until the transaction is submitted to the Somnia network (chain ID 5031).
              * The returned order structure has the unsigned transaction payload in the info field.
              *
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
@@ -929,7 +929,7 @@ class dreamdex extends Exchange {
                 //         "to" => "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
                 //         "data" => "0x...",
                 //         "value" => "100000000000000000",
-                //         "chainId" => "50312"
+                //         "chainId" => "5031"
                 //     }
                 //
                 return $this->safe_order(array(
@@ -991,7 +991,7 @@ class dreamdex extends Exchange {
             $response = Async\await($this->privatePostV0MarketsSymbolOrders ($this->extend($request, $params)));
             //
             //     {
-            //         "chainId" => "50312",
+            //         "chainId" => "5031",
             //         "data" => "0x80702f83...",
             //         "to" => "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
             //         "value" => "0"
@@ -1028,7 +1028,7 @@ class dreamdex extends Exchange {
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
              *
              * @param {string} $id the order $id
-             * @param {string} $symbol unified $market $symbol, required for dreamdex
+             * @param {string} $symbol unified $market $symbol, required for dreamDEX
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @return {array} an ~@link https://docs.ccxt.com/#/?$id=order-structure order structure~
              */
@@ -1049,7 +1049,6 @@ class dreamdex extends Exchange {
             //         "status" => "open",
             //         "createdAt" => 1765534169841,
             //         "symbol" => "SOMI:USDso",
-            //         "type" => "limit",
             //         "side" => "buy",
             //         "price" => "1.25",
             //         "amount" => "500",
@@ -1123,7 +1122,7 @@ class dreamdex extends Exchange {
              */
             $stop = $this->safe_bool_2($params, 'stop', 'trigger');
             $request = array(
-                'status' => $stop ? 'pending' : 'open',
+                'status' => ($stop) ? 'pending' : 'open',
             );
             return Async\await($this->fetch_orders($symbol, $since, $limit, $this->extend($request, $params)));
         }) ();
@@ -1137,7 +1136,7 @@ class dreamdex extends Exchange {
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
              *
              * @param {string} $id order $id
-             * @param {string} $symbol unified $market $symbol, required for dreamdex
+             * @param {string} $symbol unified $market $symbol, required for dreamDEX
              * @param {array} [$params] extra parameters specific to the exchange API endpoint
              * @param {bool} [$params->stop] set to true to cancel a $stop order (returns unsigned EVM transaction)
              * @param {bool} [$params->trigger] alias for $params->stop
@@ -1192,7 +1191,7 @@ class dreamdex extends Exchange {
              * @see https://api.dreamdex.io/v0/.well-known/oapi.json
              *
              * @param {string} $id order $id
-             * @param {string} $symbol unified $market $symbol, required for dreamdex
+             * @param {string} $symbol unified $market $symbol, required for dreamDEX
              * @param {string} $type not used, kept for CCXT unified signature
              * @param {string} $side not used, kept for CCXT unified signature
              * @param {float} $amount the new remaining quantity (must be less than current remaining)
@@ -1223,7 +1222,7 @@ class dreamdex extends Exchange {
             //         "to" => "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
             //         "data" => "0x...",
             //         "value" => "0",
-            //         "chainId" => "50312"
+            //         "chainId" => "5031"
             //     }
             //
             return $this->safe_order(array(
@@ -1260,7 +1259,6 @@ class dreamdex extends Exchange {
         //         "status" => "open",
         //         "createdAt" => 1765534169841,
         //         "symbol" => "SOMI:USDso",
-        //         "type" => "limit",
         //         "side" => "buy",
         //         "price" => "1.25",
         //         "amount" => "500",
@@ -1389,7 +1387,7 @@ class dreamdex extends Exchange {
             $nonce = $this->safe_string($nonceResponse, 'nonce');
             $issuedAt = $this->iso8601($now);
             $url = $this->safe_string($this->urls['api'], 'rest');
-            $message = $url . ' wants you to sign in with your Ethereum account:' . "\n" . $this->walletAddress . "\n" . "\n" . 'Sign in to Somnia DEX' . "\n" . "\n" . 'URI => ' . $url . "\n" . 'Version => 1' . "\n" . 'Chain ID => 50312' . "\n" . 'Nonce => ' . $nonce . "\n" . 'Issued At => ' . $issuedAt; // eslint-disable-line quotes
+            $message = $url . ' wants you to sign in with your Ethereum account:' . "\n" . $this->walletAddress . "\n" . "\n" . 'Sign in to dreamDEX' . "\n" . "\n" . 'URI => ' . $url . "\n" . 'Version => 1' . "\n" . 'Chain ID => 5031' . "\n" . 'Nonce => ' . $nonce . "\n" . 'Issued At => ' . $issuedAt; // eslint-disable-line quotes
             $hash = $this->hash_message($message);
             $sig = $this->sign_hash($hash, $this->privateKey);
             $loginRequest = array(

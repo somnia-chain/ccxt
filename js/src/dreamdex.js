@@ -15,16 +15,13 @@ import { ecdsa } from './base/functions/crypto.js';
 /**
  * @class dreamdex
  * @augments Exchange
- * @description Dreamdex (Somnia DEX) - a non-custodial decentralized exchange on the Somnia network (chain ID 50312).
- * createOrder returns an unsigned EVM transaction for the user to sign and broadcast on-chain.
- * Note: Somnia is currently in testnet. The API base URL points to the testnet environment and will be
- * updated to the production URL once mainnet launches.
+ * @description dreamDEX - a non-custodial decentralized exchange on the Somnia network (chain ID 5031)
  */
 export default class dreamdex extends Exchange {
     describe() {
         return this.deepExtend(super.describe(), {
             'id': 'dreamdex',
-            'name': 'Dreamdex',
+            'name': 'dreamDEX',
             'countries': [],
             'version': 'v0',
             'rateLimit': 200,
@@ -266,7 +263,7 @@ export default class dreamdex extends Exchange {
             'options': {
                 'authToken': undefined,
                 'authTokenExpires': undefined,
-                'chainId': 50312,
+                'chainId': 5031,
             },
             'exceptions': {
                 'exact': {
@@ -348,7 +345,7 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchMarkets
-     * @description retrieves data on all markets for dreamdex
+     * @description retrieves data on all markets for dreamDEX
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {Market[]} an array of objects representing market data
@@ -603,7 +600,7 @@ export default class dreamdex extends Exchange {
      * @name dreamdex#fetchMyTrades
      * @description fetch all trades made by the user
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {int} [since] timestamp in ms of the earliest trade to fetch
      * @param {int} [limit] the maximum number of trades to fetch
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -708,7 +705,7 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#fetchBalance
-     * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+     * @description query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} params.symbol unified market symbol (required — vault is per-market)
@@ -756,23 +753,14 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultApprove
-     * @description generates an unsigned ERC-20 approve transaction that authorizes the pool contract
-     * to spend a token on behalf of the wallet. Must be called before vaultDeposit for ERC-20 tokens.
-     * DreamDEX uses per-market vaults: each trading pair has its own vault contract that holds deposited
-     * tokens. This differs from centralized exchanges where deposit/withdraw are exchange-wide.
-     * The approve step (ERC-20 allowance) has no equivalent in the standard CCXT unified interface.
-     *
-     * Returns `undefined` when no approval is required - e.g. when the currency is the chain's native
-     * token (deposited via a payable function rather than ERC-20 transferFrom). Callers should treat
-     * `undefined` as a signal to skip signing and proceed directly to vaultDeposit.
+     * @description generates an unsigned ERC-20 approve transaction, or returns undefined for native tokens
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to approve (e.g. 'SOMI' or 'USDso')
      * @param {float} amount the amount to approve for spending
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} [params.walletAddress] the wallet address (defaults to this.walletAddress)
-     * @returns {object|undefined} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce },
-     *  or undefined if no approval is required for this currency
+     * @returns {object|undefined} an unsigned EVM transaction or undefined if no approval is required
      */
     async vaultApprove(symbol, currency, amount, params = {}) {
         return await this.vaultAction('approve', symbol, currency, amount, params);
@@ -780,9 +768,7 @@ export default class dreamdex extends Exchange {
     /**
      * @method
      * @name dreamdex#vaultDeposit
-     * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault.
-     * The token must first be approved via vaultApprove. DreamDEX vaults are per-market (each trading pair
-     * has its own vault contract), unlike centralized exchanges where funds are deposited exchange-wide.
+     * @description generates an unsigned EVM transaction for depositing tokens into a per-market vault
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to deposit (e.g. 'SOMI' or 'USDso')
@@ -792,15 +778,12 @@ export default class dreamdex extends Exchange {
      * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
      */
     async vaultDeposit(symbol, currency, amount, params = {}) {
-        // Deposit always produces a tx - the null-return path is reserved for approve.
         return (await this.vaultAction('deposit', symbol, currency, amount, params));
     }
     /**
      * @method
      * @name dreamdex#vaultWithdraw
-     * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault back to the wallet.
-     * DreamDEX vaults are per-market (each trading pair has its own vault contract), unlike centralized
-     * exchanges where withdrawals are exchange-wide.
+     * @description generates an unsigned EVM transaction for withdrawing tokens from a per-market vault
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol identifying the vault
      * @param {string} currency currency code to withdraw (e.g. 'SOMI' or 'USDso')
@@ -810,7 +793,6 @@ export default class dreamdex extends Exchange {
      * @returns {object} an unsigned EVM transaction { to, data, value, chainId, gasLimit, nonce }
      */
     async vaultWithdraw(symbol, currency, amount, params = {}) {
-        // Withdraw always produces a tx - the null-return path is reserved for approve.
         return (await this.vaultAction('withdraw', symbol, currency, amount, params));
     }
     async vaultAction(action, symbol, currency, amount, params = {}) {
@@ -841,7 +823,7 @@ export default class dreamdex extends Exchange {
         //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         //         "data": "0x80702f83...",
         //         "value": "0",
-        //         "chainId": "50312",
+        //         "chainId": "5031",
         //         "gasLimit": "250000",
         //         "nonce": "42"
         //     }
@@ -857,7 +839,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#createOrder
      * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
-     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 5031).
      * The returned order structure has the unsigned transaction payload in the info field.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
@@ -910,7 +892,7 @@ export default class dreamdex extends Exchange {
             //         "to": "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
             //         "data": "0x...",
             //         "value": "100000000000000000",
-            //         "chainId": "50312"
+            //         "chainId": "5031"
             //     }
             //
             return this.safeOrder({
@@ -974,7 +956,7 @@ export default class dreamdex extends Exchange {
         const response = await this.privatePostV0MarketsSymbolOrders(this.extend(request, params));
         //
         //     {
-        //         "chainId": "50312",
+        //         "chainId": "5031",
         //         "data": "0x80702f83...",
         //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         //         "value": "0"
@@ -1007,7 +989,7 @@ export default class dreamdex extends Exchange {
      * @description fetches information on an order made by the user
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id the order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
@@ -1029,7 +1011,6 @@ export default class dreamdex extends Exchange {
         //         "status": "open",
         //         "createdAt": 1765534169841,
         //         "symbol": "SOMI:USDso",
-        //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
         //         "amount": "500",
@@ -1097,7 +1078,7 @@ export default class dreamdex extends Exchange {
     async fetchOpenOrders(symbol = undefined, since = undefined, limit = undefined, params = {}) {
         const stop = this.safeBool2(params, 'stop', 'trigger');
         const request = {
-            'status': stop ? 'pending' : 'open',
+            'status': (stop) ? 'pending' : 'open',
         };
         return await this.fetchOrders(symbol, since, limit, this.extend(request, params));
     }
@@ -1107,7 +1088,7 @@ export default class dreamdex extends Exchange {
      * @description cancels an open order
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
      * @param {bool} [params.trigger] alias for params.stop
@@ -1159,7 +1140,7 @@ export default class dreamdex extends Exchange {
      * @description reduces the remaining quantity of an open order (the only edit the API supports)
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {string} type not used, kept for CCXT unified signature
      * @param {string} side not used, kept for CCXT unified signature
      * @param {float} amount the new remaining quantity (must be less than current remaining)
@@ -1191,7 +1172,7 @@ export default class dreamdex extends Exchange {
         //         "to": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
         //         "data": "0x...",
         //         "value": "0",
-        //         "chainId": "50312"
+        //         "chainId": "5031"
         //     }
         //
         return this.safeOrder({
@@ -1226,7 +1207,6 @@ export default class dreamdex extends Exchange {
         //         "status": "open",
         //         "createdAt": 1765534169841,
         //         "symbol": "SOMI:USDso",
-        //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
         //         "amount": "500",
@@ -1348,7 +1328,7 @@ export default class dreamdex extends Exchange {
         const nonce = this.safeString(nonceResponse, 'nonce');
         const issuedAt = this.iso8601(now);
         const url = this.safeString(this.urls['api'], 'rest');
-        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to Somnia DEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 50312' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
+        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to dreamDEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 5031' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
         const hash = this.hashMessage(message);
         const sig = this.signHash(hash, this.privateKey);
         const loginRequest = {

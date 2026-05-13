@@ -14,7 +14,7 @@ import type { Dict, int, Int, Str, Strings, Num, Market, Currencies, Order, Orde
 /**
  * @class dreamdex
  * @augments Exchange
- * @description dreamDEX - a non-custodial decentralized exchange on the Somnia network (chain ID 50312)
+ * @description dreamDEX - a non-custodial decentralized exchange on the Somnia network (chain ID 5031)
  */
 export default class dreamdex extends Exchange {
     describe (): any {
@@ -262,7 +262,7 @@ export default class dreamdex extends Exchange {
             'options': {
                 'authToken': undefined,
                 'authTokenExpires': undefined,
-                'chainId': 50312,
+                'chainId': 5031,
             },
             'exceptions': {
                 'exact': {
@@ -838,7 +838,7 @@ export default class dreamdex extends Exchange {
         //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         //         "data": "0x80702f83...",
         //         "value": "0",
-        //         "chainId": "50312",
+        //         "chainId": "5031",
         //         "gasLimit": "250000",
         //         "nonce": "42"
         //     }
@@ -855,7 +855,7 @@ export default class dreamdex extends Exchange {
      * @method
      * @name dreamdex#createOrder
      * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
-     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 5031).
      * The returned order structure has the unsigned transaction payload in the info field.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
@@ -908,7 +908,7 @@ export default class dreamdex extends Exchange {
             //         "to": "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
             //         "data": "0x...",
             //         "value": "100000000000000000",
-            //         "chainId": "50312"
+            //         "chainId": "5031"
             //     }
             //
             return this.safeOrder ({
@@ -970,7 +970,7 @@ export default class dreamdex extends Exchange {
         const response = await this.privatePostV0MarketsSymbolOrders (this.extend (request, params));
         //
         //     {
-        //         "chainId": "50312",
+        //         "chainId": "5031",
         //         "data": "0x80702f83...",
         //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         //         "value": "0"
@@ -1026,7 +1026,6 @@ export default class dreamdex extends Exchange {
         //         "status": "open",
         //         "createdAt": 1765534169841,
         //         "symbol": "SOMI:USDso",
-        //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
         //         "amount": "500",
@@ -1192,7 +1191,7 @@ export default class dreamdex extends Exchange {
         //         "to": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
         //         "data": "0x...",
         //         "value": "0",
-        //         "chainId": "50312"
+        //         "chainId": "5031"
         //     }
         //
         return this.safeOrder ({
@@ -1228,7 +1227,6 @@ export default class dreamdex extends Exchange {
         //         "status": "open",
         //         "createdAt": 1765534169841,
         //         "symbol": "SOMI:USDso",
-        //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
         //         "amount": "500",
@@ -1356,7 +1354,7 @@ export default class dreamdex extends Exchange {
         const nonce = this.safeString (nonceResponse, 'nonce');
         const issuedAt = this.iso8601 (now);
         const url = this.safeString (this.urls['api'], 'rest');
-        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to dreamDEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 50312' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
+        const message = url + ' wants you to sign in with your Ethereum account:' + "\n" + this.walletAddress + "\n" + "\n" + 'Sign in to dreamDEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 5031' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt; // eslint-disable-line quotes
         const hash = this.hashMessage (message);
         const sig = this.signHash (hash, this.privateKey);
         const loginRequest: Dict = {

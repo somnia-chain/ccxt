@@ -9,7 +9,7 @@ public partial class dreamdex : Exchange
     {
         return this.deepExtend(base.describe(), new Dictionary<string, object>() {
             { "id", "dreamdex" },
-            { "name", "Dreamdex" },
+            { "name", "dreamDEX" },
             { "countries", new List<object>() {} },
             { "version", "v0" },
             { "rateLimit", 200 },
@@ -248,7 +248,7 @@ public partial class dreamdex : Exchange
             { "options", new Dictionary<string, object>() {
                 { "authToken", null },
                 { "authTokenExpires", null },
-                { "chainId", 50312 },
+                { "chainId", 5031 },
             } },
             { "exceptions", new Dictionary<string, object>() {
                 { "exact", new Dictionary<string, object>() {
@@ -336,7 +336,7 @@ public partial class dreamdex : Exchange
     /**
      * @method
      * @name dreamdex#fetchMarkets
-     * @description retrieves data on all markets for dreamdex
+     * @description retrieves data on all markets for dreamDEX
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {Market[]} an array of objects representing market data
@@ -615,7 +615,7 @@ public partial class dreamdex : Exchange
      * @name dreamdex#fetchMyTrades
      * @description fetch all trades made by the user
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {int} [since] timestamp in ms of the earliest trade to fetch
      * @param {int} [limit] the maximum number of trades to fetch
      * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -729,7 +729,7 @@ public partial class dreamdex : Exchange
     /**
      * @method
      * @name dreamdex#fetchBalance
-     * @description query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+     * @description query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {string} params.symbol unified market symbol (required — vault is per-market)
@@ -868,7 +868,7 @@ public partial class dreamdex : Exchange
         //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         //         "data": "0x80702f83...",
         //         "value": "0",
-        //         "chainId": "50312",
+        //         "chainId": "5031",
         //         "gasLimit": "250000",
         //         "nonce": "42"
         //     }
@@ -886,7 +886,7 @@ public partial class dreamdex : Exchange
      * @method
      * @name dreamdex#createOrder
      * @description creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
-     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 50312).
+     * The order is not placed until the transaction is submitted to the Somnia network (chain ID 5031).
      * The returned order structure has the unsigned transaction payload in the info field.
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} symbol unified market symbol
@@ -945,7 +945,7 @@ public partial class dreamdex : Exchange
             //         "to": "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
             //         "data": "0x...",
             //         "value": "100000000000000000",
-            //         "chainId": "50312"
+            //         "chainId": "5031"
             //     }
             //
             return this.safeOrder(new Dictionary<string, object>() {
@@ -1016,7 +1016,7 @@ public partial class dreamdex : Exchange
         object response = await this.privatePostV0MarketsSymbolOrders(this.extend(request, parameters));
         //
         //     {
-        //         "chainId": "50312",
+        //         "chainId": "5031",
         //         "data": "0x80702f83...",
         //         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         //         "value": "0"
@@ -1050,7 +1050,7 @@ public partial class dreamdex : Exchange
      * @description fetches information on an order made by the user
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id the order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
      */
@@ -1075,7 +1075,6 @@ public partial class dreamdex : Exchange
         //         "status": "open",
         //         "createdAt": 1765534169841,
         //         "symbol": "SOMI:USDso",
-        //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
         //         "amount": "500",
@@ -1152,7 +1151,7 @@ public partial class dreamdex : Exchange
         parameters ??= new Dictionary<string, object>();
         object stop = this.safeBool2(parameters, "stop", "trigger");
         object request = new Dictionary<string, object>() {
-            { "status", ((bool) isTrue(stop)) ? "pending" : "open" },
+            { "status", ((bool) isTrue((stop))) ? "pending" : "open" },
         };
         return await this.fetchOrders(symbol, since, limit, this.extend(request, parameters));
     }
@@ -1163,7 +1162,7 @@ public partial class dreamdex : Exchange
      * @description cancels an open order
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {object} [params] extra parameters specific to the exchange API endpoint
      * @param {bool} [params.stop] set to true to cancel a stop order (returns unsigned EVM transaction)
      * @param {bool} [params.trigger] alias for params.stop
@@ -1220,7 +1219,7 @@ public partial class dreamdex : Exchange
      * @description reduces the remaining quantity of an open order (the only edit the API supports)
      * @see https://api.dreamdex.io/v0/.well-known/oapi.json
      * @param {string} id order id
-     * @param {string} symbol unified market symbol, required for dreamdex
+     * @param {string} symbol unified market symbol, required for dreamDEX
      * @param {string} type not used, kept for CCXT unified signature
      * @param {string} side not used, kept for CCXT unified signature
      * @param {float} amount the new remaining quantity (must be less than current remaining)
@@ -1257,7 +1256,7 @@ public partial class dreamdex : Exchange
         //         "to": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
         //         "data": "0x...",
         //         "value": "0",
-        //         "chainId": "50312"
+        //         "chainId": "5031"
         //     }
         //
         return this.safeOrder(new Dictionary<string, object>() {
@@ -1295,7 +1294,6 @@ public partial class dreamdex : Exchange
         //         "status": "open",
         //         "createdAt": 1765534169841,
         //         "symbol": "SOMI:USDso",
-        //         "type": "limit",
         //         "side": "buy",
         //         "price": "1.25",
         //         "amount": "500",
@@ -1431,7 +1429,7 @@ public partial class dreamdex : Exchange
         object nonce = this.safeString(nonceResponse, "nonce");
         object issuedAt = this.iso8601(now);
         object url = this.safeString(getValue(this.urls, "api"), "rest");
-        object message = add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(url, " wants you to sign in with your Ethereum account:"), "\n"), this.walletAddress), "\n"), "\n"), "Sign in to Somnia DEX"), "\n"), "\n"), "URI: "), url), "\n"), "Version: 1"), "\n"), "Chain ID: 50312"), "\n"), "Nonce: "), nonce), "\n"), "Issued At: "), issuedAt); // eslint-disable-line quotes
+        object message = add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(add(url, " wants you to sign in with your Ethereum account:"), "\n"), this.walletAddress), "\n"), "\n"), "Sign in to dreamDEX"), "\n"), "\n"), "URI: "), url), "\n"), "Version: 1"), "\n"), "Chain ID: 5031"), "\n"), "Nonce: "), nonce), "\n"), "Issued At: "), issuedAt); // eslint-disable-line quotes
         object hash = this.hashMessage(message);
         object sig = this.signHash(hash, this.privateKey);
         object loginRequest = new Dictionary<string, object>() {

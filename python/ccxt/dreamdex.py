@@ -26,7 +26,7 @@ class dreamdex(Exchange, ImplicitAPI):
     def describe(self) -> Any:
         return self.deep_extend(super(dreamdex, self).describe(), {
             'id': 'dreamdex',
-            'name': 'Dreamdex',
+            'name': 'dreamDEX',
             'countries': [],
             'version': 'v0',
             'rateLimit': 200,
@@ -268,7 +268,7 @@ class dreamdex(Exchange, ImplicitAPI):
             'options': {
                 'authToken': None,
                 'authTokenExpires': None,
-                'chainId': 50312,
+                'chainId': 5031,
             },
             'exceptions': {
                 'exact': {
@@ -347,7 +347,7 @@ class dreamdex(Exchange, ImplicitAPI):
 
     def fetch_markets(self, params={}) -> List[Market]:
         """
-        retrieves data on all markets for dreamdex
+        retrieves data on all markets for dreamDEX
 
         https://api.dreamdex.io/v0/.well-known/oapi.json
 
@@ -599,7 +599,7 @@ class dreamdex(Exchange, ImplicitAPI):
 
         https://api.dreamdex.io/v0/.well-known/oapi.json
 
-        :param str symbol: unified market symbol, required for dreamdex
+        :param str symbol: unified market symbol, required for dreamDEX
         :param int [since]: timestamp in ms of the earliest trade to fetch
         :param int [limit]: the maximum number of trades to fetch
         :param dict [params]: extra parameters specific to the exchange API endpoint
@@ -697,7 +697,7 @@ class dreamdex(Exchange, ImplicitAPI):
 
     def fetch_balance(self, params={}) -> Balances:
         """
-        query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked(in-order) balances, so all balance is reported.
+        query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked(in-order) balances, so all balance is reported.
 
         https://api.dreamdex.io/v0/.well-known/oapi.json
 
@@ -811,7 +811,7 @@ class dreamdex(Exchange, ImplicitAPI):
         #         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         #         "data": "0x80702f83...",
         #         "value": "0",
-        #         "chainId": "50312",
+        #         "chainId": "5031",
         #         "gasLimit": "250000",
         #         "nonce": "42"
         #     }
@@ -825,7 +825,7 @@ class dreamdex(Exchange, ImplicitAPI):
     def create_order(self, symbol: str, type: OrderType, side: OrderSide, amount: float, price: Num = None, params={}) -> Order:
         """
         creates an order by returning an unsigned EVM transaction for the user to sign and broadcast on-chain.
- The order is not placed until the transaction is submitted to the Somnia network(chain ID 50312).
+ The order is not placed until the transaction is submitted to the Somnia network(chain ID 5031).
  The returned order structure has the unsigned transaction payload in the info field.
 
         https://api.dreamdex.io/v0/.well-known/oapi.json
@@ -876,7 +876,7 @@ class dreamdex(Exchange, ImplicitAPI):
             #         "to": "0x1489eA81CBEDd53a8Eb1a95E99AF8EB5683b3330",
             #         "data": "0x...",
             #         "value": "100000000000000000",
-            #         "chainId": "50312"
+            #         "chainId": "5031"
             #     }
             #
             return self.safe_order({
@@ -932,7 +932,7 @@ class dreamdex(Exchange, ImplicitAPI):
         response = self.privatePostV0MarketsSymbolOrders(self.extend(request, params))
         #
         #     {
-        #         "chainId": "50312",
+        #         "chainId": "5031",
         #         "data": "0x80702f83...",
         #         "to": "0xcee4c19f4518A10FBeF92390FE6d9e7B18A4070c",
         #         "value": "0"
@@ -966,7 +966,7 @@ class dreamdex(Exchange, ImplicitAPI):
         https://api.dreamdex.io/v0/.well-known/oapi.json
 
         :param str id: the order id
-        :param str symbol: unified market symbol, required for dreamdex
+        :param str symbol: unified market symbol, required for dreamDEX
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :returns dict: an `order structure <https://docs.ccxt.com/#/?id=order-structure>`
         """
@@ -986,7 +986,6 @@ class dreamdex(Exchange, ImplicitAPI):
         #         "status": "open",
         #         "createdAt": 1765534169841,
         #         "symbol": "SOMI:USDso",
-        #         "type": "limit",
         #         "side": "buy",
         #         "price": "1.25",
         #         "amount": "500",
@@ -1051,7 +1050,7 @@ class dreamdex(Exchange, ImplicitAPI):
         """
         stop = self.safe_bool_2(params, 'stop', 'trigger')
         request: dict = {
-            'status': 'pending' if stop else 'open',
+            'status': 'pending' if (stop) else 'open',
         }
         return self.fetch_orders(symbol, since, limit, self.extend(request, params))
 
@@ -1062,7 +1061,7 @@ class dreamdex(Exchange, ImplicitAPI):
         https://api.dreamdex.io/v0/.well-known/oapi.json
 
         :param str id: order id
-        :param str symbol: unified market symbol, required for dreamdex
+        :param str symbol: unified market symbol, required for dreamDEX
         :param dict [params]: extra parameters specific to the exchange API endpoint
         :param bool [params.stop]: set to True to cancel a stop order(returns unsigned EVM transaction)
         :param bool [params.trigger]: alias for params.stop
@@ -1112,7 +1111,7 @@ class dreamdex(Exchange, ImplicitAPI):
         https://api.dreamdex.io/v0/.well-known/oapi.json
 
         :param str id: order id
-        :param str symbol: unified market symbol, required for dreamdex
+        :param str symbol: unified market symbol, required for dreamDEX
         :param str type: not used, kept for CCXT unified signature
         :param str side: not used, kept for CCXT unified signature
         :param float amount: the new remaining quantity(must be less than current remaining)
@@ -1140,7 +1139,7 @@ class dreamdex(Exchange, ImplicitAPI):
         #         "to": "0x914eDb19d187403F6e2b061CD92FF68CC795EA71",
         #         "data": "0x...",
         #         "value": "0",
-        #         "chainId": "50312"
+        #         "chainId": "5031"
         #     }
         #
         return self.safe_order({
@@ -1174,7 +1173,6 @@ class dreamdex(Exchange, ImplicitAPI):
         #         "status": "open",
         #         "createdAt": 1765534169841,
         #         "symbol": "SOMI:USDso",
-        #         "type": "limit",
         #         "side": "buy",
         #         "price": "1.25",
         #         "amount": "500",
@@ -1295,7 +1293,7 @@ class dreamdex(Exchange, ImplicitAPI):
         nonce = self.safe_string(nonceResponse, 'nonce')
         issuedAt = self.iso8601(now)
         url = self.safe_string(self.urls['api'], 'rest')
-        message = url + ' wants you to sign in with your Ethereum account:' + "\n" + self.walletAddress + "\n" + "\n" + 'Sign in to Somnia DEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 50312' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt  # eslint-disable-line quotes
+        message = url + ' wants you to sign in with your Ethereum account:' + "\n" + self.walletAddress + "\n" + "\n" + 'Sign in to dreamDEX' + "\n" + "\n" + 'URI: ' + url + "\n" + 'Version: 1' + "\n" + 'Chain ID: 5031' + "\n" + 'Nonce: ' + nonce + "\n" + 'Issued At: ' + issuedAt  # eslint-disable-line quotes
         hash = self.hash_message(message)
         sig = self.sign_hash(hash, self.privateKey)
         loginRequest: dict = {

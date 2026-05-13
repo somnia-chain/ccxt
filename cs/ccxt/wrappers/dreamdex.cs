@@ -7,7 +7,7 @@ namespace ccxt;
 public partial class dreamdex
 {
     /// <summary>
-    /// retrieves data on all markets for dreamdex
+    /// retrieves data on all markets for dreamDEX
     /// </summary>
     /// <remarks>
     /// See <see href="https://api.dreamdex.io/v0/.well-known/oapi.json"/>  <br/>
@@ -202,7 +202,7 @@ public partial class dreamdex
         return ((IList<object>)res).Select(item => new OHLCV(item)).ToList<OHLCV>();
     }
     /// <summary>
-    /// query for balance in a specific market vault. DreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
+    /// query for balance in a specific market vault. dreamDEX uses per-market vaults rather than a single exchange-wide wallet, so params.symbol is required. The API does not distinguish between free and locked (in-order) balances, so all balance is reported as free.
     /// </summary>
     /// <remarks>
     /// See <see href="https://api.dreamdex.io/v0/.well-known/oapi.json"/>  <br/>
