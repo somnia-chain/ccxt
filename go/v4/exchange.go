@@ -118,6 +118,12 @@ type Exchange struct {
 
 	httpClient *http.Client
 
+	// Guards the memoised proxy transport below. UpdateProxySettings runs on
+	// every Fetch, so the transport is rebuilt only when the proxy changes.
+	proxyMu                  sync.Mutex
+	proxyTransportURL        string
+	proxyTransportConfigured bool
+
 	HttpProxy            interface{}
 	Http_proxy           interface{}
 	HttpProxyCallback    interface{}
@@ -1454,23 +1460,32 @@ func (this *Exchange) UpdateProxySettings() {
 	this.CheckConflictingProxies(hasHttProxyDefined, proxyUrl)
 
 	if hasHttProxyDefined {
-		proxyTransport := &http.Transport{
-			// MaxIdleConns:       100,
-			// IdleConnTimeout:    90 * time.Second,
-			// DisableCompression: false,
-			// DisableKeepAlives:  false,
-		}
-
 		proxyUrlStr := ""
 		if httProxy != nil {
 			proxyUrlStr = httProxy.(string)
 		} else {
 			proxyUrlStr = httpsProxy.(string)
 		}
-		proxyURLParsed, _ := url.Parse(proxyUrlStr)
-		proxyTransport.Proxy = http.ProxyURL(proxyURLParsed)
 
-		this.httpClient.Transport = proxyTransport
+		// Fetch calls this on every request. Building a fresh Transport each
+		// time orphans the previous one along with its parked idle connections
+		// (which are never reaped) and defeats connection pooling entirely, so
+		// only rebuild when the resolved proxy actually changes.
+		this.proxyMu.Lock()
+		defer this.proxyMu.Unlock()
+		if this.proxyTransportConfigured && this.proxyTransportURL == proxyUrlStr {
+			return
+		}
+
+		proxyURLParsed, _ := url.Parse(proxyUrlStr)
+		this.httpClient.Transport = &http.Transport{
+			Proxy:               http.ProxyURL(proxyURLParsed),
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 100,
+			IdleConnTimeout:     90 * time.Second,
+		}
+		this.proxyTransportURL = proxyUrlStr
+		this.proxyTransportConfigured = true
 	}
 }
 

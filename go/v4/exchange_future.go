@@ -275,20 +275,54 @@ func WrapFuture(ch <-chan struct {
 	return f
 }
 
+// unsubscribe removes ch from f's subscriber list. It is a no-op when ch is
+// absent, which is the normal case for the future that won a race: Resolve and
+// Reject already cleared the whole slice.
+func (f *Future) unsubscribe(ch chan interface{}) {
+	f.subscribersMu.Lock()
+	defer f.subscribersMu.Unlock()
+	for i, sub := range f.subscribers {
+		if sub == ch {
+			f.subscribers = append(f.subscribers[:i], f.subscribers[i+1:]...)
+			return
+		}
+	}
+}
+
 // Race multiple Futures: returns the first resolved or rejected value/error.
 // Uses a shared subscriber channel instead of one goroutine per future to
 // avoid O(N) goroutine creation on every call (fixes #28182).
+//
+// Once the race settles, the shared channel is removed from every future that
+// did not win. Futures are long-lived and reused per messageHash (see
+// Client.NewFuture) while Client.Resolve deletes only the hash that actually
+// fired, so a symbol whose hash rarely fires stays in the map across calls.
+// Without deregistration it would retain one channel per race for the lifetime
+// of the client, and Resolve's non-blocking send would later deposit a full
+// resolved value into each of those buffers.
 func FutureRace(futures []*Future) *Future {
 	result := NewFuture()
 	// Buffered so that a non-blocking send from Future.Resolve succeeds
 	// even before the reader goroutine is scheduled.
 	sharedCh := make(chan interface{}, 1)
 
+	// Tracks the futures that actually got sharedCh appended, so the
+	// short-circuit below can undo the subscriptions made before it.
+	subscribed := make([]*Future, 0, len(futures))
+	unsubscribeAll := func() {
+		for _, f := range subscribed {
+			f.unsubscribe(sharedCh)
+		}
+	}
+
 	for _, f := range futures {
 		f.mu.Lock()
 		if f.resolved {
 			val, err := f.resolvedValue, f.resolvedError
 			f.mu.Unlock()
+			// Returning here skips the forwarding goroutine, so nothing would
+			// ever drain sharedCh from the futures already subscribed above.
+			unsubscribeAll()
 			if err != nil {
 				result.Reject(err.(error))
 			} else {
@@ -304,11 +338,15 @@ func FutureRace(futures []*Future) *Future {
 		}
 		f.subscribers = append(f.subscribers, sharedCh)
 		f.subscribersMu.Unlock()
+		subscribed = append(subscribed, f)
 	}
 
-	// Single goroutine forwards the first resolved/rejected value.
+	// Single goroutine forwards the first resolved/rejected value. Deregister
+	// before settling `result` so that a caller awaiting it observes the
+	// cleanup as already done.
 	go func() {
 		val := <-sharedCh
+		unsubscribeAll()
 		if err, isError := val.(error); isError {
 			result.Reject(err)
 		} else {
