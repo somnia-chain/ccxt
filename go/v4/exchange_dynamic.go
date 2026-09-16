@@ -13,6 +13,10 @@ func DynamicallyCreateInstance(exchangeId string, exchangeArgs map[string]any) (
 		binanceItf := NewBinanceCore()
 		binanceItf.Init(exchangeArgs)
 		return binanceItf, true
+	case "bitget":
+		bitgetItf := NewBitgetCore()
+		bitgetItf.Init(exchangeArgs)
+		return bitgetItf, true
 	case "bybit":
 		bybitItf := NewBybitCore()
 		bybitItf.Init(exchangeArgs)
@@ -25,6 +29,10 @@ func DynamicallyCreateInstance(exchangeId string, exchangeArgs map[string]any) (
 		gateioItf := NewGateioCore()
 		gateioItf.Init(exchangeArgs)
 		return gateioItf, true
+	case "hyperliquid":
+		hyperliquidItf := NewHyperliquidCore()
+		hyperliquidItf.Init(exchangeArgs)
+		return hyperliquidItf, true
 	case "kraken":
 		krakenItf := NewKrakenCore()
 		krakenItf.Init(exchangeArgs)
@@ -33,6 +41,10 @@ func DynamicallyCreateInstance(exchangeId string, exchangeArgs map[string]any) (
 		kucoinItf := NewKucoinCore()
 		kucoinItf.Init(exchangeArgs)
 		return kucoinItf, true
+	case "lighter":
+		lighterItf := NewLighterCore()
+		lighterItf.Init(exchangeArgs)
+		return lighterItf, true
 	case "mexc":
 		mexcItf := NewMexcCore()
 		mexcItf.Init(exchangeArgs)

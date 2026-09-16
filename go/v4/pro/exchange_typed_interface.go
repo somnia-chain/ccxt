@@ -19,6 +19,9 @@ func CreateExchange(exchangeId string, options map[string]any) ccxt.IExchange {
     case "binance":
         itf := NewBinance(options)
         return itf
+    case "bitget":
+        itf := NewBitget(options)
+        return itf
     case "bybit":
         itf := NewBybit(options)
         return itf
@@ -28,11 +31,17 @@ func CreateExchange(exchangeId string, options map[string]any) ccxt.IExchange {
     case "gateio":
         itf := NewGateio(options)
         return itf
+    case "hyperliquid":
+        itf := NewHyperliquid(options)
+        return itf
     case "kraken":
         itf := NewKraken(options)
         return itf
     case "kucoin":
         itf := NewKucoin(options)
+        return itf
+    case "lighter":
+        itf := NewLighter(options)
         return itf
     case "mexc":
         itf := NewMexc(options)
