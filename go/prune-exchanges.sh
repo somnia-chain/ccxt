@@ -6,7 +6,8 @@
 # a minute, everywhere (CI, docker, local, -race).
 #
 # Re-run after every upstream sync, then rebuild:
-#   go/prune-exchanges.sh binance okx bybit kucoin gate gateio mexc kraken
+#   go/prune-exchanges.sh binance okx bybit kucoin gate gateio mexc kraken \
+#     hyperliquid bitget lighter
 #   (cd go/v4 && go build ./... && go vet ./...)
 #
 # Note: some exchanges embed another one (e.g. gateio embeds gate) — the base
