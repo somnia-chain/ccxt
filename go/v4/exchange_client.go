@@ -53,7 +53,7 @@ type Client struct {
 	Url       string
 
 	Connection   *websocket.Conn
-	ConnectionMu sync.Mutex // protects conn writes
+	ConnectionMu sync.Mutex // protects the Connection field and conn writes
 
 	PongSetMu sync.RWMutex // protects LastPong set
 
@@ -62,7 +62,10 @@ type Client struct {
 	ConnectMu       sync.RWMutex // protects Connect calls
 	ReadLoopClosed  chan struct{}
 
-	Error error // last error, nil if connection considered healthy
+	Error   error        // last error, nil if connection considered healthy
+	ErrorMu sync.RWMutex // protects Error: the read loop and Exchange.Close both set it
+
+	TimersMu sync.Mutex // protects ConnectionTimer and PingInterval
 
 	Connected             any            // *Future             		// signal channel for connection established
 	Disconnected          any            // *Future              	// future for disconnection
@@ -306,12 +309,14 @@ func (this *Client) OnPong() {
 
 func (this *Client) Reset(err any) {
 	// Stop any active timers/intervals
+	this.TimersMu.Lock()
 	if t, ok := this.ConnectionTimer.(*time.Timer); ok {
 		t.Stop()
 	}
 	if tk, ok := this.PingInterval.(*time.Ticker); ok {
 		tk.Stop()
 	}
+	this.TimersMu.Unlock()
 	// Clear error and close connection
 	_ = this.Close()
 	// Reject all pending futures with provided error (or generic)
@@ -338,14 +343,16 @@ func (this *Client) OnConnectionTimeout() {
 	if !this.IsConnected.(bool) {
 		err := RequestTimeout("Connection to " + this.Url + " failed due to a connection timeout")
 		this.OnError(err)
-		if this.Connection != nil {
-			this.Connection.Close()
+		if conn := this.conn(); conn != nil {
+			conn.Close()
 		}
 		// ? this.Connection.Close(1006)
 	}
 }
 
 func (this *Client) SetConnectionTimeout() {
+	this.TimersMu.Lock()
+	defer this.TimersMu.Unlock()
 	if this.ConnectionTimeout != nil && this.ConnectionTimeout != false {
 		if timeout, ok := this.ConnectionTimeout.(int); ok {
 			this.ConnectionTimer = time.AfterFunc(time.Duration(timeout)*time.Millisecond, this.OnConnectionTimeout)
@@ -354,6 +361,8 @@ func (this *Client) SetConnectionTimeout() {
 }
 
 func (this *Client) ClearConnectionTimeout() {
+	this.TimersMu.Lock()
+	defer this.TimersMu.Unlock()
 	if this.ConnectionTimer != nil && this.ConnectionTimer != false {
 		if timer, ok := this.ConnectionTimer.(*time.Timer); ok {
 			timer.Stop()
@@ -386,10 +395,11 @@ func (this *Client) OnError(err any) {
 	if errStr, ok := err.(string); ok {
 		err = NetworkError(errStr)
 	}
-	this.Error = err.(error)
-	this.Reset(this.Error)
+	e := err.(error)
+	this.SetError(e)
+	this.Reset(e)
 	if this.OnErrorCallback != nil {
-		this.OnErrorCallback(this, this.Error)
+		this.OnErrorCallback(this, e)
 	}
 }
 
@@ -397,7 +407,7 @@ func (this *Client) OnClose(event any) {
 	if this.Verbose {
 		this.Log(time.Now(), "onClose", event)
 	}
-	if this.Error == nil {
+	if this.GetError() == nil {
 		// todo: exception types for server-side disconnects
 		// this.Reset(NetworkError("connection closed by remote server, closing code " + event.code)) // TODO: what type is event?
 		eventStr := fmt.Sprintf("%v", event)
@@ -566,11 +576,22 @@ func (this *Client) IsJsonEncodedObject(str string) bool {
 }
 
 func (this *Client) GetError() error {
+	this.ErrorMu.RLock()
+	defer this.ErrorMu.RUnlock()
 	return this.Error
 }
 
 func (this *Client) SetError(err error) {
+	this.ErrorMu.Lock()
+	defer this.ErrorMu.Unlock()
 	this.Error = err
+}
+
+// conn returns the current connection, nil once closed.
+func (this *Client) conn() *websocket.Conn {
+	this.ConnectionMu.Lock()
+	defer this.ConnectionMu.Unlock()
+	return this.Connection
 }
 
 func (this *Client) GetUrl() string {

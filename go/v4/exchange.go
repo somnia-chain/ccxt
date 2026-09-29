@@ -1732,7 +1732,7 @@ func (this *Exchange) OnError(client any, err any) {
 }
 
 func (this *Exchange) OnClose(client any, err any) {
-	if client.(*Client).Error != nil {
+	if client.(*Client).GetError() != nil {
 		// connection closed due to an error, do nothing
 	} else {
 		this.WsClientsMu.Lock()
