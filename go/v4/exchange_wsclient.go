@@ -110,17 +110,19 @@ func (this *WSClient) CreateConnection() error {
 	if err != nil {
 		return err
 	}
+	this.ConnectionMu.Lock()
 	this.Connection = conn
+	this.ConnectionMu.Unlock()
 
 	// handle connection pong here:
-	this.Connection.SetPongHandler(func(string) error {
+	conn.SetPongHandler(func(string) error {
 		this.OnPong()
 		return nil
 	})
 
 	// Start event handling goroutines
 	go this.handleOpen()
-	go this.handleMessages()
+	go this.handleMessages(conn)
 
 	return nil
 }
@@ -130,21 +132,17 @@ func (this *WSClient) handleOpen() {
 	this.OnOpen()
 }
 
-// Handle incoming WebSocket messages
-func (this *WSClient) handleMessages() {
+// Handle incoming WebSocket messages. The loop owns conn rather than
+// re-reading this.Connection, which Close nils concurrently; closing conn
+// elsewhere surfaces here as a ReadMessage error.
+func (this *WSClient) handleMessages(conn *websocket.Conn) {
 	defer func() {
 		this.OnClose(nil)
-		if this.Connection != nil {
-			this.Connection.Close()
-		}
+		conn.Close()
 	}()
 
 	for {
-		if this.Connection == nil {
-			return
-		}
-
-		messageType, data, err := this.Connection.ReadMessage()
+		messageType, data, err := conn.ReadMessage()
 		if err != nil {
 			this.OnError(NetworkError(err))
 			return
@@ -159,7 +157,9 @@ func (this *WSClient) handleMessages() {
 			if this.Verbose {
 				this.Log(time.Now(), "sending connection ping")
 			}
-			this.Connection.WriteMessage(websocket.PongMessage, nil)
+			this.ConnectionMu.Lock()
+			conn.WriteMessage(websocket.PongMessage, nil)
+			this.ConnectionMu.Unlock()
 		case websocket.PongMessage:
 			this.OnPong()
 		case websocket.CloseMessage:
@@ -197,7 +197,7 @@ func (this *WSClient) Connect(backoffDelay ...int) (*Future, error) {
 }
 
 func (this *WSClient) IsOpen() bool {
-	return this.Connection != nil
+	return this.conn() != nil
 }
 
 func (this *WSClient) ResetConnection(err any) {
@@ -209,7 +209,9 @@ func (this *WSClient) ResetConnection(err any) {
 func (this *WSClient) SetPingInterval() {
 	if this.KeepAlive.(int64) > 0 {
 		ticker := time.NewTicker(time.Duration(this.KeepAlive.(int64)) * time.Millisecond)
+		this.TimersMu.Lock()
 		this.PingInterval = ticker
+		this.TimersMu.Unlock()
 		go func() {
 			defer ticker.Stop() // Ensure ticker is stopped when goroutine exits
 			for {
@@ -225,6 +227,8 @@ func (this *WSClient) SetPingInterval() {
 }
 
 func (this *WSClient) ClearPingInterval() {
+	this.TimersMu.Lock()
+	defer this.TimersMu.Unlock()
 	if this.PingInterval != nil {
 		if ticker, ok := this.PingInterval.(*time.Ticker); ok {
 			ticker.Stop()
@@ -275,12 +279,12 @@ func (this *WSClient) OnPingInterval() {
 					}()
 				} else {
 					// In Go, we can ping directly on websocket connection
-					if this.Connection != nil {
+					if conn := this.conn(); conn != nil {
 						// this.Connection.WriteMessage(websocket.PingMessage, []byte{})
 						if this.Verbose {
 							this.Log(time.Now(), "sending connection ping")
 						}
-						this.Connection.WriteControl(websocket.PingMessage, nil, time.Now().Add(5*time.Second))
+						conn.WriteControl(websocket.PingMessage, nil, time.Now().Add(5*time.Second))
 					}
 				}
 			}
@@ -305,6 +309,8 @@ func (this *WSClient) OnOpen() {
 }
 
 func (this *WSClient) Close() *Future {
+	this.ConnectionMu.Lock()
+	defer this.ConnectionMu.Unlock()
 	if this.Connection != nil {
 		if this.Disconnected == nil {
 			this.Disconnected = NewFuture()
