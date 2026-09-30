@@ -2,6 +2,7 @@ package ccxt
 
 import (
 	"sync"
+	"sync/atomic"
 )
 
 // Future is a one-shot promise
@@ -31,13 +32,73 @@ func ToGetsLimit(v any) GetsLimit {
 type Future struct {
 	result        chan any
 	err           chan any
-	subscribers   []chan any
+	subscribers   []subscriber
 	resolved      bool
 	resolvedValue any
 	resolvedError any
+	onConsume     func() // set while the future is parked on a Client; see Client.Resolve
 	mu            sync.Mutex
 	once          sync.Once
 	subscribersMu sync.Mutex
+}
+
+// subscriber is one waiter on a Future. FutureRace shares one taken flag
+// across every future it subscribes to, so exactly one of them hands the race
+// its value; the rest see the flag set and know nobody is waiting on them.
+type subscriber struct {
+	ch    chan any
+	taken *atomic.Bool
+}
+
+func newSubscriber(ch chan any) subscriber { return subscriber{ch: ch, taken: new(atomic.Bool)} }
+
+// waited reports whether a subscriber is still waiting for this future.
+func (f *Future) waited() bool {
+	f.subscribersMu.Lock()
+	defer f.subscribersMu.Unlock()
+	for _, sub := range f.subscribers {
+		if !sub.taken.Load() {
+			return true
+		}
+	}
+	return false
+}
+
+func (f *Future) isResolved() bool {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return f.resolved
+}
+
+// catchUp delivers to sub if f was resolved between the caller checking and
+// sub being added, a window in which Resolve would have missed it.
+func (f *Future) catchUp(sub subscriber) bool {
+	f.mu.Lock()
+	resolved, value, reason := f.resolved, f.resolvedValue, f.resolvedError
+	f.mu.Unlock()
+	if !resolved || !sub.taken.CompareAndSwap(false, true) {
+		return false
+	}
+	if reason != nil {
+		value = reason
+	}
+	select {
+	case sub.ch <- value:
+	default:
+	}
+	return true
+}
+
+// consume detaches a parked future from its client once its value has been
+// handed to a caller, so the next call waits for a fresh update.
+func (f *Future) consume() {
+	f.mu.Lock()
+	detach := f.onConsume
+	f.onConsume = nil
+	f.mu.Unlock()
+	if detach != nil {
+		detach()
+	}
 }
 
 // Create new Future
@@ -79,6 +140,9 @@ func (f *Future) Resolve(args ...any) {
 		f.subscribersMu.Lock()
 		// Notify all subscribers
 		for _, sub := range f.subscribers {
+			if !sub.taken.CompareAndSwap(false, true) {
+				continue
+			}
 			func(sub chan any) {
 				defer func() {
 					if r := recover(); r != nil {
@@ -90,7 +154,7 @@ func (f *Future) Resolve(args ...any) {
 				case sub <- value:
 				default:
 				}
-			}(sub)
+			}(sub.ch)
 		}
 		f.subscribers = nil // Clear subscribers after notifying them
 		f.subscribersMu.Unlock()
@@ -122,6 +186,9 @@ func (f *Future) Reject(reason any) {
 		// Notify all subscribers
 		f.subscribersMu.Lock()
 		for _, sub := range f.subscribers {
+			if !sub.taken.CompareAndSwap(false, true) {
+				continue
+			}
 			func(sub chan any) {
 				defer func() {
 					if r := recover(); r != nil {
@@ -133,7 +200,7 @@ func (f *Future) Reject(reason any) {
 				case sub <- reason:
 				default:
 				}
-			}(sub)
+			}(sub.ch)
 		}
 		f.subscribers = nil // Clear subscribers after notifying them
 		f.subscribersMu.Unlock()
@@ -221,15 +288,20 @@ func (f *Future) Await() <-chan any {
 			ch <- f.resolvedValue
 		}
 		f.mu.Unlock()
+		f.consume()
 		return ch
 	}
 	f.mu.Unlock()
+	sub := newSubscriber(ch)
 	f.subscribersMu.Lock()
 	if f.subscribers == nil {
-		f.subscribers = make([]chan any, 0)
+		f.subscribers = make([]subscriber, 0)
 	}
-	f.subscribers = append(f.subscribers, ch)
+	f.subscribers = append(f.subscribers, sub)
 	f.subscribersMu.Unlock()
+	if f.catchUp(sub) {
+		f.consume()
+	}
 	// go func() {
 	// 	defer close(ch)
 	// 	// f.mu.Lock()
@@ -282,7 +354,7 @@ func (f *Future) unsubscribe(ch chan interface{}) {
 	f.subscribersMu.Lock()
 	defer f.subscribersMu.Unlock()
 	for i, sub := range f.subscribers {
-		if sub == ch {
+		if sub.ch == ch {
 			f.subscribers = append(f.subscribers[:i], f.subscribers[i+1:]...)
 			return
 		}
@@ -305,6 +377,7 @@ func FutureRace(futures []*Future) *Future {
 	// Buffered so that a non-blocking send from Future.Resolve succeeds
 	// even before the reader goroutine is scheduled.
 	sharedCh := make(chan interface{}, 1)
+	taken := new(atomic.Bool)
 
 	// Tracks the futures that actually got sharedCh appended, so the
 	// short-circuit below can undo the subscriptions made before it.
@@ -320,6 +393,7 @@ func FutureRace(futures []*Future) *Future {
 		if f.resolved {
 			val, err := f.resolvedValue, f.resolvedError
 			f.mu.Unlock()
+			f.consume()
 			// Returning here skips the forwarding goroutine, so nothing would
 			// ever drain sharedCh from the futures already subscribed above.
 			unsubscribeAll()
@@ -334,10 +408,14 @@ func FutureRace(futures []*Future) *Future {
 
 		f.subscribersMu.Lock()
 		if f.subscribers == nil {
-			f.subscribers = make([]chan interface{}, 0)
+			f.subscribers = make([]subscriber, 0)
 		}
-		f.subscribers = append(f.subscribers, sharedCh)
+		sub := subscriber{ch: sharedCh, taken: taken}
+		f.subscribers = append(f.subscribers, sub)
 		f.subscribersMu.Unlock()
+		if f.catchUp(sub) {
+			f.consume()
+		}
 		subscribed = append(subscribed, f)
 	}
 

@@ -95,15 +95,52 @@ func (this *Client) Resolve(data any, subHash any) any {
 		panic(fmt.Sprintf("subHash must be a string, got %T: %v", subHash, subHash))
 	}
 
-	// Send to Future channel for ongoing updates (non-blocking)
 	this.FuturesMu.Lock()
-	if fut, exists := this.Futures[hash]; exists {
-		// Print("Inside resolve, existed future for hash: " + hash)
-		fut.(*Future).Resolve(data)
+	defer this.FuturesMu.Unlock()
+	existing, exists := this.Futures[hash]
+	if exists && existing.(*Future).waited() {
+		existing.(*Future).Resolve(data)
 		delete(this.Futures, hash)
+		return data
 	}
-	this.FuturesMu.Unlock()
+	// Nobody is waiting: no call is in flight, or the future is a loser left
+	// in the map by an earlier FutureRace. Park the newest value so the next
+	// call for this hash gets it instead of it being dropped. Only hashes that
+	// already have a future or a live subscription are parked, so one-shot
+	// request ids are not retained.
+	if !exists && !this.subscribed(hash) {
+		return data
+	}
+	fut := NewFuture()
+	if exists && !existing.(*Future).isResolved() {
+		// Keep the same object: ReusableFuture callers hold it and await later.
+		fut = existing.(*Future)
+	}
+	fut.Resolve(data)
+	this.park(hash, fut)
 	return data
+}
+
+func (this *Client) subscribed(hash string) bool {
+	this.SubscriptionsMu.RLock()
+	defer this.SubscriptionsMu.RUnlock()
+	_, ok := this.Subscriptions[hash]
+	return ok
+}
+
+// park leaves a resolved future in the map until a caller takes its value.
+// Caller holds FuturesMu.
+func (this *Client) park(hash string, fut *Future) {
+	fut.mu.Lock()
+	fut.onConsume = func() {
+		this.FuturesMu.Lock()
+		defer this.FuturesMu.Unlock()
+		if cur, ok := this.Futures[hash]; ok && cur.(*Future) == fut {
+			delete(this.Futures, hash)
+		}
+	}
+	fut.mu.Unlock()
+	this.Futures[hash] = fut
 }
 
 func (this *Client) Future(messageHash any) <-chan any {
