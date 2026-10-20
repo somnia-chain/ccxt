@@ -168,6 +168,12 @@ func (this *Client) NewFuture(messageHash any) *Future {
 		future.(*Future).Reject(err.(error))
 		delete(this.Rejections, hash)
 	}
+	// A failed client is never re-dialled, so a future created on it after
+	// Reset would wait forever. OnError sets the error before Reset, so a
+	// future inserted above is caught either here or by Reset (AGT-781).
+	if err := this.GetError(); err != nil {
+		this.Reject(err, hash)
+	}
 	return future.(*Future)
 }
 
