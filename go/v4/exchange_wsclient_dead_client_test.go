@@ -75,9 +75,15 @@ func TestFutureRaceOnDroppedClientIsRejected(t *testing.T) {
 
 // A future created on a healthy client must stay pending until data arrives.
 func TestFutureOnLiveClientStaysPending(t *testing.T) {
-	url, _ := newDroppingWSServer(t)
+	url, drop := newDroppingWSServer(t)
 	ex := &Exchange{Clients: map[string]any{}}
-	client, _ := connectTracked(t, ex, url)
+	client, done := connectTracked(t, ex, url)
+	// The handler blocks until dropped, and srv.Close leaves hijacked
+	// connections alone, so release both ends before the server shuts down.
+	t.Cleanup(func() {
+		drop()
+		awaitReadLoop(t, done)
+	})
 
 	fut := client.NewFuture("bidask:BTC/USDT:USDT")
 	select {
