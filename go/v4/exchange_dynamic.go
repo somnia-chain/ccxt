@@ -21,6 +21,10 @@ func DynamicallyCreateInstance(exchangeId string, exchangeArgs map[string]any) (
 		bybitItf := NewBybitCore()
 		bybitItf.Init(exchangeArgs)
 		return bybitItf, true
+	case "deribit":
+		deribitItf := NewDeribitCore()
+		deribitItf.Init(exchangeArgs)
+		return deribitItf, true
 	case "gate":
 		gateItf := NewGateCore()
 		gateItf.Init(exchangeArgs)

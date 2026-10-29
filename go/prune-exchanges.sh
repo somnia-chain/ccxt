@@ -7,7 +7,7 @@
 #
 # Re-run after every upstream sync, then rebuild:
 #   go/prune-exchanges.sh binance okx bybit kucoin gate gateio mexc kraken \
-#     hyperliquid bitget lighter
+#     hyperliquid bitget lighter deribit
 #   (cd go/v4 && go build ./... && go vet ./...)
 #
 # Note: some exchanges embed another one (e.g. gateio embeds gate) — the base
