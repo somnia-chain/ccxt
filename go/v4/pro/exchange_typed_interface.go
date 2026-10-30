@@ -25,6 +25,9 @@ func CreateExchange(exchangeId string, options map[string]any) ccxt.IExchange {
     case "bybit":
         itf := NewBybit(options)
         return itf
+    case "deribit":
+        itf := NewDeribit(options)
+        return itf
     case "gate":
         itf := NewGate(options)
         return itf
