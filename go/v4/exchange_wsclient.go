@@ -111,6 +111,12 @@ func (this *WSClient) CreateConnection() error {
 		return err
 	}
 	this.ConnectionMu.Lock()
+	if this.closedByUser {
+		// Close ran while we were dialing: do not install a live socket.
+		this.ConnectionMu.Unlock()
+		conn.Close()
+		return ExchangeClosedByUser()
+	}
 	this.Connection = conn
 	this.ConnectionMu.Unlock()
 
@@ -311,12 +317,21 @@ func (this *WSClient) OnOpen() {
 func (this *WSClient) Close() *Future {
 	this.ConnectionMu.Lock()
 	defer this.ConnectionMu.Unlock()
+	this.closedByUser = true
+	if this.Disconnected == nil {
+		this.Disconnected = NewFuture()
+	}
 	if this.Connection != nil {
-		if this.Disconnected == nil {
-			this.Disconnected = NewFuture()
-		}
+		// The read loop's OnClose resolves Disconnected.
 		this.Connection.Close()
 		this.Connection = nil
+	} else {
+		// Never connected (or already torn down): nothing else will resolve it.
+		this.Disconnected.(*Future).Resolve(true)
+	}
+	// Release anything parked on connect; a no-op if already resolved.
+	if f, ok := this.Connected.(*Future); ok {
+		f.Reject(ExchangeClosedByUser())
 	}
 	return this.Disconnected.(*Future)
 }

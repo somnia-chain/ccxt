@@ -54,6 +54,7 @@ type Client struct {
 
 	Connection   *websocket.Conn
 	ConnectionMu sync.Mutex // protects the Connection field and conn writes
+	closedByUser bool       // guarded by ConnectionMu: Close was called, a later dial must not install a connection
 
 	PongSetMu sync.RWMutex // protects LastPong set
 
