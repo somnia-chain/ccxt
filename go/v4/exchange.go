@@ -189,6 +189,7 @@ type Exchange struct {
 	// ws
 	WsClients   map[string]any // one websocket client per URL
 	WsClientsMu sync.Mutex
+	wsShutdown  bool // guarded by WsClientsMu: Shutdown was called, new clients are born closed
 	Balance     any
 	Positions   any
 	Clients     map[string]any
@@ -1591,7 +1592,9 @@ func (this *Exchange) Watch(args ...any) <-chan any {
 		go func() {
 			result := <-connected.Await()
 			if err, ok := result.(error); ok {
+				client.SubscriptionsMu.Lock()
 				delete(client.Subscriptions, subscribeHash.(string))
+				client.SubscriptionsMu.Unlock()
 				future.Reject(err)
 				return
 			}
@@ -1792,6 +1795,11 @@ func (this *Exchange) Client(url any) *WSClient {
 	var proxyUrl string = this.getWsProxy()
 	client := NewWSClient(url.(string), this.DerivedExchange.HandleMessage, this.DerivedExchange.OnError, this.DerivedExchange.OnClose, this.DerivedExchange.OnConnected, proxyUrl, options)
 
+	if this.wsShutdown {
+		// discarded exchange: hand back a closed client and do not cache it
+		client.Close()
+		return client
+	}
 	this.Clients[url.(string)] = client
 	return client
 }
@@ -1918,9 +1926,11 @@ func (this *Exchange) WatchMultiple(args ...any) <-chan any {
 		go func() {
 			result := <-connected.Await()
 			if err, ok := result.(error); ok {
+				client.SubscriptionsMu.Lock()
 				for _, subscribeHash := range missingSubscriptions {
 					delete(client.Subscriptions, subscribeHash)
 				}
+				client.SubscriptionsMu.Unlock()
 				future.Reject(err)
 				return
 			}
@@ -2030,6 +2040,16 @@ func (this *Exchange) LoadOrderBook(client any, messageHash any, symbol any, opt
 	// 	await this.loadOrderBook (client, messageHash, symbol, limit, params);
 	// }
 	return nil
+}
+
+// Shutdown closes every client like Close and additionally makes the exchange permanently closed:
+// later Watches get a closed client and never dial. Use it when the exchange is discarded; Close
+// keeps its re-dial semantics for owners that reuse the exchange.
+func (this *Exchange) Shutdown() []error {
+	this.WsClientsMu.Lock()
+	this.wsShutdown = true
+	this.WsClientsMu.Unlock()
+	return this.Close()
 }
 
 func (this *Exchange) Close() []error {

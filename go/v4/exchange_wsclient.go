@@ -64,6 +64,12 @@ func NewWSClient(url string, onMessageCallback func(client any, err any), onErro
 }
 
 func (this *WSClient) CreateConnection() error {
+	this.ConnectionMu.Lock()
+	closed := this.closedByUser
+	this.ConnectionMu.Unlock()
+	if closed {
+		return ExchangeClosedByUser()
+	}
 	if this.Verbose {
 		this.Log(time.Now(), "connecting to", this.Url)
 	}
@@ -315,6 +321,7 @@ func (this *WSClient) OnOpen() {
 }
 
 func (this *WSClient) Close() *Future {
+	this.ClearConnectionTimeout()
 	this.ConnectionMu.Lock()
 	defer this.ConnectionMu.Unlock()
 	this.closedByUser = true

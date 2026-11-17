@@ -201,6 +201,8 @@ func (this *Client) Reject(err any, messageHash ...any) {
 func (this *Client) Close() error {
 	this.ConnectionMu.Lock()
 	defer this.ConnectionMu.Unlock()
+	// A client is never re-dialled: a dial that lands after this must close its socket.
+	this.closedByUser = true
 	if this.Connection != nil {
 		err := this.Connection.Close()
 		this.Connection = nil
@@ -368,6 +370,14 @@ func (this *Client) Reset(err any) {
 		err = "connection reset"
 	}
 	this.Reject(err)
+	// Settle a connect that never completed (timer eviction); a no-op once connected.
+	if f, ok := this.Connected.(*Future); ok {
+		e, isErr := err.(error)
+		if !isErr {
+			e = NetworkError(fmt.Sprint(err))
+		}
+		f.Reject(e)
+	}
 }
 
 func (this *Client) Log(args ...any) {
@@ -488,13 +498,14 @@ func (this *Client) Send(message any) <-chan any {
 	}
 
 	future := NewFuture()
-	ch := make(chan any)
+	ch := make(chan any, 1)
 	go func() {
 		this.ConnectionMu.Lock()
 		// ? if (isNode)
 		if this.Connection == nil {
 			err := NetworkError("not connected to " + this.Url)
 			future.Reject(err)
+			ch <- err
 		} else {
 			err := this.Connection.WriteMessage(websocket.TextMessage, []byte(msgStr))
 			if err != nil {
