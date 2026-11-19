@@ -614,6 +614,17 @@ func (this *Client) OnMessage(messageEvent any) {
 		// this.Log(time.Now(), "onMessage", util.inspect(message, false, null, true))
 		// this.Log(time.Now(), "onMessage", JSON.stringify(message, null, 4))
 	}
+	// As in the JS client: a handler that throws (e.g. a venue error frame) rejects this
+	// client's watchers instead of panicking the read loop, which nothing above can recover.
+	defer func() {
+		if r := recover(); r != nil {
+			err, ok := r.(error)
+			if !ok {
+				err = ExchangeError(fmt.Sprintf("%v", r))
+			}
+			this.Reject(err)
+		}
+	}()
 	if messageIsBinary && !this.DecompressBinary {
 		this.OnMessageCallback(this, messageBytes)
 	} else if parsedMessage != nil {
