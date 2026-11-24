@@ -3872,6 +3872,10 @@ func  (this *KucoinCore) HandleErrorMessage(client any, message any) any  {
         if ccxt.IsTrue(ccxt.IsGreaterThanOrEqual(ccxt.GetIndexOf(client.(ccxt.ClientInterface).GetUrl(), "connectId=private"), 0)) {
             typeVar = "private"
         }
+        // Somnia: futures connections cache their url under the Futures-suffixed connectId (see Negotiate).
+        if ccxt.IsTrue(ccxt.IsGreaterThanOrEqual(ccxt.GetIndexOf(client.(ccxt.ClientInterface).GetUrl(), ccxt.Add(ccxt.Add("connectId=", typeVar), "Futures")), 0)) {
+            typeVar = ccxt.Add(typeVar, "Futures")
+        }
         ccxt.AddElementToObject(ccxt.GetValue(this.Options, "urls"), typeVar, nil)
     }
     this.HandleErrors(1, "", client.(ccxt.ClientInterface).GetUrl(), "", map[string]any {}, data, message, map[string]any {}, map[string]any {})
